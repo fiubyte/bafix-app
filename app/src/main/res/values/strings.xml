@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">BAFix</string>
+    <string name="app_name">BAFIX</string>
+    <string name="register_text">Ingrese para empezar</string>
 </resources>

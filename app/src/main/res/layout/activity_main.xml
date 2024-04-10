@@ -8,6 +8,16 @@
     android:background="@color/black"
     android:gravity="center">
 
+    <androidx.appcompat.widget.Toolbar
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/black"
+        app:titleTextColor="@color/white"
+        app:titleTextAppearance="@style/ToolbarTheme"
+        android:theme="@style/ToolbarTheme"/>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_fragment_container_view"
         android:name="androidx.navigation.fragment.NavHostFragment"
