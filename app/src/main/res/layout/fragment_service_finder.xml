@@ -108,12 +108,20 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/baseline_keyboard_arrow_down_24"
+                    android:src="@drawable/down_arrow_icon"
                     android:layout_marginLeft="2dp">
                 </ImageView>
 
             </LinearLayout>
         </FrameLayout>
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/serviceFinderRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:layoutAnimation="@anim/layout_animation_fall_down"/>
 
 </LinearLayout>

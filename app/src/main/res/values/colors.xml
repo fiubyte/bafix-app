@@ -10,4 +10,5 @@
     <color name="logo_color">#FEE94C</color>
     <color name="title_color">#434147</color>
     <color name="background_color">#F5F5F5</color>
+    <color name="body_color">#8A8A8A</color>
 </resources>

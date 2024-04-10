@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.fiubyte.bafix.SplashFragment"
+        android:name="com.fiubyte.bafix.fragments.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action
@@ -16,7 +16,7 @@
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.fiubyte.bafix.RegisterFragment"
+        android:name="com.fiubyte.bafix.fragments.RegisterFragment"
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/serviceFinderFragment2"
-        android:name="com.fiubyte.bafix.ServiceFinderFragment"
+        android:name="com.fiubyte.bafix.fragments.ServiceFinderFragment"
         android:label="fragment_service_finder"
         tools:layout="@layout/fragment_service_finder" />
 </navigation>
