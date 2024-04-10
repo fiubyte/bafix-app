@@ -18,5 +18,14 @@
         android:id="@+id/registerFragment"
         android:name="com.fiubyte.bafix.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerFragment_to_serviceFinderFragment"
+            app:destination="@id/serviceFinderFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/serviceFinderFragment2"
+        android:name="com.fiubyte.bafix.ServiceFinderFragment"
+        android:label="fragment_service_finder"
+        tools:layout="@layout/fragment_service_finder" />
 </navigation>
