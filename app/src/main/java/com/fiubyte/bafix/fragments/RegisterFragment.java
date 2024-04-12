@@ -47,6 +47,8 @@ public class RegisterFragment extends Fragment implements Observer<ArrayList<Ser
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         }
+
+        dataViewModel = new ViewModelProvider(getActivity()).get(DataViewModel.class);
     }
 
     @Override
