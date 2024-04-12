@@ -61,53 +61,17 @@ public class ServiceFinderFragment extends Fragment {
     }
 
     private void setupProviders() {
-        Request request = new Request.Builder()
-                                .url(getServicesURL)
-                .addHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MTI4OTkxNDgsImlhdCI6MTcxMjg3MDM0OCwic3ViIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJyb2xlcyI6IkFETUlOIn0.AEgqdirUrtgCIrAX1N2VxdyCM2pOOYfzpCoLmJ2WfKc")
-                                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                Log.e("DEBUGGING", e.toString());
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                Log.d("DEBUGGING", response.body().string());
-            }
-        });
-
 
         providers.add(
-                new ProviderData("Julia Benavidez",
+                new ServiceData(R.drawable.julia,
+                            "Pedicura completa con esmaltado permanente",
                                 0.8,
-                                new ArrayList<>(Arrays.asList("Pedicuria/Manicuria", "Peluqueria")),
-                                R.drawable.julia));
+                                "Julia Benavidez"));
 
         providers.add(
-                new ProviderData("Mario Delgado",
+                new ServiceData(R.drawable.mario,
+                        "Reparación de cañerías de agua caliente",
                         2.5,
-                        new ArrayList<>(Arrays.asList("Plomeria", "Pintureria", "Albanileria", "Carpinteria", "Gasista", "Mecanico")),
-                        R.drawable.mario));
-
-        providers.add(
-                new ProviderData("Augusto Molina",
-                        11,
-                        new ArrayList<>(Arrays.asList("Abogados")),
-                        R.drawable.augusto));
-
-        providers.add(
-                new ProviderData("Nadia Perez",
-                        1,
-                        new ArrayList<>(Arrays.asList("Electricista", "Cerrajeria", "Reparacion de electrodomesticos")),
-                        R.drawable.nadia));
-
-        providers.add(
-                new ProviderData("Carla Pasaft",
-                        2.5,
-                        new ArrayList<>(Arrays.asList("Decoracion de interiores")),
-                        R.drawable.carla));
+                        "Mario Delgado"));
     }
 }

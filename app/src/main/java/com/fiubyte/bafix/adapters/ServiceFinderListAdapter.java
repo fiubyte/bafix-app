@@ -11,17 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fiubyte.bafix.R;
-import com.fiubyte.bafix.entities.ProviderData;
+import com.fiubyte.bafix.entities.ServiceData;
 
 import java.util.ArrayList;
 
 public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinderListAdapter.MyViewHolder> {
     Context context;
-    ArrayList<ProviderData> providers;
+    ArrayList<ServiceData> services;
 
-    public ServiceFinderListAdapter(Context context, ArrayList<ProviderData> providers) {
+    public ServiceFinderListAdapter(Context context, ArrayList<ServiceData> services) {
         this.context = context;
-        this.providers = providers;
+        this.services = services;
     }
 
     @NonNull
@@ -34,36 +34,28 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
 
     @Override
     public void onBindViewHolder(@NonNull ServiceFinderListAdapter.MyViewHolder holder, int position) {
-        holder.providerProfileImageView.setImageResource(providers.get(position).getProviderProfileImage());
-        holder.providerNameTextView.setText(providers.get(position).getProviderName());
-        holder.providerMaxDistanceTextView.setText("A " + providers.get(position).getProviderMaxDistance() + " km");
-
-        String categories = "";
-        for(int i=0; i < providers.get(position).getProviderCategories().size(); i++){
-            categories = categories + providers.get(position).getProviderCategories().get(i);
-            if (i != (providers.get(position).getProviderCategories().size() - 1)) {
-                categories = categories + " - ";
-            }
-        }
-        holder.providerCategoriesTextView.setText(categories);
+        holder.serviceImageView.setImageResource(services.get(position).getServicePicture());
+        holder.serviceTitleTextView.setText(services.get(position).getTitle());
+        holder.maxDistanceTextView.setText("A " + services.get(position).getMaxDistance() + " km");
+        holder.providerNameTextView.setText(services.get(position).getProviderName());
     }
 
     @Override
     public int getItemCount() {
-        return providers.size();
+        return services.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView providerProfileImageView;
-        TextView providerNameTextView, providerMaxDistanceTextView, providerCategoriesTextView;
+        ImageView serviceImageView;
+        TextView providerNameTextView, maxDistanceTextView, serviceTitleTextView;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            providerProfileImageView = itemView.findViewById(R.id.profile_image);
+            serviceImageView = itemView.findViewById(R.id.service_picture);
+            serviceTitleTextView = itemView.findViewById(R.id.service_title);
+            maxDistanceTextView = itemView.findViewById(R.id.max_distance);
             providerNameTextView = itemView.findViewById(R.id.provider_name);
-            providerMaxDistanceTextView = itemView.findViewById(R.id.max_distance);
-            providerCategoriesTextView = itemView.findViewById(R.id.categories);
         }
     }
 }
