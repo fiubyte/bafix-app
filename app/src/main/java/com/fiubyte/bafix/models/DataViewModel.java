@@ -1,5 +1,7 @@
 package com.fiubyte.bafix.models;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -11,7 +13,7 @@ public class DataViewModel extends ViewModel {
 
     private MutableLiveData<ArrayList<ServiceData>> services;
 
-    public MutableLiveData<ArrayList<ServiceData>> getCurrentLoginToken() {
+    public MutableLiveData<ArrayList<ServiceData>> getCurrentServices() {
         if (services == null) {
             services = new MutableLiveData<>();
         }
@@ -19,6 +21,7 @@ public class DataViewModel extends ViewModel {
     }
 
     public void updateServices(ArrayList<ServiceData> services) {
-        getCurrentLoginToken().setValue(services);
+        Log.d("SERVICES", services.toString());
+        getCurrentServices().setValue(services);
     }
 }

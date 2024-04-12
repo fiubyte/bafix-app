@@ -35,18 +35,12 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ServiceFinderFragment extends Fragment {
-
-    private final ArrayList<ServiceData> providers = new ArrayList<>();
-    private OkHttpClient client;
-
     private DataViewModel dataViewModel;
+    private RecyclerView recyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        client = new OkHttpClient();
-        dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
     }
 
     @Override
@@ -60,26 +54,17 @@ public class ServiceFinderFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
-        ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(this.getContext(), providers);
+        dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext(),
-                LinearLayoutManager.VERTICAL, false));
-    }
-
-    private void setupProviders() {
-
-        providers.add(
-                new ServiceData(R.drawable.julia,
-                            "Pedicura completa con esmaltado permanente",
-                                0.8,
-                                "Julia Benavidez"));
-
-        providers.add(
-                new ServiceData(R.drawable.mario,
-                        "Reparación de cañerías de agua caliente",
-                        2.5,
-                        "Mario Delgado"));
+        dataViewModel.getCurrentServices().observe(getViewLifecycleOwner(), new Observer<ArrayList<ServiceData>>() {
+            @Override
+            public void onChanged(ArrayList<ServiceData> serviceData) {
+                Log.d("SERVICES:", "size: " + serviceData.size());
+                recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
+                recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
+                ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(requireContext(), serviceData);
+                recyclerView.setAdapter(adapter);
+            }
+        });
     }
 }

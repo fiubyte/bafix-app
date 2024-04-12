@@ -7,7 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -17,14 +19,17 @@ import android.view.ViewGroup;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.fiubyte.bafix.R;
+import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.utils.LoginAuthManager;
+import com.fiubyte.bafix.utils.ServicesDataDeserializer;
 import com.fiubyte.bafix.utils.ServicesListManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -34,9 +39,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class SplashFragment extends Fragment {
+public class SplashFragment extends Fragment implements Observer<ArrayList<ServiceData>> {
     private DataViewModel dataViewModel;
-    private static OkHttpClient client;
+    private NavController navController;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,7 +58,10 @@ public class SplashFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        dataViewModel = new ViewModelProvider(this).get(DataViewModel.class);
+        navController = Navigation.findNavController(view);
+
+        dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+        dataViewModel.getCurrentServices().observe(getViewLifecycleOwner(), this);
 
         setupBaFixAPI();
     }
@@ -88,8 +96,18 @@ public class SplashFragment extends Fragment {
     private void retrieveServices(String token) {
         ServicesListManager.retrieveServices(token, new ServicesListManager.ServicesListCallback() {
             @Override
-            public void onServicesListReceived(String servicesList) {
-                Log.d("DEBUGGING", "Services list received: " + servicesList);
+            public void onServicesListReceived(String servicesList) throws JSONException {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Log.d("DEBUGGING", "change in list occured");
+                            dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
             }
 
             @Override
@@ -97,5 +115,10 @@ public class SplashFragment extends Fragment {
                 e.printStackTrace();
             }
         });
+    }
+
+    @Override
+    public void onChanged(ArrayList<ServiceData> serviceData) {
+        navController.navigate(R.id.action_splashFragment_to_registerFragment);
     }
 }

@@ -21,7 +21,7 @@ public class ServicesListManager {
     private static String getServicesURL = "https://bafix-api.onrender.com/services";
 
     public interface ServicesListCallback {
-        void onServicesListReceived(String response);
+        void onServicesListReceived(String response) throws JSONException;
         void onError(Exception e);
     }
 
@@ -41,7 +41,11 @@ public class ServicesListManager {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                callback.onServicesListReceived(response.body().string());
+                try {
+                    callback.onServicesListReceived(response.body().string());
+                } catch (JSONException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
