@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -17,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.fiubyte.bafix.R;
+import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -24,6 +27,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Task;
 
 public class RegisterFragment extends Fragment {
+    private DataViewModel dataViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +36,8 @@ public class RegisterFragment extends Fragment {
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         }
+
+        dataViewModel = new ViewModelProvider(getActivity()).get(DataViewModel.class);
     }
 
     @Override

@@ -9,12 +9,18 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
-import com.fiubyte.bafix.entities.ProviderData;
+import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.models.DataViewModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,23 +28,25 @@ import java.util.Arrays;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.FormBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ServiceFinderFragment extends Fragment {
 
-    private final ArrayList<ProviderData> providers = new ArrayList<>();
+    private final ArrayList<ServiceData> providers = new ArrayList<>();
     private OkHttpClient client;
-    private String getServicesURL = "https://bafix-api.onrender.com/service-categories/";
+
+    private DataViewModel dataViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         client = new OkHttpClient();
-
-        setupProviders();
+        dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
     }
 
     @Override
