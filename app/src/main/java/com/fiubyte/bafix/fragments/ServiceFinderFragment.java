@@ -1,7 +1,6 @@
 package com.fiubyte.bafix.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,21 +40,13 @@ public class ServiceFinderFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
-
-        dataViewModel.getCurrentServices().observe(getViewLifecycleOwner(), serviceData -> {
-            Log.d("SERVICES:", "size: " + serviceData.size());
-            recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
-            recyclerView.setLayoutManager(
-                    new LinearLayoutManager(
-                            requireContext(),
-                            LinearLayoutManager.VERTICAL,
-                            false
-                    ));
-            ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(
-                    requireContext(),
-                    serviceData
-            );
-            recyclerView.setAdapter(adapter);
-        });
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                                                              LinearLayoutManager.VERTICAL, false
+        ));
+        ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(
+                requireContext(),
+                dataViewModel.getCurrentServices().getValue()
+        );
+        recyclerView.setAdapter(adapter);
     }
 }
