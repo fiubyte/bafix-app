@@ -41,13 +41,21 @@ public class ServiceFinderFragment extends Fragment {
 
         recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
-                                                              LinearLayoutManager.VERTICAL, false
-        ));
-        ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(
-                requireContext(),
-                dataViewModel.getCurrentServices().getValue()
-        );
-        recyclerView.setAdapter(adapter);
+
+        dataViewModel.getCurrentServices().observe(getViewLifecycleOwner(), serviceData -> {
+            Log.d("SERVICES:", "size: " + serviceData.size());
+            recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
+            recyclerView.setLayoutManager(
+                    new LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.VERTICAL,
+                            false
+                    ));
+            ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(
+                    requireContext(),
+                    serviceData
+            );
+            recyclerView.setAdapter(adapter);
+        });
     }
 }

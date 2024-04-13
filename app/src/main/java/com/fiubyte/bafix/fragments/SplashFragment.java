@@ -1,6 +1,5 @@
 package com.fiubyte.bafix.fragments;
 
-import android.animation.Animator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
