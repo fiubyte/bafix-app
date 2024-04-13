@@ -1,10 +1,6 @@
 package com.fiubyte.bafix.utils;
 
-import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelStoreOwner;
-
 import com.fiubyte.bafix.entities.ServiceData;
-import com.fiubyte.bafix.models.DataViewModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,13 +10,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ServicesDataDeserializer {
+    private static ArrayList<ServiceData> services;
 
-    static DataViewModel dataViewModel;
-
-    public static void deserialize(String servicesList, ViewModelStoreOwner viewModelStoreOwner) throws JSONException, IOException {
-        ArrayList<ServiceData> services = new ArrayList<>();
-
-        dataViewModel = new ViewModelProvider(viewModelStoreOwner).get(DataViewModel.class);
+    public static ArrayList<ServiceData> deserialize(String servicesList) throws JSONException,
+                                                                                 IOException {
+        services = new ArrayList<>();
 
         JSONArray jsonArray = new JSONArray(servicesList);
 
@@ -28,19 +22,14 @@ public class ServicesDataDeserializer {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
             String title = jsonObject.getString("title");
+            String photoURL = jsonObject.getString("photo_url");
             String providerName = jsonObject.getJSONObject("user").getString("name")
                     + " "
                     + jsonObject.getJSONObject("user").getString("surname");
-
             double maxDistance = jsonObject.getJSONObject("user").getDouble("max_radius");
 
-            DrawableFromUrlLoader.loadDrawableFromUrl(
-                    jsonObject.getString("photo_url"),
-                    drawable -> {
-                        services.add(new ServiceData(drawable, title, maxDistance, providerName));
-                        dataViewModel.updateServices(services);
-                    }
-                                                     );
+            services.add(new ServiceData(title, photoURL, maxDistance, providerName));
         }
+        return services;
     }
 }

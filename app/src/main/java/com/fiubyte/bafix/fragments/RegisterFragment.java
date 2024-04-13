@@ -11,7 +11,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -31,7 +30,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Task;
 
 public class RegisterFragment extends Fragment {
-    private DataViewModel dataViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,8 +38,6 @@ public class RegisterFragment extends Fragment {
         if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
             ((AppCompatActivity) getActivity()).getSupportActionBar().show();
         }
-
-        dataViewModel = new ViewModelProvider(getActivity()).get(DataViewModel.class);
     }
 
     @Override

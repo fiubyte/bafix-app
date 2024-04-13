@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ServiceData;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -26,20 +27,26 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
 
     @NonNull
     @Override
-    public ServiceFinderListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                                                    int viewType) {
+    public ServiceFinderListAdapter.MyViewHolder onCreateViewHolder(
+            @NonNull ViewGroup parent,
+            int viewType
+                                                                   ) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.provider_list_item, parent, false);
         return new ServiceFinderListAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ServiceFinderListAdapter.MyViewHolder holder,
-                                 int position) {
-        holder.serviceImageView.setImageDrawable(services.get(position).getServicePicture());
-        holder.serviceTitleTextView.setText(services.get(position).getTitle());
-        holder.maxDistanceTextView.setText("A " + services.get(position).getMaxDistance() + " km");
-        holder.providerNameTextView.setText(services.get(position).getProviderName());
+    public void onBindViewHolder(
+            @NonNull ServiceFinderListAdapter.MyViewHolder holder,
+            int position
+                                ) {
+        final ServiceData serviceListItem = services.get(position);
+        holder.serviceTitleTextView.setText(serviceListItem.getTitle());
+        holder.maxDistanceTextView.setText("A " + serviceListItem.getMaxDistance() + " km");
+        holder.providerNameTextView.setText(serviceListItem.getProviderName());
+
+        Picasso.with(context).load(serviceListItem.getServicePhotoURL()).into(holder.serviceImageView);
     }
 
     @Override

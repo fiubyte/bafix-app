@@ -72,7 +72,7 @@ public class SplashFragment extends Fragment implements Observer<ArrayList<Servi
         LoginAuthManager.loginToBaFixAPI(new LoginAuthManager.TokenCallback() {
             @Override
             public void onTokenReceived(String token) {
-                Log.d("DEBUGGING", "Token received: " + token);
+                Log.d("SERVICES", "Token received: " + token);
                 retrieveServices(token);
             }
 
@@ -86,18 +86,14 @@ public class SplashFragment extends Fragment implements Observer<ArrayList<Servi
     private void retrieveServices(String token) {
         ServicesListManager.retrieveServices(token, new ServicesListManager.ServicesListCallback() {
             @Override
-            public void onServicesListReceived(String servicesList) throws JSONException {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Log.d("DEBUGGING", "change in list occured");
-                            ServicesDataDeserializer.deserialize(servicesList, requireActivity());
-                        } catch (JSONException e) {
-                            throw new RuntimeException(e);
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
+            public void onServicesListReceived(String servicesList) {
+                getActivity().runOnUiThread(() -> {
+                    try {
+                        dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
                 });
             }
