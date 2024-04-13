@@ -46,7 +46,7 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
         holder.maxDistanceTextView.setText("A " + serviceListItem.getMaxDistance() + " km");
         holder.providerNameTextView.setText(serviceListItem.getProviderName());
 
-        Picasso.with(context).load(serviceListItem.getServicePhotoURL()).into(holder.serviceImageView);
+        Picasso.with(context).load(serviceListItem.getServicePhotoURL()).resize(600, 600).centerCrop().into(holder.serviceImageView);
     }
 
     @Override
