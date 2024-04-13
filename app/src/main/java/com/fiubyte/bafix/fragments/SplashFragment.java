@@ -102,8 +102,10 @@ public class SplashFragment extends Fragment implements Observer<ArrayList<Servi
                     public void run() {
                         try {
                             Log.d("DEBUGGING", "change in list occured");
-                            dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                            ServicesDataDeserializer.deserialize(servicesList, requireActivity());
                         } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        } catch (IOException e) {
                             throw new RuntimeException(e);
                         }
                     }

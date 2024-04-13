@@ -34,7 +34,7 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
 
     @Override
     public void onBindViewHolder(@NonNull ServiceFinderListAdapter.MyViewHolder holder, int position) {
-        holder.serviceImageView.setImageResource(services.get(position).getServicePicture());
+        holder.serviceImageView.setImageDrawable(services.get(position).getServicePicture());
         holder.serviceTitleTextView.setText(services.get(position).getTitle());
         holder.maxDistanceTextView.setText("A " + services.get(position).getMaxDistance() + " km");
         holder.providerNameTextView.setText(services.get(position).getProviderName());

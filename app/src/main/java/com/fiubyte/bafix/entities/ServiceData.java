@@ -1,21 +1,21 @@
 package com.fiubyte.bafix.entities;
 
-import java.util.ArrayList;
+import android.graphics.drawable.Drawable;
 
 public class ServiceData {
-    int servicePicture;
+    Drawable servicePicture;
     String title;
     double maxDistance;
     String providerName;
 
-    public ServiceData(int servicePicture, String title, double maxDistance, String providerName) {
+    public ServiceData(Drawable servicePicture, String title, double maxDistance, String providerName) {
         this.servicePicture = servicePicture;
         this.title = title;
         this.maxDistance = maxDistance;
         this.providerName = providerName;
     }
 
-    public int getServicePicture() {
+    public Drawable getServicePicture() {
         return servicePicture;
     }
 
