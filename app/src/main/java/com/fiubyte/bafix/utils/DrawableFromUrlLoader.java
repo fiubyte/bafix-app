@@ -13,9 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class DrawableFromUrlLoader {
-    public interface DrawableCallback {
-        void onDrawableLoaded(Drawable drawable);
-    }
     public static void loadDrawableFromUrl(String url, final DrawableCallback callback) {
         new AsyncTask<String, Void, Drawable>() {
             @Override
@@ -23,7 +20,8 @@ public class DrawableFromUrlLoader {
                 try {
                     Bitmap x;
 
-                    HttpURLConnection connection = (HttpURLConnection) new URL(urls[0]).openConnection();
+                    HttpURLConnection connection =
+                            (HttpURLConnection) new URL(urls[0]).openConnection();
                     connection.connect();
                     InputStream input = connection.getInputStream();
 
@@ -42,5 +40,9 @@ public class DrawableFromUrlLoader {
                 }
             }
         }.execute(url);
+    }
+
+    public interface DrawableCallback {
+        void onDrawableLoaded(Drawable drawable);
     }
 }

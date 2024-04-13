@@ -8,7 +8,8 @@ public class ServiceData {
     double maxDistance;
     String providerName;
 
-    public ServiceData(Drawable servicePicture, String title, double maxDistance, String providerName) {
+    public ServiceData(Drawable servicePicture, String title, double maxDistance,
+                       String providerName) {
         this.servicePicture = servicePicture;
         this.title = title;
         this.maxDistance = maxDistance;

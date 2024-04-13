@@ -1,7 +1,5 @@
 package com.fiubyte.bafix.utils;
 
-import android.graphics.drawable.Drawable;
-
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelStoreOwner;
 
@@ -29,7 +27,6 @@ public class ServicesDataDeserializer {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
-            // Extraer los campos relevantes del JSON
             String title = jsonObject.getString("title");
             String providerName = jsonObject.getJSONObject("user").getString("name")
                     + " "
@@ -37,11 +34,13 @@ public class ServicesDataDeserializer {
 
             double maxDistance = jsonObject.getJSONObject("user").getDouble("max_radius");
 
-            DrawableFromUrlLoader.loadDrawableFromUrl(jsonObject.getString("photo_url"),
+            DrawableFromUrlLoader.loadDrawableFromUrl(
+                    jsonObject.getString("photo_url"),
                     drawable -> {
                         services.add(new ServiceData(drawable, title, maxDistance, providerName));
                         dataViewModel.updateServices(services);
-                    });
+                    }
+                                                     );
         }
     }
 }

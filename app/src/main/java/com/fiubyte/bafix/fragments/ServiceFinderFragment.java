@@ -9,30 +9,13 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
-import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.models.DataViewModel;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class ServiceFinderFragment extends Fragment {
     private DataViewModel dataViewModel;
@@ -44,8 +27,10 @@ public class ServiceFinderFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState
+                            ) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_service_finder, container, false);
     }
@@ -56,15 +41,20 @@ public class ServiceFinderFragment extends Fragment {
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
-        dataViewModel.getCurrentServices().observe(getViewLifecycleOwner(), new Observer<ArrayList<ServiceData>>() {
-            @Override
-            public void onChanged(ArrayList<ServiceData> serviceData) {
-                Log.d("SERVICES:", "size: " + serviceData.size());
-                recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
-                recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false));
-                ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(requireContext(), serviceData);
-                recyclerView.setAdapter(adapter);
-            }
+        dataViewModel.getCurrentServices().observe(getViewLifecycleOwner(), serviceData -> {
+            Log.d("SERVICES:", "size: " + serviceData.size());
+            recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
+            recyclerView.setLayoutManager(
+                    new LinearLayoutManager(
+                            requireContext(),
+                            LinearLayoutManager.VERTICAL,
+                            false
+                    ));
+            ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(
+                    requireContext(),
+                    serviceData
+            );
+            recyclerView.setAdapter(adapter);
         });
     }
 }

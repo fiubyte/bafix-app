@@ -1,7 +1,10 @@
 package com.fiubyte.bafix.fragments;
 
-import android.animation.Animator;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,12 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.airbnb.lottie.LottieAnimationView;
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.models.DataViewModel;
@@ -26,18 +23,9 @@ import com.fiubyte.bafix.utils.ServicesDataDeserializer;
 import com.fiubyte.bafix.utils.ServicesListManager;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
 
 public class SplashFragment extends Fragment implements Observer<ArrayList<ServiceData>> {
     private DataViewModel dataViewModel;
@@ -49,8 +37,10 @@ public class SplashFragment extends Fragment implements Observer<ArrayList<Servi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState
+                            ) {
         return inflater.inflate(R.layout.fragment_splash, container, false);
     }
 

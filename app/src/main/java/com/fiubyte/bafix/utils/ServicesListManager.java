@@ -1,11 +1,8 @@
 package com.fiubyte.bafix.utils;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -14,16 +11,10 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class ServicesListManager {
     private static OkHttpClient client;
-    private static String getServicesURL = "https://bafix-api.onrender.com/services";
-
-    public interface ServicesListCallback {
-        void onServicesListReceived(String response) throws JSONException;
-        void onError(Exception e);
-    }
+    private static final String getServicesURL = "https://bafix-api.onrender.com/services";
 
     public static void retrieveServices(String token, ServicesListCallback callback) {
         client = new OkHttpClient();
@@ -48,5 +39,11 @@ public class ServicesListManager {
                 }
             }
         });
+    }
+
+    public interface ServicesListCallback {
+        void onServicesListReceived(String response) throws JSONException;
+
+        void onError(Exception e);
     }
 }

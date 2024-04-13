@@ -6,8 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 
-public class MainActivity extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
 
+public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -26,14 +26,16 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
 
     @NonNull
     @Override
-    public ServiceFinderListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ServiceFinderListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                                    int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.provider_list_item, parent, false);
         return new ServiceFinderListAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ServiceFinderListAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ServiceFinderListAdapter.MyViewHolder holder,
+                                 int position) {
         holder.serviceImageView.setImageDrawable(services.get(position).getServicePicture());
         holder.serviceTitleTextView.setText(services.get(position).getTitle());
         holder.maxDistanceTextView.setText("A " + services.get(position).getMaxDistance() + " km");
@@ -45,7 +47,7 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
         return services.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView serviceImageView;
         TextView providerNameTextView, maxDistanceTextView, serviceTitleTextView;
 
