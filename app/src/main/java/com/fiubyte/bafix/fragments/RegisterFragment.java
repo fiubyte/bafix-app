@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.fiubyte.bafix.R;
-import com.fiubyte.bafix.utils.AuthManager;
+import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Task;
@@ -44,26 +44,27 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if(AuthManager.userAlreadySignedIn(requireActivity())) {
+        if(LoginAuthManager.userAlreadySignedIn(requireActivity())) {
+            Log.d("DEBUGGING", "User already logged with " +
+                    LoginAuthManager.getUserLastSignedInEmail(requireActivity()) + ", continuing");
             Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
-            Log.d("DEBUGGING", "User already logged, continuing");
             return;
         }
 
         ImageView googleSignInButton = view.findViewById(R.id.google_sign_in_button);
         googleSignInButton.setOnClickListener(v -> {
-            AuthManager.signInWithGoogle(this);
+            LoginAuthManager.signInWithGoogle(this);
         });
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == AuthManager.RC_SIGN_IN) {
+        if (requestCode == LoginAuthManager.RC_SIGN_IN) {
             Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
             if (signInAccountTask.isSuccessful()) {
                 Log.d("DEBUGGING", "Google SignIn was successful");
-                AuthManager.handleSuccessFullGoogleSignIn(signInAccountTask, requireActivity());
+                LoginAuthManager.handleSuccessFullGoogleSignIn(signInAccountTask, requireActivity());
                 displaySuccessFulLoginToast();
                 Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
             }
