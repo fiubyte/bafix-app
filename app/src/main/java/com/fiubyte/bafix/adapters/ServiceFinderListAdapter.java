@@ -8,62 +8,76 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fiubyte.bafix.R;
-import com.fiubyte.bafix.entities.ProviderData;
+import com.fiubyte.bafix.entities.ServiceData;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinderListAdapter.MyViewHolder> {
     Context context;
-    ArrayList<ProviderData> providers;
+    ArrayList<ServiceData> services;
 
-    public ServiceFinderListAdapter(Context context, ArrayList<ProviderData> providers) {
+    public ServiceFinderListAdapter(Context context, ArrayList<ServiceData> services) {
         this.context = context;
-        this.providers = providers;
+        this.services = services;
     }
 
     @NonNull
     @Override
-    public ServiceFinderListAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ServiceFinderListAdapter.MyViewHolder onCreateViewHolder(
+            @NonNull ViewGroup parent,
+            int viewType
+                                                                   ) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.provider_list_item, parent, false);
+        View view = inflater.inflate(R.layout.service_list_item, parent, false);
         return new ServiceFinderListAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ServiceFinderListAdapter.MyViewHolder holder, int position) {
-        holder.providerProfileImageView.setImageResource(providers.get(position).getProviderProfileImage());
-        holder.providerNameTextView.setText(providers.get(position).getProviderName());
-        holder.providerMaxDistanceTextView.setText("A " + providers.get(position).getProviderMaxDistance() + " km");
+    public void onBindViewHolder(
+            @NonNull ServiceFinderListAdapter.MyViewHolder holder,
+            int position
+                                ) {
+        final ServiceData serviceListItem = services.get(position);
 
-        String categories = "";
-        for(int i=0; i < providers.get(position).getProviderCategories().size(); i++){
-            categories = categories + providers.get(position).getProviderCategories().get(i);
-            if (i != (providers.get(position).getProviderCategories().size() - 1)) {
-                categories = categories + " - ";
-            }
+        holder.serviceTitleTextView.setText(serviceListItem.getTitle());
+        holder.maxDistanceTextView.setText("A " + serviceListItem.getMaxDistance() + " km");
+        holder.providerNameTextView.setText(serviceListItem.getProviderName());
+
+        if(serviceListItem.isAvailable()){
+            holder.providerNameTextView.setVisibility(View.VISIBLE);
+            holder.serviceNotAvailableLayout.setVisibility(View.GONE);
+        } else {
+            holder.providerNameTextView.setVisibility(View.GONE);
+            holder.serviceNotAvailableLayout.setVisibility(View.VISIBLE);
         }
-        holder.providerCategoriesTextView.setText(categories);
+
+        Picasso.with(context).load(serviceListItem.getServicePhotoURL()).resize(600, 600).centerCrop().into(holder.serviceImageView);
     }
 
     @Override
     public int getItemCount() {
-        return providers.size();
+        return services.size();
     }
 
-    public static class MyViewHolder extends RecyclerView.ViewHolder{
-        ImageView providerProfileImageView;
-        TextView providerNameTextView, providerMaxDistanceTextView, providerCategoriesTextView;
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
+        ImageView serviceImageView;
+        TextView providerNameTextView, maxDistanceTextView, serviceTitleTextView;
+
+        ConstraintLayout serviceNotAvailableLayout;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            providerProfileImageView = itemView.findViewById(R.id.profile_image);
+            serviceImageView = itemView.findViewById(R.id.service_picture);
+            serviceTitleTextView = itemView.findViewById(R.id.service_title);
+            maxDistanceTextView = itemView.findViewById(R.id.max_distance);
             providerNameTextView = itemView.findViewById(R.id.provider_name);
-            providerMaxDistanceTextView = itemView.findViewById(R.id.max_distance);
-            providerCategoriesTextView = itemView.findViewById(R.id.categories);
+            serviceNotAvailableLayout = itemView.findViewById(R.id.service_not_available_layout);
         }
     }
 }

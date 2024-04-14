@@ -11,4 +11,7 @@
     <color name="title_color">#434147</color>
     <color name="background_color">#F5F5F5</color>
     <color name="body_color">#8A8A8A</color>
+    <color name="hide_view_color">#99E0E0E0</color>
+    <color name="not_available_background">#FFD8D8</color>
+    <color name="not_available_text">#FF5C5C</color>
 </resources>
