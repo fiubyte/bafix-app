@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -12,6 +14,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         setSupportActionBar(findViewById(R.id.toolbar)); // FIXME: this crashes in some android
-        // versions
+        SharedPreferencesManager.initialize(this);
     }
 }

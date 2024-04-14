@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.fiubyte.bafix.R;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -47,6 +48,7 @@ public class RegisterFragment extends Fragment {
         if(LoginAuthManager.userAlreadySignedIn(requireActivity())) {
             Log.d("DEBUGGING", "User already logged with " +
                     LoginAuthManager.getUserLastSignedInEmail(requireActivity()) + ", continuing");
+            Log.d("DEBUGGING", "token: " + SharedPreferencesManager.getStoredToken(requireActivity()));
             Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
             return;
         }

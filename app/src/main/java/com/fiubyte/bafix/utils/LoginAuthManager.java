@@ -2,14 +2,13 @@ package com.fiubyte.bafix.utils;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.StrictMode;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.fiubyte.bafix.entities.LoginResult;
 import com.fiubyte.bafix.fragments.RegisterFragment;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -20,7 +19,6 @@ import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,7 +27,6 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.FormBody;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -38,21 +35,22 @@ import okhttp3.Response;
 
 public class LoginAuthManager {
 
+    public static final int RC_SIGN_IN = 100;
     private static final String serverClientId =
             "404201273327-m5d62vn42rvkupj1utg0akvqrghb0vft.apps.googleusercontent.com";
-
-    public static final int RC_SIGN_IN = 100;
     private static GoogleSignInClient googleSignInClient;
     private static OkHttpClient okHttpClient;
-    private static String postAuthLoginURL = "https://bafix-api.onrender.com/auth/login";
+    private static final String postAuthLoginURL = "https://bafix-api.onrender.com/auth/login";
 
     public static void signInWithGoogle(RegisterFragment registerFragment) {
-        GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions googleSignInOptions =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(serverClientId)
                 .requestEmail()
                 .build();
 
-        googleSignInClient = GoogleSignIn.getClient(registerFragment.requireActivity(), googleSignInOptions);
+        googleSignInClient = GoogleSignIn.getClient(registerFragment.requireActivity(),
+                                                    googleSignInOptions);
 
         Intent intent = googleSignInClient.getSignInIntent();
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -62,9 +60,11 @@ public class LoginAuthManager {
 
     public static void handleSuccessFullGoogleSignIn(
             Task<GoogleSignInAccount> signInAccountTask
-            , Activity activity) {
+            , Activity activity
+                                                    ) {
         try {
-            GoogleSignInAccount googleSignInAccount = signInAccountTask.getResult(ApiException.class);
+            GoogleSignInAccount googleSignInAccount =
+                    signInAccountTask.getResult(ApiException.class);
             if (googleSignInAccount != null) {
                 LoginAuthManager.authenticateWithFirebase(googleSignInAccount, activity);
             }
@@ -78,21 +78,16 @@ public class LoginAuthManager {
     }
 
     public static String getUserLastSignedInEmail(Activity activity) {
-        if(userAlreadySignedIn(activity)) {
+        if (userAlreadySignedIn(activity)) {
             return GoogleSignIn.getLastSignedInAccount(activity).getEmail();
         }
         return "admin@admin@example.com";
     }
 
-    public static String getUserLastSignedInIdToken(Activity activity) {
-        if(userAlreadySignedIn(activity)) {
-            return GoogleSignIn.getLastSignedInAccount(activity).getIdToken();
-        }
-        return "admin";
-    }
-
-    public static void authenticateWithFirebase(GoogleSignInAccount googleSignInAccount, Activity activity) {
-        AuthCredential authCredential = GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
+    public static void authenticateWithFirebase(GoogleSignInAccount googleSignInAccount,
+                                                Activity activity) {
+        AuthCredential authCredential =
+                GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
         FirebaseAuth.getInstance().signInWithCredential(authCredential)
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
@@ -101,23 +96,26 @@ public class LoginAuthManager {
                                 .addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
                                         String idToken = task1.getResult().getToken();
-                                        String email = (String) task1.getResult().getClaims().get("email");
-                                        LoginAuthManager.setupBaFixAPI(email, idToken);
-                                        //exchangeGoogleTokenForCustomToken(email, idToken);
+                                        String email =
+                                                (String) task1.getResult().getClaims().get("email");
+                                        LoginAuthManager.setupBaFixAPI(email, idToken, activity);
                                     } else {
                                         // Handle error -> task.getException();
                                     }
                                 });
                     } else {
-                        Toast.makeText(activity, "Authentication Failed :" + task.getException().getMessage(), Toast.LENGTH_SHORT);
+                        Toast.makeText(activity,
+                                       "Authentication Failed :" + task.getException().getMessage(), Toast.LENGTH_SHORT);
                     }
                 });
     }
 
-    public static void setupBaFixAPI(String email, String googleIdToken) {
-        LoginAuthManager.loginToBaFixAPI(email, googleIdToken, new LoginAuthManager.TokenCallback() {
+    public static void setupBaFixAPI(String email, String googleIdToken, Activity activity) {
+        LoginAuthManager.loginToBaFixAPI(email, googleIdToken,
+                                         new LoginAuthManager.TokenCallback() {
             @Override
             public void onTokenReceived(String token) {
+                SharedPreferencesManager.savePreferences(token, activity);
                 Log.d("DEBUGGING", "Token received: " + token);
             }
 
@@ -132,7 +130,8 @@ public class LoginAuthManager {
     public static void loginToBaFixAPI(String email, String idToken, TokenCallback callback) {
         okHttpClient = new OkHttpClient();
 
-        String json = String.format("{\"email\": \"%s\", \"google_id_token\": \"%s\"}", email, idToken);
+        String json = String.format("{\"email\": \"%s\", \"google_id_token\": \"%s\"}", email,
+                                    idToken);
 
         RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json"));
 
