@@ -1,8 +1,10 @@
 package com.fiubyte.bafix;
 
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -10,8 +12,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+
+        setSupportActionBar(findViewById(R.id.toolbar)); // FIXME: this crashes in some android
+        SharedPreferencesManager.initialize(this);
     }
 }

@@ -1,3 +1,10 @@
 <resources>
-    <string name="app_name">BAFix</string>
+    <string name="app_name">BAFIX</string>
+    <string name="register_text">Ingrese para empezar</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="current_location">Ubicación actual</string>
+    <string name="service_finder_title">Buscador de servicios</string>
+    <string name="ordering_title">Ordenar</string>
+    <string name="preference_file_key">com.fiubyte.bafix.PREFERENCES</string>
+    <string name="login_token_key">user_token</string>
 </resources>
