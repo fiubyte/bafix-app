@@ -3,6 +3,8 @@ package com.fiubyte.bafix.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import androidx.fragment.app.Fragment;
+
 import com.fiubyte.bafix.R;
 
 public final class SharedPreferencesManager {
@@ -22,5 +24,9 @@ public final class SharedPreferencesManager {
     public static String getStoredToken(Context context) {
         String token = sharedPreferences.getString(context.getString(R.string.login_token_key), "");
         return token;
+    }
+
+    public static void registerOnChangedListerner(SharedPreferences.OnSharedPreferenceChangeListener listener) {
+        sharedPreferences.registerOnSharedPreferenceChangeListener(listener);
     }
 }

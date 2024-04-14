@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/navigation_graph"
-    app:startDestination="@id/splashFragment">
+    app:startDestination="@id/launcherFragment">
 
     <fragment
         android:id="@+id/splashFragment"
@@ -28,4 +28,13 @@
         android:name="com.fiubyte.bafix.fragments.ServiceFinderFragment"
         android:label="fragment_service_finder"
         tools:layout="@layout/fragment_service_finder" />
+    <fragment
+        android:id="@+id/launcherFragment"
+        android:name="com.fiubyte.bafix.fragments.LauncherFragment"
+        android:label="fragment_launcher"
+        tools:layout="@layout/fragment_launcher" >
+        <action
+            android:id="@+id/action_launcherFragment_to_splashFragment"
+            app:destination="@id/splashFragment" />
+    </fragment>
 </navigation>

@@ -1,6 +1,6 @@
 package com.fiubyte.bafix.fragments;
 
-import android.location.Location;
+import android.animation.Animator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,14 +11,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.fiubyte.bafix.R;
-import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.fiubyte.bafix.utils.ServicesDataDeserializer;
 import com.fiubyte.bafix.utils.ServicesListManager;
@@ -26,12 +26,12 @@ import com.fiubyte.bafix.utils.ServicesListManager;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Map;
 
-public class SplashFragment extends Fragment implements Observer<ArrayList<ServiceData>> {
+public class SplashFragment extends Fragment {
     private DataViewModel dataViewModel;
     private NavController navController;
+    private LottieAnimationView logoAnimationView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,12 +50,56 @@ public class SplashFragment extends Fragment implements Observer<ArrayList<Servi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        logoAnimationView = view.findViewById(R.id.bafixLogo);
         navController = Navigation.findNavController(view);
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
-        dataViewModel.getCurrentServices().observe(getViewLifecycleOwner(), this);
+        dataViewModel.getCurrentServices().observe(
+                getViewLifecycleOwner(),
+                serviceData -> {
+                    waitForAnimationToEndToContinue();
+                });
 
-        setupBaFixAPI();
+        if (LoginAuthManager.userAlreadySignedIn(requireActivity())) {
+            Log.d("DEBUGGING", "User already logged with " +
+                    LoginAuthManager.getUserLastSignedInEmail(requireActivity()) + ", " +
+                    "continuing");
+            Log.d(
+                    "DEBUGGING",
+                    "token: " + SharedPreferencesManager.getStoredToken(requireActivity())
+                 );
+            retrieveServices(
+                    SharedPreferencesManager.getStoredToken(requireActivity()),
+                    dataViewModel.getCurrentLocation().getValue()
+                            );
+            return;
+        } else {
+            waitForAnimationToEndToContinue();
+        }
+    }
+
+    private void waitForAnimationToEndToContinue() {
+        logoAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(@NonNull Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(@NonNull Animator animator) {
+                navController.navigate(R.id.action_splashFragment_to_registerFragment);
+            }
+
+            @Override
+            public void onAnimationCancel(@NonNull Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(@NonNull Animator animator) {
+
+            }
+        });
     }
 
     @Override
@@ -70,46 +114,27 @@ public class SplashFragment extends Fragment implements Observer<ArrayList<Servi
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
-    private void setupBaFixAPI() {
-        LoginAuthManager.loginToBaFixAPI(new LoginAuthManager.TokenCallback() {
-            @Override
-            public void onTokenReceived(String token) {
-                Log.d("SERVICES", "Token received: " + token);
-                retrieveServices(token, dataViewModel.getCurrentLocation().getValue());
-            }
-
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
     private void retrieveServices(String token, Map<String, Double> userLocation) {
         ServicesListManager.retrieveServices(token, userLocation,
-                                             new ServicesListManager.ServicesListCallback() {
-            @Override
-            public void onServicesListReceived(String servicesList) {
-                getActivity().runOnUiThread(() -> {
-                    try {
-                        dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
-                    } catch (JSONException e) {
-                        throw new RuntimeException(e);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-            }
+         new ServicesListManager.ServicesListCallback() {
+             @Override
+             public void onServicesListReceived(String servicesList) {
+                 getActivity().runOnUiThread(() -> {
+                     try {
+                         dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                     } catch (JSONException e) {
+                         throw new RuntimeException(e);
+                     } catch (IOException e) {
+                         throw new RuntimeException(e);
+                     }
+                 });
+             }
 
-            @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    @Override
-    public void onChanged(ArrayList<ServiceData> serviceData) {
-        navController.navigate(R.id.action_splashFragment_to_registerFragment);
+             @Override
+             public void onError(Exception e) {
+                 e.printStackTrace();
+             }
+         }
+        );
     }
 }
