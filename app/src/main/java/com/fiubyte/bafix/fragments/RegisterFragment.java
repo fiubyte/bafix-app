@@ -1,5 +1,6 @@
 package com.fiubyte.bafix.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,12 +9,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.fiubyte.bafix.R;
+import com.fiubyte.bafix.utils.AuthManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.tasks.Task;
 
 public class RegisterFragment extends Fragment {
 
@@ -37,12 +44,33 @@ public class RegisterFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if(AuthManager.userAlreadySignedIn(requireActivity())) {
+            Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
+            Log.d("DEBUGGING", "User already logged, continuing");
+            return;
+        }
+
         ImageView googleSignInButton = view.findViewById(R.id.google_sign_in_button);
-        googleSignInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
-            }
+        googleSignInButton.setOnClickListener(v -> {
+            AuthManager.signInWithGoogle(this);
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AuthManager.RC_SIGN_IN) {
+            Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
+            if (signInAccountTask.isSuccessful()) {
+                Log.d("DEBUGGING", "Google SignIn was successful");
+                AuthManager.handleSuccessFullGoogleSignIn(signInAccountTask, requireActivity());
+                displaySuccessFulLoginToast();
+                Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
+            }
+        }
+    }
+
+    private void displaySuccessFulLoginToast() {
+        Toast.makeText(requireActivity(), "Successfully logged in", Toast.LENGTH_SHORT).show();
     }
 }
