@@ -9,8 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-<<<<<<< 9c0ddcd11fde9077c8351530398a26a4bda2ef07:app/src/main/java/com/fiubyte/bafix/MainActivity.java
-=======
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -37,7 +35,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
->>>>>>> fiubyte/.github#2: Basic logic for authenticating with Google & to own backend server for retrieving custom jwt:app/src/main/java/com/fiubyte/bafix/fragments/MainActivity.java
 public class MainActivity extends AppCompatActivity {
 
     SignInButton btSignIn;
