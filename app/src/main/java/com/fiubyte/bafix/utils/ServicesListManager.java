@@ -14,7 +14,7 @@ import okhttp3.Response;
 
 public class ServicesListManager {
     private static OkHttpClient client;
-    private static final String getServicesURL = "https://bafix-api.onrender.com/services";
+    private static final String getServicesURL = "https://bafix-api.onrender.com/services/filter/";
 
     public static void retrieveServices(String token, ServicesListCallback callback) {
         client = new OkHttpClient();

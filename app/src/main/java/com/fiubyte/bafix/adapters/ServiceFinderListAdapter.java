@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fiubyte.bafix.R;
@@ -32,7 +33,7 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
             int viewType
                                                                    ) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.provider_list_item, parent, false);
+        View view = inflater.inflate(R.layout.service_list_item, parent, false);
         return new ServiceFinderListAdapter.MyViewHolder(view);
     }
 
@@ -42,9 +43,18 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
             int position
                                 ) {
         final ServiceData serviceListItem = services.get(position);
+
         holder.serviceTitleTextView.setText(serviceListItem.getTitle());
         holder.maxDistanceTextView.setText("A " + serviceListItem.getMaxDistance() + " km");
         holder.providerNameTextView.setText(serviceListItem.getProviderName());
+
+        if(serviceListItem.isAvailable()){
+            holder.providerNameTextView.setVisibility(View.VISIBLE);
+            holder.serviceNotAvailableLayout.setVisibility(View.GONE);
+        } else {
+            holder.providerNameTextView.setVisibility(View.GONE);
+            holder.serviceNotAvailableLayout.setVisibility(View.VISIBLE);
+        }
 
         Picasso.with(context).load(serviceListItem.getServicePhotoURL()).resize(600, 600).centerCrop().into(holder.serviceImageView);
     }
@@ -58,6 +68,8 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
         ImageView serviceImageView;
         TextView providerNameTextView, maxDistanceTextView, serviceTitleTextView;
 
+        ConstraintLayout serviceNotAvailableLayout;
+
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -65,6 +77,7 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
             serviceTitleTextView = itemView.findViewById(R.id.service_title);
             maxDistanceTextView = itemView.findViewById(R.id.max_distance);
             providerNameTextView = itemView.findViewById(R.id.provider_name);
+            serviceNotAvailableLayout = itemView.findViewById(R.id.service_not_available_layout);
         }
     }
 }

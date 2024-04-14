@@ -6,14 +6,17 @@ public class ServiceData {
     double maxDistance;
     String providerName;
 
+    boolean available;
+
     public ServiceData(
             String title, String servicePhotoURL, double maxDistance,
-            String providerName
+            String providerName, boolean available
                       ) {
         this.title = title;
         this.servicePhotoURL = servicePhotoURL;
         this.maxDistance = maxDistance;
         this.providerName = providerName;
+        this.available = available;
     }
 
     public String getServicePhotoURL() {return servicePhotoURL;}
@@ -28,5 +31,9 @@ public class ServiceData {
 
     public String getProviderName() {
         return providerName;
+    }
+
+    public boolean isAvailable() {
+        return available;
     }
 }

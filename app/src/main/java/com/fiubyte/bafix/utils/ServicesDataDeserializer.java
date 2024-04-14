@@ -1,5 +1,7 @@
 package com.fiubyte.bafix.utils;
 
+import android.util.Log;
+
 import com.fiubyte.bafix.entities.ServiceData;
 
 import org.json.JSONArray;
@@ -7,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ServicesDataDeserializer {
@@ -23,12 +26,13 @@ public class ServicesDataDeserializer {
 
             String title = jsonObject.getString("title");
             String photoURL = jsonObject.getString("photo_url");
-            String providerName = jsonObject.getJSONObject("user").getString("name")
+            String providerName = jsonObject.getString("user_name")
                     + " "
-                    + jsonObject.getJSONObject("user").getString("surname");
-            double maxDistance = jsonObject.getJSONObject("user").getDouble("max_radius");
-
-            services.add(new ServiceData(title, photoURL, maxDistance, providerName));
+                    + jsonObject.getString("user_surname");
+            DecimalFormat twoDForm = new DecimalFormat("#.#");
+            double maxDistance = Double.valueOf(twoDForm.format(jsonObject.getDouble("distance")));
+            boolean isAvailable = jsonObject.getBoolean("is_available");
+            services.add(new ServiceData(title, photoURL, maxDistance, providerName, isAvailable));
         }
         return services;
     }
