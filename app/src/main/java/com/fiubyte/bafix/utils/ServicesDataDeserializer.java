@@ -19,6 +19,8 @@ public class ServicesDataDeserializer {
                                                                                  IOException {
         services = new ArrayList<>();
 
+        Log.d("DEBUGGING", servicesList);
+
         JSONArray jsonArray = new JSONArray(servicesList);
 
         for (int i = 0; i < jsonArray.length(); i++) {

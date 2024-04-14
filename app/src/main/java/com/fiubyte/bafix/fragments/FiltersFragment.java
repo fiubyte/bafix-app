@@ -1,6 +1,7 @@
 package com.fiubyte.bafix.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +16,19 @@ import androidx.navigation.Navigation;
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.models.FiltersViewModel;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
+import com.fiubyte.bafix.utils.ServicesDataDeserializer;
+import com.fiubyte.bafix.utils.ServicesListManager;
 import com.google.android.material.card.MaterialCardView;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.Map;
 
 public class FiltersFragment extends Fragment {
 
+    DataViewModel dataViewModel;
     FiltersViewModel filtersViewModel;
     MaterialCardView availableNowButton;
     MaterialCardView applyButton;
@@ -41,6 +51,8 @@ public class FiltersFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
         filtersViewModel = new ViewModelProvider(requireActivity()).get(FiltersViewModel.class);
 
@@ -75,10 +87,13 @@ public class FiltersFragment extends Fragment {
     }
 
     private void handleApplyButtonClicked(View view) {
+        Log.d("DEBUGGING", "filter: " + availableNowButtonSelected);
         filtersViewModel.getAvailabilityFilter().setValue(availableNowButtonSelected);
-        Navigation
-                .findNavController(view)
-                .navigate(R.id.action_filtersFragment_to_serviceFinderFragment);
+
+        retrieveServices(
+                SharedPreferencesManager.getStoredToken(requireActivity()),
+                availableNowButtonSelected,
+                dataViewModel.getCurrentLocation().getValue());
     }
 
     private void deselectButton() {
@@ -91,5 +106,32 @@ public class FiltersFragment extends Fragment {
         availableNowButton.setStrokeColor(getResources().getColor(R.color.selected_color));
         ((TextView)availableNowButton.getChildAt(0)).setTextColor(getResources().getColor(R.color.selected_color));
         availableNowButtonSelected = true;
+    }
+
+    private void retrieveServices(String token, boolean orderByAvailability, Map<String, Double> userLocation) {
+        ServicesListManager.retrieveServices(token, orderByAvailability, userLocation,
+         new ServicesListManager.ServicesListCallback() {
+             @Override
+             public void onServicesListReceived(String servicesList) {
+                 getActivity().runOnUiThread(() -> {
+                     try {
+                         dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                         Navigation
+                                 .findNavController(requireView())
+                                 .navigate(R.id.action_filtersFragment_to_serviceFinderFragment);
+                     } catch (JSONException e) {
+                         throw new RuntimeException(e);
+                     } catch (IOException e) {
+                         throw new RuntimeException(e);
+                     }
+                 });
+             }
+
+             @Override
+             public void onError(Exception e) {
+                 e.printStackTrace();
+             }
+         }
+        );
     }
 }

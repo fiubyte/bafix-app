@@ -1,6 +1,7 @@
 package com.fiubyte.bafix.utils;
 
 import android.location.Location;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -30,9 +31,8 @@ public class ServicesListManager {
         params.put("ordered_by_availability_now", "true");
         params.put("user_lat", userLocation.get("latitude").toString());
         params.put("user_long", userLocation.get("longitude").toString());
-
-        // TODO: update when param is added to endpoint query
-        //params.put("availability", String.valueOf(availabilityFilter));
+        Log.d("DEBUGGING", String.valueOf(availabilityFilter));
+        params.put("availability_filter", String.valueOf(availabilityFilter));
 
         if (params != null) {
             for(Map.Entry<String, String> param : params.entrySet()) {

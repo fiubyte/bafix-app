@@ -1,6 +1,6 @@
 package com.fiubyte.bafix.fragments;
 
-import android.location.Location;
+import android.animation.Animator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,11 +54,6 @@ public class SplashFragment extends Fragment {
         navController = Navigation.findNavController(view);
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
-        dataViewModel.getCurrentServices().observe(
-                getViewLifecycleOwner(),
-                serviceData -> {
-                    waitForAnimationToEndToContinue();
-                });
 
         if (LoginAuthManager.userAlreadySignedIn(requireActivity())) {
             Log.d("DEBUGGING", "User already logged with " +
@@ -70,15 +65,15 @@ public class SplashFragment extends Fragment {
                  );
             retrieveServices(
                     SharedPreferencesManager.getStoredToken(requireActivity()),
-                    dataViewModel.getCurrentLocation().getValue()
-                            );
+                    false,
+                    dataViewModel.getCurrentLocation().getValue());
             return;
         } else {
-            waitForAnimationToEndToContinue();
+            waitForAnimationToEndToContinue(R.id.action_splashFragment_to_registerFragment);
         }
     }
 
-    private void waitForAnimationToEndToContinue() {
+    private void waitForAnimationToEndToContinue(int destination) {
         logoAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(@NonNull Animator animator) {
@@ -87,7 +82,7 @@ public class SplashFragment extends Fragment {
 
             @Override
             public void onAnimationEnd(@NonNull Animator animator) {
-                navController.navigate(R.id.action_splashFragment_to_registerFragment);
+                navController.navigate(destination);
             }
 
             @Override
@@ -114,14 +109,15 @@ public class SplashFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
-    private void retrieveServices(String token, Map<String, Double> userLocation) {
-        ServicesListManager.retrieveServices(token, userLocation,
+    private void retrieveServices(String token, boolean orderByAvailability, Map<String, Double> userLocation) {
+        ServicesListManager.retrieveServices(token, orderByAvailability, userLocation,
          new ServicesListManager.ServicesListCallback() {
              @Override
              public void onServicesListReceived(String servicesList) {
                  getActivity().runOnUiThread(() -> {
                      try {
                          dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                         waitForAnimationToEndToContinue(R.id.action_splashFragment_to_serviceFinderFragment);
                      } catch (JSONException e) {
                          throw new RuntimeException(e);
                      } catch (IOException e) {

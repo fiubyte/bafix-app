@@ -36,7 +36,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class RegisterFragment extends Fragment implements Observer<ArrayList<ServiceData>>, SharedPreferences.OnSharedPreferenceChangeListener {
+public class RegisterFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     private DataViewModel dataViewModel;
 
@@ -65,7 +65,6 @@ public class RegisterFragment extends Fragment implements Observer<ArrayList<Ser
         SharedPreferencesManager.registerOnChangedListerner(this);
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
-        dataViewModel.getCurrentServices().observe(requireActivity(), this);
 
         ImageView googleSignInButton = view.findViewById(R.id.google_sign_in_button);
         googleSignInButton.setOnClickListener(v -> {
@@ -86,40 +85,37 @@ public class RegisterFragment extends Fragment implements Observer<ArrayList<Ser
         }
     }
 
-    private void retrieveServices(String token, Map<String, Double> userLocation) {
-        ServicesListManager.retrieveServices(token, userLocation,
-                                             new ServicesListManager.ServicesListCallback() {
-             @Override
-             public void onServicesListReceived(String servicesList) {
-                 getActivity().runOnUiThread(() -> {
-                     try {
-                         dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
-                     } catch (JSONException e) {
-                         throw new RuntimeException(e);
-                     } catch (IOException e) {
-                         throw new RuntimeException(e);
-                     }
-                 });
-             }
+    private void retrieveServices(String token, boolean filterByAvailability, Map<String, Double> userLocation) {
+        ServicesListManager.retrieveServices(token, filterByAvailability, userLocation,
+             new ServicesListManager.ServicesListCallback() {
+                 @Override
+                 public void onServicesListReceived(String servicesList) {
+                     getActivity().runOnUiThread(() -> {
+                         try {
+                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                             Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
+                         } catch (JSONException e) {
+                             throw new RuntimeException(e);
+                         } catch (IOException e) {
+                             throw new RuntimeException(e);
+                         }
+                     });
+                 }
 
-             @Override
-             public void onError(Exception e) {
-                 e.printStackTrace();
+                 @Override
+                 public void onError(Exception e) {
+                     e.printStackTrace();
+                 }
              }
-         });
+            );
     }
 
     private void displaySuccessFulLoginToast() {
         Toast.makeText(requireActivity(), "Successfully logged in", Toast.LENGTH_SHORT).show();
     }
-
-    @Override
-    public void onChanged(ArrayList<ServiceData> serviceData) {
-        Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
-    }
-
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String s) {
-        retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()), dataViewModel.getCurrentLocation().getValue());
+        retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()),
+                         false, dataViewModel.getCurrentLocation().getValue());
     }
 }

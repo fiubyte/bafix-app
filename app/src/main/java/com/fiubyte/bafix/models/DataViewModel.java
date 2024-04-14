@@ -14,7 +14,6 @@ public class DataViewModel extends ViewModel {
 
     private MutableLiveData<ArrayList<ServiceData>> services;
     private MutableLiveData<Map<String, Double>> location;
-    private MutableLiveData<String> token;
 
     public MutableLiveData<ArrayList<ServiceData>> getCurrentServices() {
         if (services == null) {
@@ -28,13 +27,6 @@ public class DataViewModel extends ViewModel {
             location = new MutableLiveData<>();
         }
         return location;
-    }
-
-    public MutableLiveData<String> getToken() {
-        if (token == null) {
-            token = new MutableLiveData<>();
-        }
-        return token;
     }
 
     public void updateServices(ArrayList<ServiceData> services) {
