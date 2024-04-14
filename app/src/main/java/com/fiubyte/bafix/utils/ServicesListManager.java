@@ -1,5 +1,7 @@
 package com.fiubyte.bafix.utils;
 
+import android.location.Location;
+
 import androidx.annotation.NonNull;
 
 import org.json.JSONException;
@@ -19,13 +21,15 @@ public class ServicesListManager {
     private static OkHttpClient client;
     private static final String getServicesURL = "https://bafix-api.onrender.com/services/filter/";
 
-    public static void retrieveServices(String token, ServicesListCallback callback) {
+    public static void retrieveServices(String token, Map<String, Double> userLocation, ServicesListCallback callback) {
         client = new OkHttpClient();
 
         HttpUrl.Builder httpBuilder = HttpUrl.parse(getServicesURL).newBuilder();
         Map<String, String> params = new HashMap<>();
         params.put("ordered_by_distance", "true");
         params.put("ordered_by_availability_now", "true");
+        params.put("user_lat", userLocation.get("latitude").toString());
+        params.put("user_long", userLocation.get("longitude").toString());
 
         if (params != null) {
             for(Map.Entry<String, String> param : params.entrySet()) {

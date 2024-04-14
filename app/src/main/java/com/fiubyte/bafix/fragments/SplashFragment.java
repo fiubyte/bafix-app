@@ -1,5 +1,6 @@
 package com.fiubyte.bafix.fragments;
 
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class SplashFragment extends Fragment implements Observer<ArrayList<ServiceData>> {
     private DataViewModel dataViewModel;
@@ -73,7 +75,7 @@ public class SplashFragment extends Fragment implements Observer<ArrayList<Servi
             @Override
             public void onTokenReceived(String token) {
                 Log.d("SERVICES", "Token received: " + token);
-                retrieveServices(token);
+                retrieveServices(token, dataViewModel.getCurrentLocation().getValue());
             }
 
             @Override
@@ -83,8 +85,9 @@ public class SplashFragment extends Fragment implements Observer<ArrayList<Servi
         });
     }
 
-    private void retrieveServices(String token) {
-        ServicesListManager.retrieveServices(token, new ServicesListManager.ServicesListCallback() {
+    private void retrieveServices(String token, Map<String, Double> userLocation) {
+        ServicesListManager.retrieveServices(token, userLocation,
+                                             new ServicesListManager.ServicesListCallback() {
             @Override
             public void onServicesListReceived(String servicesList) {
                 getActivity().runOnUiThread(() -> {
