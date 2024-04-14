@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,6 +18,13 @@ import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.models.FiltersViewModel;
+import com.fiubyte.bafix.utils.ServicesDataDeserializer;
+import com.fiubyte.bafix.utils.ServicesListManager;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.Map;
 
 public class ServiceFinderFragment extends Fragment implements View.OnClickListener {
     private DataViewModel dataViewModel;
@@ -64,7 +70,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         filtersViewModel.getAvailabilityFilter().observe(
                 requireActivity(),
                 availabilityFilter -> {
-
+                    retrieveServices(dataViewModel.getToken().getValue(), availabilityFilter, dataViewModel.getCurrentLocation().getValue());
                 });
     }
 
@@ -73,5 +79,29 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         Navigation
                 .findNavController(view)
                 .navigate(R.id.action_serviceFinderFragment_to_filtersFragment);
+    }
+
+    private void retrieveServices(String token, boolean orderByAvailability, Map<String, Double> userLocation) {
+        ServicesListManager.retrieveServices(token, orderByAvailability, userLocation,
+             new ServicesListManager.ServicesListCallback() {
+                 @Override
+                 public void onServicesListReceived(String servicesList) {
+                     getActivity().runOnUiThread(() -> {
+                         try {
+                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                         } catch (JSONException e) {
+                             throw new RuntimeException(e);
+                         } catch (IOException e) {
+                             throw new RuntimeException(e);
+                         }
+                     });
+                 }
+
+                 @Override
+                 public void onError(Exception e) {
+                     e.printStackTrace();
+                 }
+             }
+            );
     }
 }
