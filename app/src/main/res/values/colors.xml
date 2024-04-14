@@ -14,4 +14,7 @@
     <color name="hide_view_color">#99E0E0E0</color>
     <color name="not_available_background">#FFD8D8</color>
     <color name="not_available_text">#FF5C5C</color>
+    <color name="highligthed_color">#416ED2</color>
+    <color name="selected_color">#407BFF</color>
+    <color name="stoke_color">#DBDBDB</color>
 </resources>

@@ -4,11 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,9 +18,11 @@ import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
 import com.fiubyte.bafix.models.DataViewModel;
 
-public class ServiceFinderFragment extends Fragment {
+public class ServiceFinderFragment extends Fragment implements View.OnClickListener {
     private DataViewModel dataViewModel;
     private RecyclerView recyclerView;
+
+    private ImageView filterButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,5 +52,15 @@ public class ServiceFinderFragment extends Fragment {
                 dataViewModel.getCurrentServices().getValue()
         );
         recyclerView.setAdapter(adapter);
+
+        filterButton = view.findViewById(R.id.filters_button);
+        filterButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View view) {
+        Navigation
+                .findNavController(view)
+                .navigate(R.id.action_serviceFinderFragment_to_filtersFragment);
     }
 }
