@@ -5,9 +5,12 @@ import androidx.annotation.NonNull;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -19,10 +22,19 @@ public class ServicesListManager {
     public static void retrieveServices(String token, ServicesListCallback callback) {
         client = new OkHttpClient();
 
-        Request request = new Request.Builder()
-                .url(getServicesURL)
+        HttpUrl.Builder httpBuilder = HttpUrl.parse(getServicesURL).newBuilder();
+        Map<String, String> params = new HashMap<>();
+        params.put("ordered_by_distance", "true");
+        params.put("ordered_by_availability_now", "true");
+
+        if (params != null) {
+            for(Map.Entry<String, String> param : params.entrySet()) {
+                httpBuilder.addQueryParameter(param.getKey(),param.getValue());
+            }
+        }
+        Request request = new Request.Builder().url(httpBuilder.build())
                 .addHeader("Authorization", "Bearer " + token)
-                .build();
+                                .build();
 
         client.newCall(request).enqueue(new Callback() {
             @Override
