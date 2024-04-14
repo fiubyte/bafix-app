@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,9 +18,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
 import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.models.FiltersViewModel;
 
 public class ServiceFinderFragment extends Fragment implements View.OnClickListener {
     private DataViewModel dataViewModel;
+    private FiltersViewModel filtersViewModel;
     private RecyclerView recyclerView;
 
     private ImageView filterButton;
@@ -44,6 +47,8 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
 
         recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+        filtersViewModel = new ViewModelProvider(requireActivity()).get(FiltersViewModel.class);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                                               LinearLayoutManager.VERTICAL, false
         ));
@@ -55,6 +60,12 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
 
         filterButton = view.findViewById(R.id.filters_button);
         filterButton.setOnClickListener(this);
+
+        filtersViewModel.getAvailabilityFilter().observe(
+                requireActivity(),
+                availabilityFilter -> {
+
+                });
     }
 
     @Override
