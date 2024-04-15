@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginTop="20dp">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/not_available_cardview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:cardCornerRadius="20dp"
+        app:cardElevation="30dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="25dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/cancel_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/dm_sans_regular"
+                    android:text="Cancelar"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"></TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/dm_sans_bold"
+                    android:text="Todos los filtros"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    app:layout_constraintLeft_toLeftOf="@id/cancel_button"
+                    app:layout_constraintRight_toRightOf="@+id/clean_button"
+                    app:layout_constraintTop_toTopOf="parent"></TextView>
+
+                <TextView
+                    android:id="@+id/clean_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/dm_sans_bold"
+                    android:text="Limpiar"
+                    android:textColor="@color/highligthed_color"
+                    android:textSize="16sp"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"></TextView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dm_sans_bold"
+                android:text="Filtrar por"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout"></TextView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/available_now_button"
+                android:layout_width="150dp"
+                android:layout_height="31dp"
+                app:cardCornerRadius="9dp"
+                app:cardElevation="0dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView3"
+                app:strokeColor="@color/stoke_color"
+                app:strokeWidth="1dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="7dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/dm_sans_medium"
+                    android:text="Disponibles ahora"
+                    android:textColor="@color/title_color"
+                    android:textSize="15sp">
+
+                </TextView>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/apply_button"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="30dp"
+                android:layout_height="45dp"
+                app:cardCornerRadius="25dp"
+                app:cardElevation="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:cardBackgroundColor="@color/selected_color"
+                app:strokeWidth="1dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/dm_sans_bold"
+                    android:text="Aplicar"
+                    android:textColor="@color/white"
+                    android:textSize="17sp">
+
+                </TextView>
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

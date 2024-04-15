@@ -19,11 +19,6 @@ import com.fiubyte.bafix.models.DataViewModel;
 
 import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link LauncherFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class LauncherFragment extends Fragment implements Observer<Map<String, Double>> {
 
     private DataViewModel dataViewModel;

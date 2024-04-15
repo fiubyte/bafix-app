@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_splashFragment_to_registerFragment"
             app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_splashFragment_to_serviceFinderFragment"
+            app:destination="@id/serviceFinderFragment2" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -27,7 +30,12 @@
         android:id="@+id/serviceFinderFragment2"
         android:name="com.fiubyte.bafix.fragments.ServiceFinderFragment"
         android:label="fragment_service_finder"
-        tools:layout="@layout/fragment_service_finder" />
+        tools:layout="@layout/fragment_service_finder">
+        <action
+            android:id="@+id/action_serviceFinderFragment_to_filtersFragment"
+            app:destination="@id/filtersFragment" />
+        </fragment>
+
     <fragment
         android:id="@+id/launcherFragment"
         android:name="com.fiubyte.bafix.fragments.LauncherFragment"
@@ -36,5 +44,15 @@
         <action
             android:id="@+id/action_launcherFragment_to_splashFragment"
             app:destination="@id/splashFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/filtersFragment"
+        android:name="com.fiubyte.bafix.fragments.FiltersFragment"
+        android:label="fragment_filters"
+        tools:layout="@layout/fragment_filters" >
+        <action
+            android:id="@+id/action_filtersFragment_to_serviceFinderFragment"
+            app:destination="@id/serviceFinderFragment2" />
     </fragment>
 </navigation>
