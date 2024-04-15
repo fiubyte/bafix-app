@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,9 +26,13 @@ import com.google.android.material.slider.Slider;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FiltersFragment extends Fragment {
 
@@ -38,6 +43,9 @@ public class FiltersFragment extends Fragment {
     TextView distanceText;
     boolean availableNowButtonSelected = false;
     String maxDistance = "";
+
+    LinearLayout categoriesLayout;
+    ArrayList<Integer> selectedCategories = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,16 +73,20 @@ public class FiltersFragment extends Fragment {
 
         distanceSlider = view.findViewById(R.id.distance_slider);
         distanceText = view.findViewById(R.id.distance_text);
+        categoriesLayout = view.findViewById(R.id.categories_layout);
 
         updateAvailableButton();
         updateMaxDistanceSlider();
+        updateCategoryButtons();
 
-        availableNowButton.setOnClickListener(v -> {
-            handleAvailableButtonClicked();
-        });
+        availableNowButton.setOnClickListener(v -> handleAvailableButtonClicked());
 
         applyButton.setOnClickListener(v -> {
-            handleApplyButtonClicked(v);
+            try {
+                handleApplyButtonClicked(v);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
         });
 
         distanceSlider.setLabelFormatter(value -> {
@@ -86,6 +98,94 @@ public class FiltersFragment extends Fragment {
             maxDistance = twoDForm.format(value);
             distanceText.setText(maxDistance + " km");
         });
+        setCategoriesListeners();
+    }
+
+    private void updateCategoryButtons() {
+        Log.d("CATEGORY", filtersViewModel.getFilters().getValue().toString());
+        String categories = filtersViewModel.getFilters().getValue().get("categories");
+
+        if(categories != "") {
+            selectedCategories = (ArrayList<Integer>) Arrays.stream(categories.split(","))
+                    .map(Integer::parseInt)
+                    .collect(Collectors.toList());
+
+            for (int i = 0; i < categoriesLayout.getChildCount(); i++) {
+                LinearLayout rowLayout = (LinearLayout) categoriesLayout.getChildAt(i);
+
+                for(int j = 0; j < rowLayout.getChildCount(); j++) {
+                    MaterialCardView categoryCard = (MaterialCardView) rowLayout.getChildAt(j);
+
+                    int finalJ = j;
+                    int finalI = i;
+                    String categoryName = ((TextView)categoryCard.getChildAt(0)).getText().toString();
+                    if(selectedCategories.contains(getIdFromCategoryName(categoryName))) {
+                        selectCategoryButton(finalI, finalJ);
+                    } else {
+                        unselectCategoryButton(finalI, finalJ);
+                    }
+                }
+            }
+        }
+
+        Log.d("CATEGORY", "updated: " + selectedCategories.toString());
+    }
+
+    private void setCategoriesListeners() {
+        for (int i = 0; i < categoriesLayout.getChildCount(); i++) {
+            LinearLayout rowLayout = (LinearLayout) categoriesLayout.getChildAt(i);
+
+            for(int j = 0; j < rowLayout.getChildCount(); j++) {
+                MaterialCardView categoryCard = (MaterialCardView) rowLayout.getChildAt(j);
+
+                int finalJ = j;
+                int finalI = i;
+                categoryCard.setOnClickListener(view -> {
+                    String categoryName = ((TextView)categoryCard.getChildAt(0)).getText().toString();
+                    Log.d("CATEGORY", categoryName);
+                    updateCategoryButton(getIdFromCategoryName(categoryName), finalI, finalJ);
+                });
+            }
+        }
+    }
+
+    private void updateCategoryButton(int categoryId, int i, int j) {
+        Log.d("CATEGORY", "" + categoryId);
+        Log.d("CATEGORY", selectedCategories.toString());
+        if(!selectedCategories.contains(categoryId)) {
+            selectCategoryButton(i, j);
+        } else {
+            unselectCategoryButton(i,j);
+        }
+    }
+
+    // FIXME: Refactor code and fix bug issue when unselecting
+    private void unselectCategoryButton(int i, int j) {
+        LinearLayout rowLayout = (LinearLayout) categoriesLayout.getChildAt(i);
+        MaterialCardView categoryCard = (MaterialCardView) rowLayout.getChildAt(j);
+        categoryCard.setStrokeColor(getResources().getColor(R.color.stoke_color));
+        ((TextView)categoryCard.getChildAt(0)).setTextColor(getResources().getColor(R.color.title_color));
+
+        int category_id = getIdFromCategoryName(((TextView)categoryCard.getChildAt(0)).getText().toString());
+        for (int k=0;k<selectedCategories.size();k++) {
+            if (selectedCategories.get(k) == category_id) {
+                selectedCategories.remove(k);
+            }
+        }
+        Log.d("CATEGORY", "unselect: " + selectedCategories);
+    }
+
+    private void selectCategoryButton(int i, int j) {
+        LinearLayout rowLayout = (LinearLayout) categoriesLayout.getChildAt(i);
+        MaterialCardView categoryCard = (MaterialCardView) rowLayout.getChildAt(j);
+        categoryCard.setStrokeColor(getResources().getColor(R.color.selected_color));
+        ((TextView)categoryCard.getChildAt(0)).setTextColor(getResources().getColor(R.color.selected_color));
+
+        int category_id = getIdFromCategoryName(((TextView)categoryCard.getChildAt(0)).getText().toString());
+        if(!selectedCategories.contains(category_id)){
+            selectedCategories.add(getIdFromCategoryName(((TextView)categoryCard.getChildAt(0)).getText().toString()));
+        }
+        Log.d("CATEGORY", "select: " + selectedCategories);
     }
 
     private void updateAvailableButton() {
@@ -112,10 +212,19 @@ public class FiltersFragment extends Fragment {
         }
     }
 
-    private void handleApplyButtonClicked(View view) {
+    private void handleApplyButtonClicked(View view) throws UnsupportedEncodingException {
         Map<String, String> filters = new HashMap<>();
         filters.put("filterByAvailability", String.valueOf(availableNowButtonSelected));
         filters.put("distance", maxDistance);
+
+        String categories = "";
+        for(int i = 0; i < selectedCategories.size(); i++) {
+            categories = categories + selectedCategories.get(i);
+            if(i != selectedCategories.size() - 1) {
+                categories = categories + ",";
+            }
+        }
+        filters.put("categories", categories);
 
         filtersViewModel.getFilters().setValue(filters);
         Log.d("BUTTON", "Updated filters: " + filters);
@@ -136,8 +245,30 @@ public class FiltersFragment extends Fragment {
         availableNowButtonSelected = true;
     }
 
+    private int getIdFromCategoryName(String categoryName) {
+        Map<String, Integer> categories = new HashMap<>();
+        categories.put("Plomeria", 1);
+        categories.put("Pinturería", 2);
+        categories.put("Albañilería", 3);
+        categories.put("Gasista", 4);
+        categories.put("Carpintería", 5);
+        categories.put("Mecánico", 6);
+        categories.put("Electricista", 7);
+        categories.put("Reparación de electrodomésticos", 8);
+        categories.put("Cerrajería", 9);
+        categories.put("Instalación de aires acondicionados", 10);
+        categories.put("Jardinería/Paisajista", 11);
+        categories.put("Decoración de interiores", 12);
+        categories.put("Arquitectura", 13);
+        categories.put("Pedicuría/Manicuría", 14);
+        categories.put("Peluquería", 15);
+        categories.put("Abogados", 16);
+
+        return categories.get(categoryName);
+    }
+
     private void retrieveServices(String token, Map<String, String> filters,
-                                  Map<String, Double> userLocation) {
+                                  Map<String, Double> userLocation) throws UnsupportedEncodingException {
         ServicesListManager.retrieveServices(token, filters, userLocation,
                                              new ServicesListManager.ServicesListCallback() {
                                                  @Override

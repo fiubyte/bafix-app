@@ -33,6 +33,7 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -86,7 +87,7 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
         }
     }
 
-    private void retrieveServices(String token, Map<String, Double> userLocation) {
+    private void retrieveServices(String token, Map<String, Double> userLocation) throws UnsupportedEncodingException {
         Map<String,String> emptyFilters = new HashMap<>();
         emptyFilters.put("distance", "99999999");
 
@@ -97,6 +98,7 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
                                                      getActivity().runOnUiThread(() -> {
                                                          try {
                                                              dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                                                             Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
                                                          } catch (JSONException e) {
                                                              throw new RuntimeException(e);
                                                          } catch (IOException e) {
@@ -117,7 +119,11 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
     }
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String s) {
-        retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()),
-                         dataViewModel.getCurrentLocation().getValue());
+        try {
+            retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()),
+                             dataViewModel.getCurrentLocation().getValue());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
