@@ -8,16 +8,21 @@ import androidx.lifecycle.ViewModel;
 import com.fiubyte.bafix.entities.ServiceData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FiltersViewModel extends ViewModel {
 
-    private MutableLiveData<Boolean> availabilityFilter;
+    private MutableLiveData<Map<String,String>> filters;
 
-    public MutableLiveData<Boolean> getAvailabilityFilter() {
-        if(availabilityFilter == null) {
-            availabilityFilter = new MutableLiveData<>(false);
+    public MutableLiveData<Map<String,String>> getFilters() {
+        if(filters == null) {
+            filters = new MutableLiveData<>();
+            Map<String, String> initFilters = new HashMap<>();
+            initFilters.put("filterByAvailability", "false");
+            initFilters.put("distance", "15");
+            filters.setValue(initFilters);
         }
-        return availabilityFilter;
+        return filters;
     }
 }

@@ -20,20 +20,24 @@ import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.ServicesDataDeserializer;
 import com.fiubyte.bafix.utils.ServicesListManager;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.slider.Slider;
 
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 public class FiltersFragment extends Fragment {
 
     DataViewModel dataViewModel;
     FiltersViewModel filtersViewModel;
-    MaterialCardView availableNowButton;
-    MaterialCardView applyButton;
-
+    MaterialCardView availableNowButton, applyButton;
+    Slider distanceSlider;
+    TextView distanceText;
     boolean availableNowButtonSelected = false;
+    String maxDistance = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,11 @@ public class FiltersFragment extends Fragment {
         availableNowButton = view.findViewById(R.id.available_now_button);
         applyButton = view.findViewById(R.id.apply_button);
 
+        distanceSlider = view.findViewById(R.id.distance_slider);
+        distanceText = view.findViewById(R.id.distance_text);
+
         updateAvailableButton();
+        updateMaxDistanceSlider();
 
         availableNowButton.setOnClickListener(v -> {
             handleAvailableButtonClicked();
@@ -68,18 +76,36 @@ public class FiltersFragment extends Fragment {
         applyButton.setOnClickListener(v -> {
             handleApplyButtonClicked(v);
         });
+
+        distanceSlider.setLabelFormatter(value -> {
+            DecimalFormat twoDForm = new DecimalFormat("#.#");
+            return twoDForm.format(value);
+        });
+        distanceSlider.addOnChangeListener((slider, value, fromUser) -> {
+            DecimalFormat twoDForm = new DecimalFormat("#.#");
+            maxDistance = twoDForm.format(value);
+            distanceText.setText(maxDistance + " km");
+        });
     }
 
     private void updateAvailableButton() {
-        if(filtersViewModel.getAvailabilityFilter().getValue() == false){
+        if (filtersViewModel.getFilters().getValue().get("filterByAvailability") == "false") {
+            Log.d("BUTTON", "deselected");
             deselectButton();
         } else {
             selectButton();
         }
     }
 
+    private void updateMaxDistanceSlider() {
+        maxDistance = filtersViewModel.getFilters().getValue().get("distance");
+        distanceSlider.setValue(Float.valueOf(filtersViewModel.getFilters().getValue().get(
+                "distance")));
+        distanceText.setText(filtersViewModel.getFilters().getValue().get("distance") + " km");
+    }
+
     private void handleAvailableButtonClicked() {
-        if(availableNowButtonSelected == false){
+        if (availableNowButtonSelected == false) {
             selectButton();
         } else {
             deselectButton();
@@ -87,51 +113,52 @@ public class FiltersFragment extends Fragment {
     }
 
     private void handleApplyButtonClicked(View view) {
-        Log.d("DEBUGGING", "filter: " + availableNowButtonSelected);
-        filtersViewModel.getAvailabilityFilter().setValue(availableNowButtonSelected);
+        Map<String, String> filters = new HashMap<>();
+        filters.put("filterByAvailability", String.valueOf(availableNowButtonSelected));
+        filters.put("distance", maxDistance);
 
-        retrieveServices(
-                SharedPreferencesManager.getStoredToken(requireActivity()),
-                availableNowButtonSelected,
-                dataViewModel.getCurrentLocation().getValue());
+        filtersViewModel.getFilters().setValue(filters);
+        Log.d("BUTTON", "Updated filters: " + filters);
+
+        retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()), filters,
+                         dataViewModel.getCurrentLocation().getValue());
     }
 
     private void deselectButton() {
         availableNowButton.setStrokeColor(getResources().getColor(R.color.stoke_color));
-        ((TextView)availableNowButton.getChildAt(0)).setTextColor(getResources().getColor(R.color.title_color));
+        ((TextView) availableNowButton.getChildAt(0)).setTextColor(getResources().getColor(R.color.title_color));
         availableNowButtonSelected = false;
     }
 
     private void selectButton() {
         availableNowButton.setStrokeColor(getResources().getColor(R.color.selected_color));
-        ((TextView)availableNowButton.getChildAt(0)).setTextColor(getResources().getColor(R.color.selected_color));
+        ((TextView) availableNowButton.getChildAt(0)).setTextColor(getResources().getColor(R.color.selected_color));
         availableNowButtonSelected = true;
     }
 
-    private void retrieveServices(String token, boolean orderByAvailability, Map<String, Double> userLocation) {
-        ServicesListManager.retrieveServices(token, orderByAvailability, userLocation,
-         new ServicesListManager.ServicesListCallback() {
-             @Override
-             public void onServicesListReceived(String servicesList) {
-                 getActivity().runOnUiThread(() -> {
-                     try {
-                         dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
-                         Navigation
-                                 .findNavController(requireView())
-                                 .navigate(R.id.action_filtersFragment_to_serviceFinderFragment);
-                     } catch (JSONException e) {
-                         throw new RuntimeException(e);
-                     } catch (IOException e) {
-                         throw new RuntimeException(e);
-                     }
-                 });
-             }
+    private void retrieveServices(String token, Map<String, String> filters,
+                                  Map<String, Double> userLocation) {
+        ServicesListManager.retrieveServices(token, filters, userLocation,
+                                             new ServicesListManager.ServicesListCallback() {
+                                                 @Override
+                                                 public void onServicesListReceived(String servicesList) {
+                                                     getActivity().runOnUiThread(() -> {
+                                                         try {
+                                                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                                                             Navigation.findNavController(requireView()).navigate(R.id.action_filtersFragment_to_serviceFinderFragment);
+                                                         } catch (JSONException e) {
+                                                             throw new RuntimeException(e);
+                                                         } catch (IOException e) {
+                                                             throw new RuntimeException(e);
+                                                         }
+                                                     });
+                                                 }
 
-             @Override
-             public void onError(Exception e) {
-                 e.printStackTrace();
-             }
-         }
-        );
+                                                 @Override
+                                                 public void onError(Exception e) {
+                                                     e.printStackTrace();
+                                                 }
+                                             }
+                                            );
     }
 }

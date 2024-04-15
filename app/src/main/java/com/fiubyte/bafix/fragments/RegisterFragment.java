@@ -34,6 +34,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public class RegisterFragment extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener {
@@ -85,29 +86,30 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
         }
     }
 
-    private void retrieveServices(String token, boolean filterByAvailability, Map<String, Double> userLocation) {
-        ServicesListManager.retrieveServices(token, filterByAvailability, userLocation,
-             new ServicesListManager.ServicesListCallback() {
-                 @Override
-                 public void onServicesListReceived(String servicesList) {
-                     getActivity().runOnUiThread(() -> {
-                         try {
-                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
-                             Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_serviceFinderFragment);
-                         } catch (JSONException e) {
-                             throw new RuntimeException(e);
-                         } catch (IOException e) {
-                             throw new RuntimeException(e);
-                         }
-                     });
-                 }
+    private void retrieveServices(String token, Map<String, Double> userLocation) {
+        Map<String,String> emptyFilters = new HashMap<>();
+        emptyFilters.put("distance", "99999999");
 
-                 @Override
-                 public void onError(Exception e) {
-                     e.printStackTrace();
-                 }
-             }
-            );
+        ServicesListManager.retrieveServices(token, emptyFilters, userLocation,
+                                             new ServicesListManager.ServicesListCallback() {
+                                                 @Override
+                                                 public void onServicesListReceived(String servicesList) {
+                                                     getActivity().runOnUiThread(() -> {
+                                                         try {
+                                                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                                                         } catch (JSONException e) {
+                                                             throw new RuntimeException(e);
+                                                         } catch (IOException e) {
+                                                             throw new RuntimeException(e);
+                                                         }
+                                                     });
+                                                 }
+
+                                                 @Override
+                                                 public void onError(Exception e) {
+                                                     e.printStackTrace();
+                                                 }
+                                             });
     }
 
     private void displaySuccessFulLoginToast() {
@@ -116,6 +118,6 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String s) {
         retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()),
-                         false, dataViewModel.getCurrentLocation().getValue());
+                         dataViewModel.getCurrentLocation().getValue());
     }
 }
