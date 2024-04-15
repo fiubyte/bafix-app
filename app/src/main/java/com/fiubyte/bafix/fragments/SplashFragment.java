@@ -134,8 +134,10 @@ public class SplashFragment extends Fragment {
                                                  }
 
                                                  @Override
-                                                 public void onError(Exception e) {
-                                                     e.printStackTrace();
+                                                 public void onError() {
+                                                     Log.d("BACK", "caido splash");
+                                                     dataViewModel.isBackendDown().postValue(true);
+                                                     waitForAnimationToEndToContinue(R.id.action_splashFragment_to_serviceFinderFragment);
                                                  }
                                              });
     }

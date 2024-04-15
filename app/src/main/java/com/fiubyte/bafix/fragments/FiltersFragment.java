@@ -318,8 +318,10 @@ public class FiltersFragment extends Fragment {
                                                  }
 
                                                  @Override
-                                                 public void onError(Exception e) {
-                                                     e.printStackTrace();
+                                                 public void onError() {
+                                                     Log.d("BACK", "caido filters");
+                                                     dataViewModel.isBackendDown().postValue(true);
+                                                     requireActivity().runOnUiThread(() -> Navigation.findNavController(requireView()).navigate(R.id.action_filtersFragment_to_serviceFinderFragment));
                                                  }
                                              }
                                             );

@@ -109,8 +109,11 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
                                                  }
 
                                                  @Override
-                                                 public void onError(Exception e) {
-                                                     e.printStackTrace();
+                                                 public void onError() {
+                                                     Log.d("BACK", "caido register");
+                                                     dataViewModel.isBackendDown().postValue(true);
+
+                                                     requireActivity().runOnUiThread(() -> Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_serviceFinderFragment));
                                                  }
                                              });
     }
