@@ -26,6 +26,7 @@ import com.fiubyte.bafix.utils.ServicesListManager;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -64,9 +65,13 @@ public class SplashFragment extends Fragment {
                     "DEBUGGING",
                     "token: " + SharedPreferencesManager.getStoredToken(requireActivity())
                  );
-            retrieveServices(
-                    SharedPreferencesManager.getStoredToken(requireActivity()),
-                    dataViewModel.getCurrentLocation().getValue());
+            try {
+                retrieveServices(
+                        SharedPreferencesManager.getStoredToken(requireActivity()),
+                        dataViewModel.getCurrentLocation().getValue());
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
             return;
         } else {
             waitForAnimationToEndToContinue(R.id.action_splashFragment_to_registerFragment);
@@ -109,7 +114,7 @@ public class SplashFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
-    private void retrieveServices(String token, Map<String, Double> userLocation) {
+    private void retrieveServices(String token, Map<String, Double> userLocation) throws UnsupportedEncodingException {
         Map<String,String> emptyFilters = new HashMap<>();
         emptyFilters.put("distance", "99999999");
         ServicesListManager.retrieveServices(token, emptyFilters, userLocation,

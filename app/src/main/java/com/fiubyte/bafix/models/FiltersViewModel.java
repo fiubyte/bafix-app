@@ -21,6 +21,7 @@ public class FiltersViewModel extends ViewModel {
             Map<String, String> initFilters = new HashMap<>();
             initFilters.put("filterByAvailability", "false");
             initFilters.put("distance", "15");
+            initFilters.put("categories", "");
             filters.setValue(initFilters);
         }
         return filters;
