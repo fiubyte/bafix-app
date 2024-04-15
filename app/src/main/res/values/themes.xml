@@ -19,4 +19,15 @@
         <item name="android:textSize">40sp</item>
     </style>
 
+    <style name="Widget.App.Tooltip" parent="Widget.MaterialComponents.Tooltip">
+        <item name="android:textAppearance">@style/TextAppearance.App.Tooltip</item>
+        <item name="backgroundTint">@color/selected_color</item>
+    </style>
+
+    <style name="TextAppearance.App.Tooltip" parent="TextAppearance.MaterialComponents.Tooltip">
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/dm_sans_medium</item>
+        <item name="android:fontFamily">@font/dm_sans_medium</item>
+    </style>
+
 </resources>

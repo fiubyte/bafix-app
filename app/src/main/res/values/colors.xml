@@ -17,4 +17,5 @@
     <color name="highligthed_color">#416ED2</color>
     <color name="selected_color">#407BFF</color>
     <color name="stoke_color">#DBDBDB</color>
+    <color name="track_color">#BAB2C3</color>
 </resources>
