@@ -1,12 +1,17 @@
 package com.fiubyte.bafix.utils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.fragments.RegisterFragment;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -34,7 +39,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LoginAuthManager {
-
+    static FirebaseAuth firebaseAuth;
     public static final int RC_SIGN_IN = 100;
     private static final String serverClientId =
             "404201273327-m5d62vn42rvkupj1utg0akvqrghb0vft.apps.googleusercontent.com";
@@ -60,21 +65,26 @@ public class LoginAuthManager {
 
     public static void handleSuccessFullGoogleSignIn(
             Task<GoogleSignInAccount> signInAccountTask
-            , Activity activity
+            , Activity activity, View view
                                                     ) {
         try {
             GoogleSignInAccount googleSignInAccount =
                     signInAccountTask.getResult(ApiException.class);
             if (googleSignInAccount != null) {
-                LoginAuthManager.authenticateWithFirebase(googleSignInAccount, activity);
+                Log.d("DEBUGGING", "#1");
+                LoginAuthManager.authenticateWithFirebase(googleSignInAccount, activity, view);
             }
         } catch (ApiException e) {
+            Log.d("DEBUGGING", "#2");
+
             e.printStackTrace();
         }
     }
 
     public static boolean userAlreadySignedIn(Activity activity) {
-        return GoogleSignIn.getLastSignedInAccount(activity) != null;
+        firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+        return (GoogleSignIn.getLastSignedInAccount(activity) != null) && firebaseUser != null;
     }
 
     public static String getUserLastSignedInEmail(Activity activity) {
@@ -84,30 +94,43 @@ public class LoginAuthManager {
         return "admin@admin@example.com";
     }
 
+    private static void displaySuccessFulLoginToast(Activity activity) {
+        activity.runOnUiThread(() -> {
+            Toast.makeText(activity, "Successfully logged in", Toast.LENGTH_SHORT).show();
+        });
+    }
+
     public static void authenticateWithFirebase(GoogleSignInAccount googleSignInAccount,
-                                                Activity activity) {
+                                                Activity activity, View view) {
         AuthCredential authCredential =
                 GoogleAuthProvider.getCredential(googleSignInAccount.getIdToken(), null);
         FirebaseAuth.getInstance().signInWithCredential(authCredential)
                 .addOnCompleteListener(activity, task -> {
                     if (task.isSuccessful()) {
+
                         FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
                         mUser.getIdToken(true)
                                 .addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
+
                                         String idToken = task1.getResult().getToken();
                                         String email =
                                                 (String) task1.getResult().getClaims().get("email");
                                         LoginAuthManager.setupBaFixAPI(email, idToken, activity);
+
                                     } else {
                                         // Handle error -> task.getException();
                                     }
                                 });
                     } else {
-                        Toast.makeText(activity,
-                                       "Authentication Failed :" + task.getException().getMessage(), Toast.LENGTH_SHORT);
+                        displayAuthenticationFailedMessage(activity, view);
                     }
                 });
+    }
+
+    public static void displayAuthenticationFailedMessage(Activity activity, View view) {
+        ImageView registerFailedView = view.findViewById(R.id.register_failed);
+        AnimationManager.showAndFadeOutView(activity.getApplicationContext(), registerFailedView, 3000);
     }
 
     public static void setupBaFixAPI(String email, String googleIdToken, Activity activity) {
@@ -116,6 +139,7 @@ public class LoginAuthManager {
             @Override
             public void onTokenReceived(String token) {
                 SharedPreferencesManager.savePreferences(token, activity);
+                displaySuccessFulLoginToast(activity);
                 Log.d("DEBUGGING", "Token received: " + token);
             }
 

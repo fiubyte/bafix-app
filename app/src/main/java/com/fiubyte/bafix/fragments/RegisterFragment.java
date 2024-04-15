@@ -34,7 +34,6 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,8 +80,10 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
             Task<GoogleSignInAccount> signInAccountTask = GoogleSignIn.getSignedInAccountFromIntent(data);
             if (signInAccountTask.isSuccessful()) {
                 Log.d("DEBUGGING", "Google SignIn was successful");
-                LoginAuthManager.handleSuccessFullGoogleSignIn(signInAccountTask, requireActivity());
-                displaySuccessFulLoginToast();
+                LoginAuthManager.handleSuccessFullGoogleSignIn(signInAccountTask, requireActivity(), requireView());
+            } else {
+                LoginAuthManager.displayAuthenticationFailedMessage(requireActivity(), requireView());
+                Log.d("DEBUGGING", "not success");
             }
         }
     }
@@ -114,9 +115,6 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
                                              });
     }
 
-    private void displaySuccessFulLoginToast() {
-        Toast.makeText(requireActivity(), "Successfully logged in", Toast.LENGTH_SHORT).show();
-    }
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, @Nullable String s) {
         try {

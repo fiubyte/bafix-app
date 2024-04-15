@@ -36,6 +36,8 @@ import java.util.stream.Collectors;
 
 public class FiltersFragment extends Fragment {
 
+    TextView cancelButton;
+    TextView clearFiltersButton;
     DataViewModel dataViewModel;
     FiltersViewModel filtersViewModel;
     MaterialCardView availableNowButton, applyButton;
@@ -75,6 +77,9 @@ public class FiltersFragment extends Fragment {
         distanceText = view.findViewById(R.id.distance_text);
         categoriesLayout = view.findViewById(R.id.categories_layout);
 
+        cancelButton = view.findViewById(R.id.cancel_button);
+        clearFiltersButton = view.findViewById(R.id.clean_button);
+
         updateAvailableButton();
         updateMaxDistanceSlider();
         updateCategoryButtons();
@@ -99,31 +104,58 @@ public class FiltersFragment extends Fragment {
             distanceText.setText(maxDistance + " km");
         });
         setCategoriesListeners();
+
+        cancelButton.setOnClickListener(v-> {
+            clearFilters();
+            Navigation.findNavController(requireView()).navigate(R.id.action_filtersFragment_to_serviceFinderFragment);
+        });
+
+        clearFiltersButton.setOnClickListener(v-> {
+            clearFilters();
+        });
+    }
+
+    private void clearFilters() {
+        Map<String,String> emptyFilters = new HashMap<>();
+        emptyFilters.put("distance", "15");
+
+        filtersViewModel.getFilters().setValue(emptyFilters);
     }
 
     private void updateCategoryButtons() {
         Log.d("CATEGORY", filtersViewModel.getFilters().getValue().toString());
         String categories = filtersViewModel.getFilters().getValue().get("categories");
 
-        if(categories != "") {
-            selectedCategories = (ArrayList<Integer>) Arrays.stream(categories.split(","))
-                    .map(Integer::parseInt)
-                    .collect(Collectors.toList());
-
+        if (categories == "" || categories ==  null) {
+            selectedCategories = new ArrayList<>();
             for (int i = 0; i < categoriesLayout.getChildCount(); i++) {
                 LinearLayout rowLayout = (LinearLayout) categoriesLayout.getChildAt(i);
 
                 for(int j = 0; j < rowLayout.getChildCount(); j++) {
-                    MaterialCardView categoryCard = (MaterialCardView) rowLayout.getChildAt(j);
-
                     int finalJ = j;
                     int finalI = i;
-                    String categoryName = ((TextView)categoryCard.getChildAt(0)).getText().toString();
-                    if(selectedCategories.contains(getIdFromCategoryName(categoryName))) {
-                        selectCategoryButton(finalI, finalJ);
-                    } else {
-                        unselectCategoryButton(finalI, finalJ);
-                    }
+                    unselectCategoryButton(finalI, finalJ);
+                }
+            }
+            return;
+        }
+        selectedCategories = (ArrayList<Integer>) Arrays.stream(categories.split(","))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
+
+        for (int i = 0; i < categoriesLayout.getChildCount(); i++) {
+            LinearLayout rowLayout = (LinearLayout) categoriesLayout.getChildAt(i);
+
+            for(int j = 0; j < rowLayout.getChildCount(); j++) {
+                MaterialCardView categoryCard = (MaterialCardView) rowLayout.getChildAt(j);
+
+                int finalJ = j;
+                int finalI = i;
+                String categoryName = ((TextView)categoryCard.getChildAt(0)).getText().toString();
+                if(selectedCategories.contains(getIdFromCategoryName(categoryName))) {
+                    selectCategoryButton(finalI, finalJ);
+                } else {
+                    unselectCategoryButton(finalI, finalJ);
                 }
             }
         }
