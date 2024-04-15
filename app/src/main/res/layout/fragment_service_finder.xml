@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -123,6 +124,41 @@
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
-        android:layoutAnimation="@anim/layout_animation_fall_down"/>
+        android:layoutAnimation="@anim/layout_animation_fall_down"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/no_services_offered"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aún no hay servicios ofrecidos."
+        android:fontFamily="@font/dm_sans_medium"
+        android:layout_gravity="left"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/title_color"
+        android:visibility="gone">
+    </TextView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/services_not_available_cardview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/background_error"
+        app:cardCornerRadius="12dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="15dp">
+
+        <TextView
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/dm_sans_bold"
+            android:text="Servicios no disponibles. Por favor, intenta de\n nuevo más tarde."
+            android:textSize="14sp"
+            android:layout_gravity="left"
+            android:textColor="@color/text_error">
+
+        </TextView>
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

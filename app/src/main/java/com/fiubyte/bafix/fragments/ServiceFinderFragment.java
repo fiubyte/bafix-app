@@ -6,9 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -19,14 +21,6 @@ import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.models.FiltersViewModel;
-import com.fiubyte.bafix.preferences.SharedPreferencesManager;
-import com.fiubyte.bafix.utils.ServicesDataDeserializer;
-import com.fiubyte.bafix.utils.ServicesListManager;
-
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.util.Map;
 
 public class ServiceFinderFragment extends Fragment implements View.OnClickListener {
     private DataViewModel dataViewModel;
@@ -34,6 +28,9 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
     private RecyclerView recyclerView;
 
     private ImageView filterButton;
+
+    private TextView noServicesOffered;
+    private CardView noServicesAvailable;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +53,8 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
         filtersViewModel = new ViewModelProvider(requireActivity()).get(FiltersViewModel.class);
+        noServicesOffered = view.findViewById(R.id.no_services_offered);
+        noServicesAvailable = view.findViewById(R.id.services_not_available_cardview);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                                               LinearLayoutManager.VERTICAL, false
@@ -66,6 +65,24 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                 dataViewModel.getCurrentServices().getValue()
         );
         recyclerView.setAdapter(adapter);
+
+        if(dataViewModel.getCurrentServices().getValue().isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            noServicesOffered.setVisibility(View.VISIBLE);
+            noServicesAvailable.setVisibility(View.GONE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            noServicesOffered.setVisibility(View.GONE);
+            noServicesAvailable.setVisibility(View.GONE);
+        }
+
+        if(dataViewModel.isBackendDown().getValue()) {
+            recyclerView.setVisibility(View.GONE);
+            noServicesOffered.setVisibility(View.GONE);
+            noServicesAvailable.setVisibility(View.VISIBLE);
+        } else {
+            noServicesAvailable.setVisibility(View.GONE);
+        }
 
         filterButton = view.findViewById(R.id.filters_button);
         filterButton.setOnClickListener(this);

@@ -6,25 +6,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.RegisterFragment">
 
-    <LinearLayout
+    <ImageView
+        android:id="@+id/register_failed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:src="@drawable/register_failed_toast"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginBottom="30dp"
+        android:visibility="gone">
+    </ImageView>
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.35"
-        android:gravity="center_horizontal">
+        app:layout_constraintVertical_bias="0.35">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/register_text"
             android:fontFamily="@font/dm_sans_bold"
+            android:text="@string/register_text"
             android:textColor="@color/title_color"
-            android:textSize="22sp">
-        </TextView>
+            android:textSize="22sp"></TextView>
 
         <ImageView
             android:id="@+id/google_sign_in_button"

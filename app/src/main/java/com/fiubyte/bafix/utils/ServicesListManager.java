@@ -59,15 +59,22 @@ public class ServicesListManager {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                callback.onError(e);
+                Log.d("DEBUGGING", "Failure");
+                callback.onError();
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                try {
-                    callback.onServicesListReceived(response.body().string());
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                if(response.isSuccessful()) {
+                    try {
+                        callback.onServicesListReceived(response.body().string());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    callback.onError();
+                    Log.d("DEBUGGING", "not succesful response");
+                    Log.d("DEBUGGING", "response: " + response);
                 }
             }
         });
@@ -76,6 +83,6 @@ public class ServicesListManager {
     public interface ServicesListCallback {
         void onServicesListReceived(String response) throws JSONException;
 
-        void onError(Exception e);
+        void onError();
     }
 }

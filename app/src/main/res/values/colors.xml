@@ -18,4 +18,6 @@
     <color name="selected_color">#407BFF</color>
     <color name="stoke_color">#DBDBDB</color>
     <color name="track_color">#BAB2C3</color>
+    <color name="background_error">#FFDFDF</color>
+    <color name="text_error">#A73232</color>
 </resources>
