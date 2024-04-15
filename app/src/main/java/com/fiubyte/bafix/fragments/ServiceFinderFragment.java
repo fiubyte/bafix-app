@@ -77,29 +77,4 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                 .findNavController(view)
                 .navigate(R.id.action_serviceFinderFragment_to_filtersFragment);
     }
-
-    private void retrieveServices(String token, boolean orderByAvailability,
-                                  Map<String, Double> userLocation) {
-        ServicesListManager.retrieveServices(token, orderByAvailability, userLocation,
-                                             new ServicesListManager.ServicesListCallback() {
-                                                 @Override
-                                                 public void onServicesListReceived(String servicesList) {
-                                                     getActivity().runOnUiThread(() -> {
-                                                         try {
-                                                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
-                                                         } catch (JSONException e) {
-                                                             throw new RuntimeException(e);
-                                                         } catch (IOException e) {
-                                                             throw new RuntimeException(e);
-                                                         }
-                                                     });
-                                                 }
-
-                                                 @Override
-                                                 public void onError(Exception e) {
-                                                     e.printStackTrace();
-                                                 }
-                                             }
-                                            );
-    }
 }

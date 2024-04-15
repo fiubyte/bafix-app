@@ -22,7 +22,7 @@ public class ServicesListManager {
     private static OkHttpClient client;
     private static final String getServicesURL = "https://bafix-api.onrender.com/services/filter/";
 
-    public static void retrieveServices(String token, boolean availabilityFilter, Map<String, Double> userLocation, ServicesListCallback callback) {
+    public static void retrieveServices(String token, Map<String,String> filters, Map<String, Double> userLocation, ServicesListCallback callback) {
         client = new OkHttpClient();
 
         HttpUrl.Builder httpBuilder = HttpUrl.parse(getServicesURL).newBuilder();
@@ -31,8 +31,8 @@ public class ServicesListManager {
         params.put("ordered_by_availability_now", "true");
         params.put("user_lat", userLocation.get("latitude").toString());
         params.put("user_long", userLocation.get("longitude").toString());
-        Log.d("DEBUGGING", String.valueOf(availabilityFilter));
-        params.put("availability_filter", String.valueOf(availabilityFilter));
+        params.put("availability_filter", String.valueOf(Boolean.parseBoolean(filters.get("filterByAvailability"))));
+        params.put("distance_filter", String.valueOf(Float.parseFloat(filters.get("distance"))));
 
         if (params != null) {
             for(Map.Entry<String, String> param : params.entrySet()) {

@@ -26,6 +26,7 @@ import com.fiubyte.bafix.utils.ServicesListManager;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class SplashFragment extends Fragment {
@@ -65,7 +66,6 @@ public class SplashFragment extends Fragment {
                  );
             retrieveServices(
                     SharedPreferencesManager.getStoredToken(requireActivity()),
-                    false,
                     dataViewModel.getCurrentLocation().getValue());
             return;
         } else {
@@ -109,28 +109,29 @@ public class SplashFragment extends Fragment {
         ((AppCompatActivity) getActivity()).getSupportActionBar().show();
     }
 
-    private void retrieveServices(String token, boolean orderByAvailability, Map<String, Double> userLocation) {
-        ServicesListManager.retrieveServices(token, orderByAvailability, userLocation,
-         new ServicesListManager.ServicesListCallback() {
-             @Override
-             public void onServicesListReceived(String servicesList) {
-                 getActivity().runOnUiThread(() -> {
-                     try {
-                         dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
-                         waitForAnimationToEndToContinue(R.id.action_splashFragment_to_serviceFinderFragment);
-                     } catch (JSONException e) {
-                         throw new RuntimeException(e);
-                     } catch (IOException e) {
-                         throw new RuntimeException(e);
-                     }
-                 });
-             }
+    private void retrieveServices(String token, Map<String, Double> userLocation) {
+        Map<String,String> emptyFilters = new HashMap<>();
+        emptyFilters.put("distance", "99999999");
+        ServicesListManager.retrieveServices(token, emptyFilters, userLocation,
+                                             new ServicesListManager.ServicesListCallback() {
+                                                 @Override
+                                                 public void onServicesListReceived(String servicesList) {
+                                                     getActivity().runOnUiThread(() -> {
+                                                         try {
+                                                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                                                             waitForAnimationToEndToContinue(R.id.action_splashFragment_to_serviceFinderFragment);
+                                                         } catch (JSONException e) {
+                                                             throw new RuntimeException(e);
+                                                         } catch (IOException e) {
+                                                             throw new RuntimeException(e);
+                                                         }
+                                                     });
+                                                 }
 
-             @Override
-             public void onError(Exception e) {
-                 e.printStackTrace();
-             }
-         }
-        );
+                                                 @Override
+                                                 public void onError(Exception e) {
+                                                     e.printStackTrace();
+                                                 }
+                                             });
     }
 }
