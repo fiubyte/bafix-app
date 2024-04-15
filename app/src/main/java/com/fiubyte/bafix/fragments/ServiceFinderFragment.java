@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +36,8 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
 
     private ImageView filterButton;
 
+    private TextView noServicesAvailable;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +59,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
         filtersViewModel = new ViewModelProvider(requireActivity()).get(FiltersViewModel.class);
+        noServicesAvailable = view.findViewById(R.id.no_services_available);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                                               LinearLayoutManager.VERTICAL, false
@@ -66,6 +70,14 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                 dataViewModel.getCurrentServices().getValue()
         );
         recyclerView.setAdapter(adapter);
+
+        if(dataViewModel.getCurrentServices().getValue().isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            noServicesAvailable.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            noServicesAvailable.setVisibility(View.GONE);
+        }
 
         filterButton = view.findViewById(R.id.filters_button);
         filterButton.setOnClickListener(this);

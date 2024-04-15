@@ -17,7 +17,7 @@ public class DataViewModel extends ViewModel {
 
     public MutableLiveData<ArrayList<ServiceData>> getCurrentServices() {
         if (services == null) {
-            services = new MutableLiveData<>();
+            services = new MutableLiveData<>(new ArrayList<>());
         }
         return services;
     }
