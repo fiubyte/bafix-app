@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -15,25 +14,22 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fiubyte.bafix.preferences.SharedPreferencesManager;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 public class MainActivity extends AppCompatActivity {
     final String[] LOCATION_PERMISSIONS = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
-    private DataViewModel dataViewModel;
-    private FusedLocationProviderClient fusedLocationClient;
     private final ActivityResultContracts.RequestMultiplePermissions multiplePermissionsContract =
             new ActivityResultContracts.RequestMultiplePermissions();
+    private DataViewModel dataViewModel;
+    private FusedLocationProviderClient fusedLocationClient;
     private final ActivityResultLauncher<String[]> multiplePermissionLauncher =
             registerForActivityResult(multiplePermissionsContract, isGranted -> {
                 if (isGranted.containsValue(false)) {
@@ -77,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("MissingPermission")
     private void getLocation() {
-        fusedLocationClient.getLastLocation().addOnSuccessListener(this, location -> {
+        fusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
+            Location location = task.getResult();
             if (location != null) {
                 saveLocation(location);
             }
