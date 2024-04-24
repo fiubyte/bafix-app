@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,9 +18,17 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.fiubyte.bafix.BuildConfig;
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
 import com.fiubyte.bafix.models.DataViewModel;
+
+import org.osmdroid.api.IMapController;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,13 +45,13 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
     private Map<ServicesView, View> views;
     private DataViewModel dataViewModel;
     private RecyclerView recyclerView;
-
+    private CardView mapCardView;
     private ImageView filterButton;
-
     private TextView noServicesOffered;
     private CardView noServicesAvailable;
     private CardView mapsButton;
     private CardView listButton;
+    private MapView mapView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,24 +77,40 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         updateServicesView();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
     private void initializeViews(View view) {
         recyclerView = view.findViewById(R.id.serviceFinderRecyclerView);
+        mapCardView = view.findViewById(R.id.map_cardview);
         noServicesOffered = view.findViewById(R.id.no_services_offered);
         noServicesAvailable = view.findViewById(R.id.services_not_available_cardview);
         filterButton = view.findViewById(R.id.filters_button);
         mapsButton = view.findViewById(R.id.maps_button);
         listButton = view.findViewById(R.id.list_button);
+        mapView = view.findViewById(R.id.map);
 
         views = new HashMap<>();
         views.put(ServicesView.LIST, recyclerView);
+        views.put(ServicesView.MAP, mapCardView);
         views.put(ServicesView.NO_SERVICES, noServicesOffered);
         views.put(ServicesView.BACKEND_ERROR, noServicesAvailable);
 
         filterButton.setOnClickListener(this);
         mapsButton.setOnClickListener(this);
         listButton.setOnClickListener(this);
-    }
 
+        initializeMap();
+    }
     private void setupViewModels() {
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
     }
@@ -153,6 +178,39 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                 currentView = ServicesView.LIST;
                 updateServicesView();
                 break;
+        }
+    }
+
+    private void initializeMap() {
+        mapView.setTileSource(TileSourceFactory.MAPNIK);
+        mapView.setBuiltInZoomControls(true);
+        mapView.setMultiTouchControls(true);
+
+        IMapController mapController = mapView.getController();
+        mapController.setCenter(new GeoPoint(-34.6037, -58.3816));
+        mapController.setZoom(14);
+
+        addMarkers();
+
+        Marker startMarker = new Marker(mapView);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        mapView.getOverlays().add(startMarker);
+
+        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+    }
+
+    private void addMarkers() {
+        double[][] locations = {
+                {-34.6037, -58.3816},
+                {-34.5829, -58.4109},
+                {-34.6083, -58.3700}
+        };
+
+        for (double[] location : locations) {
+            Marker marker = new Marker(mapView);
+            marker.setPosition(new GeoPoint(location[0], location[1]));
+            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            mapView.getOverlays().add(marker);
         }
     }
 }
