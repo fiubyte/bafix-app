@@ -42,6 +42,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
     private TextView noServicesOffered;
     private CardView noServicesAvailable;
     private CardView mapsButton;
+    private CardView listButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,6 +74,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         noServicesAvailable = view.findViewById(R.id.services_not_available_cardview);
         filterButton = view.findViewById(R.id.filters_button);
         mapsButton = view.findViewById(R.id.maps_button);
+        listButton = view.findViewById(R.id.list_button);
 
         views = new HashMap<>();
         views.put(ServicesView.LIST, recyclerView);
@@ -81,6 +83,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
 
         filterButton.setOnClickListener(this);
         mapsButton.setOnClickListener(this);
+        listButton.setOnClickListener(this);
     }
 
     private void setupViewModels() {
@@ -104,10 +107,13 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
     private void updateViewSwitcherButtons() {
          if (currentView == ServicesView.LIST) {
             mapsButton.setVisibility(View.VISIBLE);
+            listButton.setVisibility(View.GONE);
          } else if (currentView == ServicesView.MAP) {
              mapsButton.setVisibility(View.GONE);
+             listButton.setVisibility(View.VISIBLE);
          } else {
              mapsButton.setVisibility(View.GONE);
+             listButton.setVisibility(View.GONE);
          }
     }
 
@@ -141,6 +147,10 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                 break;
             case R.id.maps_button:
                 currentView = ServicesView.MAP;
+                updateServicesView();
+                break;
+            case R.id.list_button:
+                currentView = ServicesView.LIST;
                 updateServicesView();
                 break;
         }
