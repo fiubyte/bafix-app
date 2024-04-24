@@ -43,7 +43,7 @@ public class FiltersFragment extends Fragment {
     MaterialCardView availableNowButton, applyButton;
     Slider distanceSlider;
     TextView distanceText;
-    boolean availableNowButtonSelected = false;
+    boolean availableNowButtonSelected = true;
     String maxDistance = "";
 
     LinearLayout categoriesLayout;

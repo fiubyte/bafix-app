@@ -19,7 +19,7 @@ public class FiltersViewModel extends ViewModel {
         if(filters == null) {
             filters = new MutableLiveData<>();
             Map<String, String> initFilters = new HashMap<>();
-            initFilters.put("filterByAvailability", "false");
+            initFilters.put("filterByAvailability", "true");
             initFilters.put("distance", "15");
             initFilters.put("categories", "");
             filters.setValue(initFilters);

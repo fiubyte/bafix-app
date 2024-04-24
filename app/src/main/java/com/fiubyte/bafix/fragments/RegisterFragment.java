@@ -91,6 +91,7 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
     private void retrieveServices(String token, Map<String, Double> userLocation) throws UnsupportedEncodingException {
         Map<String,String> emptyFilters = new HashMap<>();
         emptyFilters.put("distance", "99999999");
+        emptyFilters.put("filterByAvailability", "true");
 
         ServicesListManager.retrieveServices(token, emptyFilters, userLocation,
                                              new ServicesListManager.ServicesListCallback() {
