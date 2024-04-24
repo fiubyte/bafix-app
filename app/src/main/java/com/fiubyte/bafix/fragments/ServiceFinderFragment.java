@@ -23,6 +23,7 @@ import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.models.FiltersViewModel;
 
 public class ServiceFinderFragment extends Fragment implements View.OnClickListener {
+
     private DataViewModel dataViewModel;
     private FiltersViewModel filtersViewModel;
     private RecyclerView recyclerView;
@@ -31,6 +32,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
 
     private TextView noServicesOffered;
     private CardView noServicesAvailable;
+    private CardView mapsButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,12 +88,22 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
 
         filterButton = view.findViewById(R.id.filters_button);
         filterButton.setOnClickListener(this);
+
+        mapsButton = view.findViewById(R.id.maps_button);
+        mapsButton.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
-        Navigation
-                .findNavController(view)
-                .navigate(R.id.action_serviceFinderFragment_to_filtersFragment);
+        switch (view.getId()) {
+            case R.id.filters_button:
+                Navigation
+                        .findNavController(view)
+                        .navigate(R.id.action_serviceFinderFragment_to_filtersFragment);
+                break;
+            case R.id.maps_button:
+                Log.d("DEBUGGING", "maps");
+                break;
+        }
     }
 }

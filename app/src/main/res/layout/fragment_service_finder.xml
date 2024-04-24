@@ -54,69 +54,109 @@
         android:textColor="@color/title_color">
     </TextView>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="32dp"
-        android:orientation="horizontal"
-        android:layout_marginTop="6dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="match_parent"
-                android:src="@drawable/filter_button_rectangle">
-            </ImageView>
-
-            <ImageView
-                android:id="@+id/filters_button"
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/filter_icon"
-                android:layout_gravity="center">
-            </ImageView>
-        </FrameLayout>
+                android:layout_height="match_parent">
 
-        <FrameLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="5dp">
+                <ImageView
+                    android:layout_width="30dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/filter_button_rectangle"></ImageView>
 
-            <ImageView
-                android:layout_width="105dp"
+                <ImageView
+                    android:id="@+id/filters_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/filter_icon"></ImageView>
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/order_button_rectangle">
-            </ImageView>
+                android:layout_marginLeft="5dp">
+
+                <ImageView
+                    android:layout_width="105dp"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/order_button_rectangle"></ImageView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/dm_sans_medium"
+                        android:text="@string/ordering_title"
+                        android:textColor="@color/title_color"
+                        android:textSize="15dp"></TextView>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="2dp"
+                        android:src="@drawable/down_arrow_icon"></ImageView>
+
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/maps_button"
+            android:layout_width="81dp"
+            android:layout_height="30dp"
+            android:backgroundTint="@color/selected_color"
+            app:cardCornerRadius="9dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="12dp">
+                android:layout_gravity="center">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/maps_location_icon">
+                </ImageView>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/ordering_title"
+                    android:layout_gravity="center"
                     android:fontFamily="@font/dm_sans_medium"
-                    android:textColor="@color/title_color"
-                    android:textSize="15dp"
-                    android:layout_gravity="center">
+                    android:text="Mapa"
+                    android:textColor="@color/white"
+                    android:textSize="15sp"
+                    android:layout_marginLeft="5dp">
                 </TextView>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/down_arrow_icon"
-                    android:layout_marginLeft="2dp">
-                </ImageView>
-
             </LinearLayout>
-        </FrameLayout>
-    </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/serviceFinderRecyclerView"
@@ -146,7 +186,8 @@
         android:backgroundTint="@color/background_error"
         app:cardCornerRadius="12dp"
         android:layout_marginBottom="4dp"
-        android:layout_marginTop="15dp">
+        android:layout_marginTop="15dp"
+        android:visibility="gone">
 
         <TextView
             android:padding="10dp"
