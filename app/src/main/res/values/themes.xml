@@ -16,7 +16,9 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
+    <style name="ToolbarTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
         <item name="android:fontFamily">@font/thiccboi</item>
         <item name="android:textSize">40sp</item>
     </style>
