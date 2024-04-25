@@ -1,17 +1,17 @@
 package com.fiubyte.bafix.fragments;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fiubyte.bafix.BuildConfig;
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
+import com.fiubyte.bafix.entities.CustomInfoWindow;
 import com.fiubyte.bafix.models.DataViewModel;
 
 import org.osmdroid.api.IMapController;
@@ -30,10 +31,12 @@ import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServiceFinderFragment extends Fragment implements View.OnClickListener {
+
     enum ServicesView {
         LIST,
         MAP,
@@ -206,11 +209,25 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                 {-34.6083, -58.3700}
         };
 
+        Drawable d = ResourcesCompat.getDrawable(getResources(), R.drawable.map_location_icon, null);
+
+        ArrayList<String> servicesList = new ArrayList<String>();
+        servicesList.add("Reparación de cañerías de agua caliente");
+        servicesList.add("Pintura de interiores");
+        servicesList.add("Reparación de grietas en el techo");
+        servicesList.add("Fabricación de muebles a medida para cocina");
+
+        CustomInfoWindow customInfoWindow = new CustomInfoWindow(mapView, "Mario Delgado", servicesList);
+
         for (double[] location : locations) {
             Marker marker = new Marker(mapView);
             marker.setPosition(new GeoPoint(location[0], location[1]));
             marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            marker.setIcon(d);
+            marker.setInfoWindow(customInfoWindow);
             mapView.getOverlays().add(marker);
         }
     }
+
 }
+

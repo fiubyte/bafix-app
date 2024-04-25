@@ -20,4 +20,5 @@
     <color name="track_color">#BAB2C3</color>
     <color name="background_error">#FFDFDF</color>
     <color name="text_error">#A73232</color>
+    <color name="line_color">#E0E0E0</color>
 </resources>
