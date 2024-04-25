@@ -1,7 +1,8 @@
 package com.fiubyte.bafix.fragments;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.Path;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,31 +19,19 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.fiubyte.bafix.BuildConfig;
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
-import com.fiubyte.bafix.entities.CustomInfoWindow;
 import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.utils.OpenStreetMapManager;
+import com.fiubyte.bafix.utils.ProvidersDataGenerator;
 
-import org.osmdroid.api.IMapController;
-import org.osmdroid.config.Configuration;
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.Marker;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServiceFinderFragment extends Fragment implements View.OnClickListener {
-
-    enum ServicesView {
-        LIST,
-        MAP,
-        NO_SERVICES,
-        BACKEND_ERROR
-    }
 
     private ServicesView currentView = ServicesView.LIST;
     private Map<ServicesView, View> views;
@@ -77,6 +66,8 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         initializeViews(view);
         setupViewModels();
         initializeListView();
+        initializeMap();
+
         updateServicesView();
     }
 
@@ -111,9 +102,8 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         filterButton.setOnClickListener(this);
         mapsButton.setOnClickListener(this);
         listButton.setOnClickListener(this);
-
-        initializeMap();
     }
+
     private void setupViewModels() {
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
     }
@@ -133,23 +123,22 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
     }
 
     private void updateViewSwitcherButtons() {
-         if (currentView == ServicesView.LIST) {
+        if (currentView == ServicesView.LIST) {
             mapsButton.setVisibility(View.VISIBLE);
             listButton.setVisibility(View.GONE);
-         } else if (currentView == ServicesView.MAP) {
-             mapsButton.setVisibility(View.GONE);
-             listButton.setVisibility(View.VISIBLE);
-         } else {
-             mapsButton.setVisibility(View.GONE);
-             listButton.setVisibility(View.GONE);
-         }
+        } else if (currentView == ServicesView.MAP) {
+            mapsButton.setVisibility(View.GONE);
+            listButton.setVisibility(View.VISIBLE);
+        } else {
+            mapsButton.setVisibility(View.GONE);
+            listButton.setVisibility(View.GONE);
+        }
     }
 
     private void updateCurrentView() {
-        if(dataViewModel.isBackendDown().getValue()) {
+        if (dataViewModel.isBackendDown().getValue()) {
             currentView = ServicesView.BACKEND_ERROR;
-        }
-        else if(dataViewModel.getCurrentServices().getValue().isEmpty()){
+        } else if (dataViewModel.getCurrentServices().getValue().isEmpty()) {
             currentView = ServicesView.NO_SERVICES;
         }
     }
@@ -163,6 +152,18 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                 dataViewModel.getCurrentServices().getValue()
         );
         recyclerView.setAdapter(adapter);
+    }
+
+    private void initializeMap() {
+        Log.d("DEBUGGING", "initializeMap");
+        OpenStreetMapManager.initializeMap(
+                mapView,
+                ResourcesCompat.getDrawable(getResources(), R.drawable.map_location_icon, null),
+                new GeoPoint(dataViewModel.getCurrentLocation().getValue().get("latitude"),
+                             dataViewModel.getCurrentLocation().getValue().get("longitude"))
+                                          );
+
+        OpenStreetMapManager.addMarkers(ProvidersDataGenerator.generateProvidersList(dataViewModel.getCurrentServices().getValue()));
     }
 
     @Override
@@ -184,50 +185,11 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         }
     }
 
-    private void initializeMap() {
-        mapView.setTileSource(TileSourceFactory.MAPNIK);
-        mapView.setBuiltInZoomControls(true);
-        mapView.setMultiTouchControls(true);
-
-        IMapController mapController = mapView.getController();
-        mapController.setCenter(new GeoPoint(-34.6037, -58.3816));
-        mapController.setZoom(14);
-
-        addMarkers();
-
-        Marker startMarker = new Marker(mapView);
-        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        mapView.getOverlays().add(startMarker);
-
-        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
+    enum ServicesView {
+        LIST,
+        MAP,
+        NO_SERVICES,
+        BACKEND_ERROR
     }
-
-    private void addMarkers() {
-        double[][] locations = {
-                {-34.6037, -58.3816},
-                {-34.5829, -58.4109},
-                {-34.6083, -58.3700}
-        };
-
-        Drawable d = ResourcesCompat.getDrawable(getResources(), R.drawable.map_location_icon, null);
-
-        ArrayList<String> servicesList = new ArrayList<String>();
-        servicesList.add("Reparación de cañerías de agua caliente");
-        servicesList.add("Pintura de interiores");
-        servicesList.add("Reparación de grietas en el techo");
-        servicesList.add("Fabricación de muebles a medida para cocina");
-
-        CustomInfoWindow customInfoWindow = new CustomInfoWindow(mapView, "Mario Delgado", servicesList);
-
-        for (double[] location : locations) {
-            Marker marker = new Marker(mapView);
-            marker.setPosition(new GeoPoint(location[0], location[1]));
-            marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            marker.setIcon(d);
-            marker.setInfoWindow(customInfoWindow);
-            mapView.getOverlays().add(marker);
-        }
-    }
-
 }
 

@@ -7,6 +7,7 @@ import com.fiubyte.bafix.entities.ServiceData;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -34,7 +35,12 @@ public class ServicesDataDeserializer {
             DecimalFormat twoDForm = new DecimalFormat("#.#");
             double maxDistance = Double.valueOf(twoDForm.format(jsonObject.getDouble("distance")));
             boolean isAvailable = jsonObject.getBoolean("is_available");
-            services.add(new ServiceData(title, photoURL, maxDistance, providerName, isAvailable));
+            double latitude = jsonObject.getDouble("service_latitude");
+            double longitude = jsonObject.getDouble("service_longitude");
+            int providerId = jsonObject.getInt("user_id");
+
+            services.add(new ServiceData(title, photoURL, maxDistance, providerName, providerId,
+                                         isAvailable, new GeoPoint(latitude, longitude)));
         }
         return services;
     }
