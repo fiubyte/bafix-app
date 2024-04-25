@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/provider_item_container"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="@color/white">
+
+    <LinearLayout
+        android:layout_width="268dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="13dp">
+
+        <TextView
+            android:id="@+id/provider_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Julia Benavidez"
+            android:textColor="@color/selected_color"
+            android:fontFamily="@font/dm_sans_bold"
+            android:textSize="16dp"
+            android:paddingBottom="4dp">
+        </TextView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"/>
+
+        <TextView
+            android:id="@+id/first_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pedicura completa con esmaltado permanente"
+            android:textColor="@color/body_color"
+            android:fontFamily="@font/dm_sans_regular"
+            android:textSize="13dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp">
+        </TextView>
+
+        <View
+            android:id="@+id/first_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/second_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pedicura completa con esmaltado permanente"
+            android:textColor="@color/body_color"
+            android:fontFamily="@font/dm_sans_regular"
+            android:textSize="13dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:visibility="gone">
+        </TextView>
+
+        <View
+            android:id="@+id/second_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/third_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Pedicura completa con esmaltado permanente"
+            android:textColor="@color/body_color"
+            android:fontFamily="@font/dm_sans_regular"
+            android:textSize="13dp"
+            android:paddingTop="7dp"
+            android:paddingBottom="7dp"
+            android:visibility="gone">
+        </TextView>
+
+        <View
+            android:id="@+id/third_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/line_color"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/too_many_services_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="..."
+            android:layout_gravity="center"
+            android:textColor="@color/selected_color"
+            android:fontFamily="@font/dm_sans_bold"
+            android:textSize="16dp"
+            android:paddingTop="7dp"
+            android:visibility="gone">
+        </TextView>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
