@@ -34,7 +34,10 @@
         <action
             android:id="@+id/action_serviceFinderFragment_to_filtersFragment"
             app:destination="@id/filtersFragment" />
-        </fragment>
+        <action
+            android:id="@+id/action_serviceFinderFragment2_to_providerFragment"
+            app:destination="@id/providerFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/launcherFragment"
@@ -53,6 +56,15 @@
         tools:layout="@layout/fragment_filters" >
         <action
             android:id="@+id/action_filtersFragment_to_serviceFinderFragment"
+            app:destination="@id/serviceFinderFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/providerFragment"
+        android:name="com.fiubyte.bafix.fragments.ProviderFragment"
+        android:label="fragment_provider"
+        tools:layout="@layout/fragment_provider" >
+        <action
+            android:id="@+id/action_providerFragment_to_serviceFinderFragment2"
             app:destination="@id/serviceFinderFragment2" />
     </fragment>
 </navigation>

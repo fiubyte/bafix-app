@@ -163,7 +163,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                              dataViewModel.getCurrentLocation().getValue().get("longitude"))
                                           );
 
-        OpenStreetMapManager.addMarkers(ProvidersDataGenerator.generateProvidersList(dataViewModel.getCurrentServices().getValue()));
+        OpenStreetMapManager.addMarkers(ProvidersDataGenerator.generateProvidersList(dataViewModel.getCurrentServices().getValue()), this);
     }
 
     @Override
@@ -181,6 +181,11 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
             case R.id.list_button:
                 currentView = ServicesView.LIST;
                 updateServicesView();
+                break;
+            case R.id.provider_name:
+                Navigation
+                        .findNavController(view)
+                        .navigate(R.id.action_serviceFinderFragment2_to_providerFragment);
                 break;
         }
     }
