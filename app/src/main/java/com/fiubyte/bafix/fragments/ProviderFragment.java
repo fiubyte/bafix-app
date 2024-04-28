@@ -62,13 +62,9 @@ public class ProviderFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ProviderFragmentDirections.ActionProviderFragmentToServiceFinderFragment action =
-                        ProviderFragmentDirections.actionProviderFragmentToServiceFinderFragment(ServicesView.MAP);
-
                 Navigation
                         .findNavController(view)
-                        .navigate(action);
+                        .popBackStack();
             }
         });
     }

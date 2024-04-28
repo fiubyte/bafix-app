@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -14,16 +15,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiubyte.bafix.R;
+import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.utils.ProvidersDataGenerator;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
-public class ServiceFragment extends Fragment {
+public class ServiceFragment extends Fragment implements View.OnClickListener {
+    private DataViewModel dataViewModel;
     MaterialCardView providerCardView;
     ServiceData serviceData;
-
     ImageView backButton;
 
     @Override
@@ -37,6 +41,8 @@ public class ServiceFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
         serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
 
@@ -52,15 +58,29 @@ public class ServiceFragment extends Fragment {
         ((TextView)view.findViewById(R.id.provider_phone)).setText(serviceData.getProviderPhone());
 
         providerCardView = view.findViewById(R.id.provider_container);
-        providerCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        providerCardView.setOnClickListener(this);
 
         backButton = view.findViewById(R.id.back_button);
 
         backButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
+    }
+
+    @Override
+    public void onClick(View view) {
+        ProviderData providerData = new ProviderData(serviceData.getProviderId(),
+                                                     serviceData.getProviderName(),
+                                                     serviceData.getGeoPoint(),
+                                                     ProvidersDataGenerator.generateProviderServicesList(dataViewModel.getCurrentServices().getValue(), serviceData.getProviderId()),
+                                                     serviceData.getMaxDistance(),
+                                                     serviceData.getProviderPhotoURL(),
+                                                     serviceData.getProviderPhone()
+
+        );
+
+        ServiceFragmentDirections.ActionServiceFragmentToProviderFragment action = ServiceFragmentDirections.actionServiceFragmentToProviderFragment(providerData);
+
+        Navigation
+                .findNavController(view)
+                .navigate(action);
     }
 }

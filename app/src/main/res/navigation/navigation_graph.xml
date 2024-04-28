@@ -87,5 +87,8 @@
         <argument
             android:name="serviceData"
             app:argType="com.fiubyte.bafix.entities.ServiceData" />
+        <action
+            android:id="@+id/action_serviceFragment_to_providerFragment"
+            app:destination="@id/providerFragment" />
     </fragment>
 </navigation>
