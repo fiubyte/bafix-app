@@ -28,7 +28,8 @@ public class ServicesDataDeserializer {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
             String title = jsonObject.getString("title");
-            String photoURL = jsonObject.getString("photo_url");
+            String userPhotoURL = jsonObject.getString("user_profile_photo_url");
+            String servicePhotoURL = jsonObject.getString("photo_url");
             String providerName = jsonObject.getString("user_name")
                     + " "
                     + jsonObject.getString("user_surname");
@@ -38,9 +39,10 @@ public class ServicesDataDeserializer {
             double latitude = jsonObject.getDouble("service_latitude");
             double longitude = jsonObject.getDouble("service_longitude");
             int providerId = jsonObject.getInt("user_id");
+            String providerPhone = jsonObject.getString("user_phone_number");
 
-            services.add(new ServiceData(title, photoURL, maxDistance, providerName, providerId,
-                                         isAvailable, new GeoPoint(latitude, longitude)));
+            services.add(new ServiceData(title, userPhotoURL, servicePhotoURL, maxDistance, providerName, providerId,
+                                         isAvailable, new GeoPoint(latitude, longitude), providerPhone));
         }
         return services;
     }

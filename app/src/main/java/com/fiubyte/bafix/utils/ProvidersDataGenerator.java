@@ -20,7 +20,10 @@ public class ProvidersDataGenerator {
                         service.getProviderId(),
                         service.getProviderName(),
                         service.getGeoPoint(),
-                        new ArrayList(Arrays.asList(service))
+                        new ArrayList(Arrays.asList(service)),
+                        service.getMaxDistance(),
+                        service.getProviderPhotoURL(),
+                        service.getProviderPhone()
                 );
                 providers.add(newProvider);
             }
