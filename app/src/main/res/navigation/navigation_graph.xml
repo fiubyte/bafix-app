@@ -83,5 +83,9 @@
         android:id="@+id/serviceFragment"
         android:name="com.fiubyte.bafix.fragments.ServiceFragment"
         android:label="fragment_service"
-        tools:layout="@layout/fragment_service" />
+        tools:layout="@layout/fragment_service" >
+        <argument
+            android:name="serviceData"
+            app:argType="com.fiubyte.bafix.entities.ServiceData" />
+    </fragment>
 </navigation>

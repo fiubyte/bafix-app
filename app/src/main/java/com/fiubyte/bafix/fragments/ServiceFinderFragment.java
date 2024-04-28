@@ -220,9 +220,11 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onItemClick(int position) {
+        ServiceFinderFragmentDirections.ActionServiceFinderFragmentToServiceFragment action =
+                ServiceFinderFragmentDirections.actionServiceFinderFragmentToServiceFragment(dataViewModel.getCurrentServices().getValue().get(position));
         Navigation
                 .findNavController(requireView())
-                .navigate(R.id.action_serviceFinderFragment_to_serviceFragment);
+                .navigate(action);
     }
 }
 

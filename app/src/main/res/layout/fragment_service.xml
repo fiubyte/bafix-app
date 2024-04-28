@@ -78,13 +78,14 @@
             </TextView>
 
             <TextView
+                android:id="@+id/availability_days"
+                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lu, Ma, Vi"
                 android:fontFamily="@font/dm_sans_medium"
+                android:text="Lu, Ma, Mi, Ju, Vi, Sa, Do"
                 android:textColor="@color/title_color"
-                android:textSize="15sp">
-            </TextView>
+                android:textSize="15sp"></TextView>
 
         </LinearLayout>
 
@@ -104,6 +105,8 @@
             </TextView>
 
             <TextView
+                android:id="@+id/availability_time"
+                android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="09:00 - 18:00"
@@ -149,6 +152,7 @@
             android:layout_marginLeft="5dp">
 
             <TextView
+                android:id="@+id/provider_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Julia Benavídez"
