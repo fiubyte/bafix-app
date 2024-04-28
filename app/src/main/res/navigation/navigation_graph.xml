@@ -40,6 +40,9 @@
         <argument
             android:name="ServicesView"
             app:argType="com.fiubyte.bafix.entities.ServicesView" />
+        <action
+            android:id="@+id/action_serviceFinderFragment_to_serviceFragment"
+            app:destination="@id/serviceFragment" />
     </fragment>
 
     <fragment
@@ -72,5 +75,13 @@
         <action
             android:id="@+id/action_providerFragment_to_serviceFinderFragment"
             app:destination="@id/serviceFinderFragment" />
+        <action
+            android:id="@+id/action_providerFragment_to_serviceFragment"
+            app:destination="@id/serviceFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/serviceFragment"
+        android:name="com.fiubyte.bafix.ServiceFragment"
+        android:label="fragment_service"
+        tools:layout="@layout/fragment_service" />
 </navigation>
