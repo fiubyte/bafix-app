@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiubyte.bafix.R;
+import com.fiubyte.bafix.adapters.ProviderServiceListAdapter;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
 import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
@@ -77,7 +78,7 @@ public class ProviderFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                                               LinearLayoutManager.VERTICAL, false
         ));
-        ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(
+        ProviderServiceListAdapter adapter = new ProviderServiceListAdapter(
                 requireContext(),
                 services
         );

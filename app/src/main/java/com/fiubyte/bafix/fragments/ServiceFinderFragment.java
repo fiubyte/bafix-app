@@ -5,6 +5,7 @@ import android.graphics.Path;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ import com.fiubyte.bafix.entities.ServicesView;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.utils.OpenStreetMapManager;
 import com.fiubyte.bafix.utils.ProvidersDataGenerator;
+import com.fiubyte.bafix.utils.RecylcerViewInterface;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -35,7 +37,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServiceFinderFragment extends Fragment implements View.OnClickListener {
+public class ServiceFinderFragment extends Fragment implements View.OnClickListener, RecylcerViewInterface {
 
     private ArrayList<ProviderData> providers;
     private ServicesView currentView = ServicesView.LIST;
@@ -161,7 +163,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         ));
         ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(
                 requireContext(),
-                dataViewModel.getCurrentServices().getValue()
+                dataViewModel.getCurrentServices().getValue(), this
         );
         recyclerView.setAdapter(adapter);
     }
@@ -214,6 +216,13 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
         Navigation
                 .findNavController(view)
                 .navigate(action);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Navigation
+                .findNavController(requireView())
+                .navigate(R.id.action_serviceFinderFragment_to_serviceFragment);
     }
 }
 

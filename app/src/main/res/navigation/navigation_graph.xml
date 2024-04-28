@@ -81,7 +81,7 @@
     </fragment>
     <fragment
         android:id="@+id/serviceFragment"
-        android:name="com.fiubyte.bafix.ServiceFragment"
+        android:name="com.fiubyte.bafix.fragments.ServiceFragment"
         android:label="fragment_service"
         tools:layout="@layout/fragment_service" />
 </navigation>
