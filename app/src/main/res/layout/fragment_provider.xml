@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/back_button"
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:src="@drawable/left_arrow_icon">
+    </ImageView>
+
+    <TextView
+        android:id="@+id/provider_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Julia Benavidez"
+        android:layout_marginTop="12dp"
+        android:textSize="25sp"
+        android:fontFamily="@font/dm_sans_bold"
+        android:textColor="@color/title_color">
+    </TextView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="15dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/provider_cardview"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            app:cardCornerRadius="12dp">
+
+            <ImageView
+                android:id="@+id/provider_picture"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:src="@drawable/julia"/>
+
+        </androidx.cardview.widget.CardView>
+        
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="15dp"
+            android:layout_gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/distance_maps_icon"></ImageView>
+
+                <TextView
+                    android:id="@+id/max_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:fontFamily="@font/dm_sans_regular"
+                    android:text="A 0,8 km"
+                    android:textColor="@color/title_color"
+                    android:textSize="15dp"></TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="7dp">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/phone_icon"></ImageView>
+
+                <TextView
+                    android:id="@+id/provider_phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:fontFamily="@font/dm_sans_regular"
+                    android:text="+5491140298321"
+                    android:textColor="@color/title_color"
+                    android:textSize="15dp"></TextView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Servicios provistos"
+        android:fontFamily="@font/dm_sans_medium"
+        android:textColor="@color/title_color"
+        android:textSize="16sp">
+    </TextView>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/provider_services_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:layoutAnimation="@anim/layout_animation_fall_down"
+        android:visibility="visible"/>
+
+    <TextView
+        android:id="@+id/no_services_offered"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Aún no hay servicios ofrecidos."
+        android:fontFamily="@font/dm_sans_medium"
+        android:layout_gravity="left"
+        android:layout_marginTop="15dp"
+        android:textColor="@color/title_color"
+        android:visibility="gone">
+    </TextView>
+
+</LinearLayout>

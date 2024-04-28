@@ -1,5 +1,6 @@
 package com.fiubyte.bafix.fragments;
 
+import android.app.Service;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
+import com.fiubyte.bafix.entities.ProviderData;
+import com.fiubyte.bafix.entities.ServicesView;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.utils.OpenStreetMapManager;
 import com.fiubyte.bafix.utils.ProvidersDataGenerator;
@@ -28,11 +31,13 @@ import com.fiubyte.bafix.utils.ProvidersDataGenerator;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ServiceFinderFragment extends Fragment implements View.OnClickListener {
 
+    private ArrayList<ProviderData> providers;
     private ServicesView currentView = ServicesView.LIST;
     private Map<ServicesView, View> views;
     private DataViewModel dataViewModel;
@@ -62,6 +67,13 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        try {
+            ServiceFinderFragmentArgs args = ServiceFinderFragmentArgs.fromBundle(getArguments());
+            currentView = args.getServicesView();
+        } catch (IllegalArgumentException e) {
+            currentView = ServicesView.LIST;
+        }
 
         initializeViews(view);
         setupViewModels();
@@ -163,7 +175,8 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                              dataViewModel.getCurrentLocation().getValue().get("longitude"))
                                           );
 
-        OpenStreetMapManager.addMarkers(ProvidersDataGenerator.generateProvidersList(dataViewModel.getCurrentServices().getValue()));
+        providers = ProvidersDataGenerator.generateProvidersList(dataViewModel.getCurrentServices().getValue());
+        OpenStreetMapManager.addMarkers(providers, this);
     }
 
     @Override
@@ -182,14 +195,25 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
                 currentView = ServicesView.LIST;
                 updateServicesView();
                 break;
+            case R.id.provider_name:
+                handleOnProviderClicked(view);
+                break;
         }
     }
 
-    enum ServicesView {
-        LIST,
-        MAP,
-        NO_SERVICES,
-        BACKEND_ERROR
+    private void handleOnProviderClicked(View view) {
+       String providerName = ((TextView)view.findViewById(R.id.provider_name)).getText().toString();
+
+       ProviderData providerData = providers.stream()
+                .filter(provider -> provider.getName() == providerName)
+                .findFirst().orElse(null);
+
+        ServiceFinderFragmentDirections.ActionServiceFinderFragmentToProviderFragment action =
+                ServiceFinderFragmentDirections.actionServiceFinderFragmentToProviderFragment(providerData);
+
+        Navigation
+                .findNavController(view)
+                .navigate(action);
     }
 }
 

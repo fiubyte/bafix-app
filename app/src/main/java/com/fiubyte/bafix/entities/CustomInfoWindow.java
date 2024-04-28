@@ -67,4 +67,8 @@ public class CustomInfoWindow extends MarkerInfoWindow {
     @Override
     public void onClose() {
     }
+
+    public void setOnClickListerner(View.OnClickListener onClickListener) {
+        mView.findViewById(R.id.provider_name).setOnClickListener(onClickListener);
+    }
 }

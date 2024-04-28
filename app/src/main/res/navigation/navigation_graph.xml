@@ -15,7 +15,7 @@
             app:destination="@id/registerFragment" />
         <action
             android:id="@+id/action_splashFragment_to_serviceFinderFragment"
-            app:destination="@id/serviceFinderFragment2" />
+            app:destination="@id/serviceFinderFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -24,17 +24,23 @@
         tools:layout="@layout/fragment_register" >
         <action
             android:id="@+id/action_registerFragment_to_serviceFinderFragment"
-            app:destination="@id/serviceFinderFragment2" />
+            app:destination="@id/serviceFinderFragment" />
     </fragment>
     <fragment
-        android:id="@+id/serviceFinderFragment2"
+        android:id="@+id/serviceFinderFragment"
         android:name="com.fiubyte.bafix.fragments.ServiceFinderFragment"
         android:label="fragment_service_finder"
         tools:layout="@layout/fragment_service_finder">
         <action
             android:id="@+id/action_serviceFinderFragment_to_filtersFragment"
             app:destination="@id/filtersFragment" />
-        </fragment>
+        <action
+            android:id="@+id/action_serviceFinderFragment_to_providerFragment"
+            app:destination="@id/providerFragment" />
+        <argument
+            android:name="ServicesView"
+            app:argType="com.fiubyte.bafix.entities.ServicesView" />
+    </fragment>
 
     <fragment
         android:id="@+id/launcherFragment"
@@ -53,6 +59,18 @@
         tools:layout="@layout/fragment_filters" >
         <action
             android:id="@+id/action_filtersFragment_to_serviceFinderFragment"
-            app:destination="@id/serviceFinderFragment2" />
+            app:destination="@id/serviceFinderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/providerFragment"
+        android:name="com.fiubyte.bafix.fragments.ProviderFragment"
+        android:label="fragment_provider"
+        tools:layout="@layout/fragment_provider" >
+        <argument
+            android:name="providerData"
+            app:argType="com.fiubyte.bafix.entities.ProviderData" />
+        <action
+            android:id="@+id/action_providerFragment_to_serviceFinderFragment"
+            app:destination="@id/serviceFinderFragment" />
     </fragment>
 </navigation>
