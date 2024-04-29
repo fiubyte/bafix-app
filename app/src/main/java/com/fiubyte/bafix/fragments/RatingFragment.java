@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -16,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiubyte.bafix.R;
+import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.fragments.RatingFragmentDirections;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.SvgRatingBar;
 import com.google.android.material.card.MaterialCardView;
@@ -68,7 +71,8 @@ public class RatingFragment extends Fragment {
         int rating = RatingFragmentArgs.fromBundle(getArguments()).getRating();
         ratingBar.setRating(rating);
 
-        serviceId = RatingFragmentArgs.fromBundle(getArguments()).getServiceData().getServiceId();
+        ServiceData serviceData = RatingFragmentArgs.fromBundle(getArguments()).getServiceData();
+        serviceId = serviceData.getServiceId();
         serviceTitle.setText(RatingFragmentArgs.fromBundle(getArguments()).getServiceData().getTitle());
 
         postServiceRateURL = "https://bafix-api.onrender.com/services/" + serviceId + "/rate";
@@ -76,11 +80,10 @@ public class RatingFragment extends Fragment {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("DEBUGGING", "CLOSE");
-                /*Navigation
-                        .findNavController(view)
-                        .popBackStack();*/
-                // FIXME: No funciona
+                NavController navController = Navigation.findNavController(view);
+                RatingFragmentDirections.ActionRatingFragmentToServiceFragment action =
+                        RatingFragmentDirections.actionRatingFragmentToServiceFragment(serviceData);
+                navController.navigate(action);
             }
         });
 
@@ -133,9 +136,6 @@ public class RatingFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 Log.d("DEBUGGING", response.toString());
-                    /*JSONObject jsonResponse = new JSONObject(response.body().string());
-                    String token = jsonResponse.getString("token");
-                    callback.onTokenReceived(token);*/
             }
         });
     }

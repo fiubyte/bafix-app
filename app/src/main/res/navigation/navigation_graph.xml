@@ -86,7 +86,8 @@
         tools:layout="@layout/fragment_service" >
         <argument
             android:name="serviceData"
-            app:argType="com.fiubyte.bafix.entities.ServiceData" />
+            app:argType="com.fiubyte.bafix.entities.ServiceData"
+            app:nullable="true" />
         <action
             android:id="@+id/action_serviceFragment_to_providerFragment"
             app:destination="@id/providerFragment" />
@@ -105,5 +106,9 @@
         <argument
             android:name="serviceData"
             app:argType="com.fiubyte.bafix.entities.ServiceData" />
+        <action
+            android:id="@+id/action_ratingFragment_to_serviceFragment"
+            app:destination="@id/serviceFragment"
+            app:popUpTo="@id/serviceFinderFragment"/>
     </fragment>
 </navigation>

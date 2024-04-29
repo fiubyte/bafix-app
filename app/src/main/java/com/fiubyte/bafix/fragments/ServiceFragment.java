@@ -49,7 +49,9 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
-        serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
+        if(ServiceFragmentArgs.fromBundle(getArguments()).getServiceData() != null){
+            serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
+        }
 
         ImageView providerPhoto = view.findViewById(R.id.provider_picture);
         Picasso.with(this.getContext()).load(serviceData.getProviderPhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
