@@ -73,7 +73,12 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                Log.d("RATING", "rating: " + v);
+                ServiceFragmentDirections.ActionServiceFragmentToRatingFragment action =
+                        ServiceFragmentDirections.actionServiceFragmentToRatingFragment((int) v);
+
+                Navigation
+                        .findNavController(view)
+                        .navigate(action);
             }
         });
     }

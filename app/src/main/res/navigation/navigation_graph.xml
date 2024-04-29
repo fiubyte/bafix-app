@@ -90,5 +90,17 @@
         <action
             android:id="@+id/action_serviceFragment_to_providerFragment"
             app:destination="@id/providerFragment" />
+        <action
+            android:id="@+id/action_serviceFragment_to_ratingFragment"
+            app:destination="@id/ratingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/ratingFragment"
+        android:name="com.fiubyte.bafix.fragments.RatingFragment"
+        android:label="fragment_rating"
+        tools:layout="@layout/fragment_rating" >
+        <argument
+            android:name="rating"
+            app:argType="integer" />
     </fragment>
 </navigation>
