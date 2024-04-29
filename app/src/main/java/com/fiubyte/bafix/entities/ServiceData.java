@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class ServiceData implements Serializable {
+    int id;
     String providerPhotoURL;
     String servicePhotoURL;
     String title;
@@ -19,11 +20,12 @@ public class ServiceData implements Serializable {
     String description;
     String availabilityDays;
     String availabilityTime;
-    public ServiceData(
+    public ServiceData(int id,
             String title, String providerPhotoURL, String servicePhotoURL, double maxDistance,
             String providerName, int providerId, boolean available, GeoPoint geoPoint, String providerPhone,
             String description, String availabilityDays, String availabilityTime
                       ) {
+        this.id = id;
         this.title = title;
         this.providerPhotoURL = providerPhotoURL;
         this.servicePhotoURL = servicePhotoURL;
@@ -82,7 +84,10 @@ public class ServiceData implements Serializable {
     public String getAvailabilityTime() {
         return availabilityTime;
     }
+
+    public int getServiceId() { return id; }
     public void writeToObject(java.io.ObjectOutputStream out) throws IOException {
+        out.writeObject(id);
         out.writeObject(title);
         out.writeObject(providerPhotoURL);
         out.writeObject(servicePhotoURL);
@@ -99,6 +104,7 @@ public class ServiceData implements Serializable {
 
     @SuppressWarnings("unchecked")
     public ServiceData readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        int id = in.readInt();
         String title = (String) in.readObject();
         String providerPhotoURL = (String) in.readObject();
         String servicePhotoURL = (String) in.readObject();
@@ -112,7 +118,7 @@ public class ServiceData implements Serializable {
         String availabilityDays = (String) in.readObject();
         String availabilityTime = (String) in.readObject();
 
-        return new ServiceData(title, providerPhotoURL, servicePhotoURL, maxDistance, providerName,
+        return new ServiceData(id, title, providerPhotoURL, servicePhotoURL, maxDistance, providerName,
                                providerId, available, geoPoint, providerPhone, description,
                                availabilityDays, availabilityTime);
     }

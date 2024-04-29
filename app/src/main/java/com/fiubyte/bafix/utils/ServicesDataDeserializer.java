@@ -27,6 +27,7 @@ public class ServicesDataDeserializer {
         for (int i = 0; i < jsonArray.length(); i++) {
             JSONObject jsonObject = jsonArray.getJSONObject(i);
 
+            int id = jsonObject.getInt("id");
             String title = jsonObject.getString("title");
             String userPhotoURL = jsonObject.getString("user_profile_photo_url");
             String servicePhotoURL = jsonObject.getString("photo_url");
@@ -44,7 +45,7 @@ public class ServicesDataDeserializer {
             String availabilityDays = ServicesDataDeserializer.formatAvailableDays(jsonObject.getString("availability_days"));
             String availabilityTime = jsonObject.getString("availability_time_start") + " - " + jsonObject.getString("availability_time_end");
 
-            services.add(new ServiceData(title, userPhotoURL, servicePhotoURL, maxDistance, providerName, providerId,
+            services.add(new ServiceData(id, title, userPhotoURL, servicePhotoURL, maxDistance, providerName, providerId,
                                          isAvailable, new GeoPoint(latitude, longitude), providerPhone, description, availabilityDays, availabilityTime));
         }
         return services;

@@ -102,5 +102,8 @@
         <argument
             android:name="rating"
             app:argType="integer" />
+        <argument
+            android:name="serviceData"
+            app:argType="com.fiubyte.bafix.entities.ServiceData" />
     </fragment>
 </navigation>

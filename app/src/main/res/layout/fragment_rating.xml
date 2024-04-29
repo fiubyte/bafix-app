@@ -82,7 +82,7 @@
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/apply_button"
+        android:id="@+id/publish_button"
         android:layout_marginBottom="5dp"
         android:layout_width="match_parent"
         android:layout_marginHorizontal="30dp"

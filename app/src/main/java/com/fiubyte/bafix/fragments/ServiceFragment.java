@@ -74,7 +74,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
                 ServiceFragmentDirections.ActionServiceFragmentToRatingFragment action =
-                        ServiceFragmentDirections.actionServiceFragmentToRatingFragment((int) v);
+                        ServiceFragmentDirections.actionServiceFragmentToRatingFragment((int) v, serviceData);
 
                 Navigation
                         .findNavController(view)
