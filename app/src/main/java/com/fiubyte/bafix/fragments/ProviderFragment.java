@@ -9,7 +9,6 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +16,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fiubyte.bafix.R;
-import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
+import com.fiubyte.bafix.adapters.ProviderServiceListAdapter;
 import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
-import com.fiubyte.bafix.entities.ServicesView;
-import com.fiubyte.bafix.fragments.ProviderFragmentDirections;
+import com.fiubyte.bafix.utils.RecylcerViewInterface;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class ProviderFragment extends Fragment {
+public class ProviderFragment extends Fragment implements RecylcerViewInterface {
 
     private RecyclerView recyclerView;
     private ProviderData providerData;
@@ -61,13 +59,9 @@ public class ProviderFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                ProviderFragmentDirections.ActionProviderFragmentToServiceFinderFragment action =
-                        ProviderFragmentDirections.actionProviderFragmentToServiceFinderFragment(ServicesView.MAP);
-
                 Navigation
                         .findNavController(view)
-                        .navigate(action);
+                        .popBackStack();
             }
         });
     }
@@ -77,10 +71,21 @@ public class ProviderFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                                               LinearLayoutManager.VERTICAL, false
         ));
-        ServiceFinderListAdapter adapter = new ServiceFinderListAdapter(
-                requireContext(),
+        ProviderServiceListAdapter adapter = new ProviderServiceListAdapter(
+                this, requireContext(),
                 services
         );
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+        ProviderFragmentDirections.ActionProviderFragmentToServiceFragment action =
+                ProviderFragmentDirections.actionProviderFragmentToServiceFragment(providerData.getServicesOffered().get(position));
+
+        Navigation
+                .findNavController(requireView())
+                .navigate(action);
     }
 }

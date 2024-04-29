@@ -40,10 +40,26 @@ public class ServicesDataDeserializer {
             double longitude = jsonObject.getDouble("service_longitude");
             int providerId = jsonObject.getInt("user_id");
             String providerPhone = jsonObject.getString("user_phone_number");
+            String description = jsonObject.getString("description");
+            String availabilityDays = ServicesDataDeserializer.formatAvailableDays(jsonObject.getString("availability_days"));
+            String availabilityTime = jsonObject.getString("availability_time_start") + " - " + jsonObject.getString("availability_time_end");
 
             services.add(new ServiceData(title, userPhotoURL, servicePhotoURL, maxDistance, providerName, providerId,
-                                         isAvailable, new GeoPoint(latitude, longitude), providerPhone));
+                                         isAvailable, new GeoPoint(latitude, longitude), providerPhone, description, availabilityDays, availabilityTime));
         }
         return services;
+    }
+
+    private static String formatAvailableDays(String availableDays) {
+        String[] days = availableDays.split(",");
+
+        for (int i = 0; i < days.length; i++) {
+            String palabra = days[i];
+            String abreviatura = palabra.substring(0, 2);
+            days[i] = abreviatura;
+        }
+
+        String shortenDays = String.join(", ", days);
+        return shortenDays;
     }
 }

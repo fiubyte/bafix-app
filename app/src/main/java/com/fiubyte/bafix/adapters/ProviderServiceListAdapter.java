@@ -8,20 +8,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.utils.RecylcerViewInterface;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public class ProviderServiceListAdapter extends RecyclerView.Adapter<ProviderServiceListAdapter.MyViewHolder> {
+    private final RecylcerViewInterface recylcerViewInterface;
     Context context;
     ArrayList<ServiceData> services;
 
-    public ProviderServiceListAdapter(Context context, ArrayList<ServiceData> services) {
+    public ProviderServiceListAdapter(RecylcerViewInterface recylcerViewInterface, Context context, ArrayList<ServiceData> services) {
+        this.recylcerViewInterface = recylcerViewInterface;
         this.context = context;
         this.services = services;
     }
@@ -33,8 +37,8 @@ public class ProviderServiceListAdapter extends RecyclerView.Adapter<ProviderSer
             int viewType
                                                                    ) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.service_list_item, parent, false);
-        return new ProviderServiceListAdapter.MyViewHolder(view);
+        View view = inflater.inflate(R.layout.provider_service_list_item, parent, false);
+        return new ProviderServiceListAdapter.MyViewHolder(view, recylcerViewInterface);
     }
 
     @Override
@@ -47,8 +51,10 @@ public class ProviderServiceListAdapter extends RecyclerView.Adapter<ProviderSer
         holder.serviceTitleTextView.setText(serviceListItem.getTitle());
 
         if(serviceListItem.isAvailable()){
+            holder.serviceNotAvailableCardview.setVisibility(View.GONE);
             holder.serviceNotAvailableLayout.setVisibility(View.GONE);
         } else {
+            holder.serviceNotAvailableCardview.setVisibility(View.VISIBLE);
             holder.serviceNotAvailableLayout.setVisibility(View.VISIBLE);
         }
 
@@ -63,15 +69,26 @@ public class ProviderServiceListAdapter extends RecyclerView.Adapter<ProviderSer
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView serviceImageView;
         TextView serviceTitleTextView;
-
+        CardView serviceNotAvailableCardview;
         ConstraintLayout serviceNotAvailableLayout;
 
-        public MyViewHolder(@NonNull View itemView) {
+        public MyViewHolder(@NonNull View itemView, RecylcerViewInterface recylcerViewInterface) {
             super(itemView);
 
             serviceImageView = itemView.findViewById(R.id.service_picture);
             serviceTitleTextView = itemView.findViewById(R.id.service_title);
+            serviceNotAvailableCardview = itemView.findViewById(R.id.not_available_cardview);
             serviceNotAvailableLayout = itemView.findViewById(R.id.service_not_available_layout);
+
+            itemView.setOnClickListener(view -> {
+                if (recylcerViewInterface != null) {
+                    int position = getAdapterPosition();
+
+                    if (position != RecyclerView.NO_POSITION) {
+                        recylcerViewInterface.onItemClick(position);
+                    }
+                }
+            });
         }
     }
 }

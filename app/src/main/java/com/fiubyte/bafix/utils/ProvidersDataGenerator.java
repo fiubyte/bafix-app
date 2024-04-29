@@ -30,4 +30,14 @@ public class ProvidersDataGenerator {
         }
         return providers;
     }
+
+    public static ArrayList<ServiceData> generateProviderServicesList(ArrayList<ServiceData> services, int providerId) {
+        ArrayList<ServiceData> providerServices = new ArrayList<>();
+        for (ServiceData service : services) {
+           if (service.getProviderId() == providerId) {
+               providerServices.add(service);
+           }
+        }
+        return providerServices;
+    }
 }

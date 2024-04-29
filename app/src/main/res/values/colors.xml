@@ -21,4 +21,5 @@
     <color name="background_error">#FFDFDF</color>
     <color name="text_error">#A73232</color>
     <color name="line_color">#E0E0E0</color>
+    <color name="subtitle_color">#909090</color>
 </resources>

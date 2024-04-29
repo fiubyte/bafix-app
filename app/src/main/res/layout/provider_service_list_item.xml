@@ -17,7 +17,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:padding="12dp"
             android:orientation="vertical">
 
@@ -54,6 +54,26 @@
 
             </LinearLayout>
 
+            <androidx.cardview.widget.CardView
+                android:id="@+id/not_available_cardview"
+                android:layout_width="90dp"
+                android:layout_height="18dp"
+                android:backgroundTint="@color/not_available_background"
+                app:cardCornerRadius="14dp"
+                android:layout_gravity="right"
+                android:translationZ="90dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/dm_sans_bold"
+                    android:text="No disponible"
+                    android:textColor="@color/not_available_text"
+                    android:textSize="11sp">
+
+                </TextView>
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
 
@@ -66,7 +86,6 @@
             android:padding="12dp">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/not_available_cardview"
                 android:layout_width="90dp"
                 android:layout_height="18dp"
                 android:backgroundTint="@color/not_available_background"
@@ -88,7 +107,6 @@
             </androidx.cardview.widget.CardView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </FrameLayout>
 
 </androidx.cardview.widget.CardView>
