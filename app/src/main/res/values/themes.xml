@@ -33,5 +33,4 @@
         <item name="fontFamily">@font/dm_sans_medium</item>
         <item name="android:fontFamily">@font/dm_sans_medium</item>
     </style>
-
 </resources>

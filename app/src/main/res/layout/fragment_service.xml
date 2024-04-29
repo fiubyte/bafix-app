@@ -134,7 +134,7 @@
         android:id="@+id/provider_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="10dp"
         app:cardCornerRadius="14dp"
@@ -215,5 +215,26 @@
 
 
     </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:layout_marginTop="25dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Califica y opina"
+        android:fontFamily="@font/dm_sans_bold"
+        android:textColor="@color/title_color"
+        android:textSize="17sp">
+    </TextView>
+
+    <com.fiubyte.bafix.utils.SvgRatingBar
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:progressDrawable="@drawable/rating_bar"
+        android:rating="3.5"
+        android:stepSize="1" />
 
 </LinearLayout>
