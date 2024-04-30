@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:src="@drawable/ic_alert">
+        </ImageView>
+
+        <TextView
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="¡Ups! "
+            android:fontFamily="@font/dm_sans_bold"
+            android:textColor="@color/title_color"
+            android:textSize="22sp">
+        </TextView>
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:layout_gravity="center"
+        android:layout_width="330dp"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#F0E0B1"
+        app:cardCornerRadius="22dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="25dp">
+
+        <TextView
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:padding="10dp"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/dm_sans_medium"
+            android:text="No encontramos ningún servicio que coincida con tus filtros. "
+            android:textSize="18sp"
+            android:textColor="@color/title_color">
+
+        </TextView>
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:layout_marginTop="25dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/error_human">
+    </ImageView>
+
+    <TextView
+        android:layout_marginTop="30dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Por favor, revisa tus criterios de búsqueda."
+        android:fontFamily="@font/dm_sans_medium"
+        android:textColor="@color/title_color"
+        android:textSize="17sp">
+    </TextView>
+
+
+</LinearLayout>

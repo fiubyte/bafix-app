@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -46,7 +47,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
     private RecyclerView recyclerView;
     private CardView mapCardView;
     private ImageView filterButton;
-    private TextView noServicesOffered;
+    private LinearLayout noServicesOffered;
     private CardView noServicesAvailable;
     private CardView mapsButton;
     private CardView listButton;

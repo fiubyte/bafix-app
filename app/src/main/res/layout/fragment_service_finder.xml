@@ -203,17 +203,12 @@
         android:layoutAnimation="@anim/layout_animation_fall_down"
         android:visibility="gone"/>
 
-    <TextView
-        android:id="@+id/no_services_offered"
+    <include android:id="@+id/no_services_offered"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Aún no hay servicios ofrecidos."
-        android:fontFamily="@font/dm_sans_medium"
-        android:layout_gravity="left"
-        android:layout_marginTop="15dp"
-        android:textColor="@color/title_color"
-        android:visibility="gone">
-    </TextView>
+        android:layout_height="match_parent"
+        layout="@layout/no_services_offered"
+        android:layout_marginTop="30dp"
+        android:visibility="gone"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/services_not_available_cardview"
