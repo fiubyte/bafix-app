@@ -20,6 +20,7 @@ import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.ProvidersDataGenerator;
 import com.fiubyte.bafix.utils.SvgRatingBar;
 import com.google.android.material.card.MaterialCardView;
@@ -54,7 +55,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
         }
 
         ImageView providerPhoto = view.findViewById(R.id.provider_picture);
-        Picasso.with(this.getContext()).load(serviceData.getProviderPhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
+        Picasso.with(this.getContext()).load(serviceData.getServicePhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
 
         ((TextView)view.findViewById(R.id.service_title)).setText(serviceData.getTitle());
         ((TextView)view.findViewById(R.id.service_description)).setText(serviceData.getDescription());
@@ -72,6 +73,8 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
         backButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
         ratingBar = view.findViewById(R.id.rating_bar);
+
+        ratingBar.setRating(ServiceFragmentArgs.fromBundle(getArguments()).getRating());
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {

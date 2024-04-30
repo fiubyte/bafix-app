@@ -84,16 +84,18 @@
         android:name="com.fiubyte.bafix.fragments.ServiceFragment"
         android:label="fragment_service"
         tools:layout="@layout/fragment_service" >
-        <argument
-            android:name="serviceData"
-            app:argType="com.fiubyte.bafix.entities.ServiceData"
-            app:nullable="true" />
         <action
             android:id="@+id/action_serviceFragment_to_providerFragment"
             app:destination="@id/providerFragment" />
         <action
             android:id="@+id/action_serviceFragment_to_ratingFragment"
             app:destination="@id/ratingFragment" />
+        <argument
+            android:name="rating"
+            app:argType="integer" />
+        <argument
+            android:name="serviceData"
+            app:argType="com.fiubyte.bafix.entities.ServiceData" />
     </fragment>
     <fragment
         android:id="@+id/ratingFragment"

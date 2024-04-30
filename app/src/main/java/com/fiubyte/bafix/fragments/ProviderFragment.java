@@ -82,7 +82,7 @@ public class ProviderFragment extends Fragment implements RecylcerViewInterface 
     public void onItemClick(int position) {
 
         ProviderFragmentDirections.ActionProviderFragmentToServiceFragment action =
-                ProviderFragmentDirections.actionProviderFragmentToServiceFragment(providerData.getServicesOffered().get(position));
+                ProviderFragmentDirections.actionProviderFragmentToServiceFragment(0, providerData.getServicesOffered().get(position));
 
         Navigation
                 .findNavController(requireView())

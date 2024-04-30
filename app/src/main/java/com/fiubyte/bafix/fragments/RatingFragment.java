@@ -1,13 +1,6 @@
 package com.fiubyte.bafix.fragments;
 
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,10 +8,16 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ServiceData;
-import com.fiubyte.bafix.fragments.RatingFragmentDirections;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.SvgRatingBar;
 import com.google.android.material.card.MaterialCardView;
@@ -51,6 +50,8 @@ public class RatingFragment extends Fragment {
     private int serviceId;
     private String postServiceRateURL;
 
+    private ServiceData serviceData;
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -71,7 +72,7 @@ public class RatingFragment extends Fragment {
         int rating = RatingFragmentArgs.fromBundle(getArguments()).getRating();
         ratingBar.setRating(rating);
 
-        ServiceData serviceData = RatingFragmentArgs.fromBundle(getArguments()).getServiceData();
+        serviceData = RatingFragmentArgs.fromBundle(getArguments()).getServiceData();
         serviceId = serviceData.getServiceId();
         serviceTitle.setText(RatingFragmentArgs.fromBundle(getArguments()).getServiceData().getTitle());
 
@@ -82,7 +83,7 @@ public class RatingFragment extends Fragment {
             public void onClick(View view) {
                 NavController navController = Navigation.findNavController(view);
                 RatingFragmentDirections.ActionRatingFragmentToServiceFragment action =
-                        RatingFragmentDirections.actionRatingFragmentToServiceFragment(serviceData);
+                        RatingFragmentDirections.actionRatingFragmentToServiceFragment(0, serviceData);
                 navController.navigate(action);
             }
         });
@@ -91,16 +92,16 @@ public class RatingFragment extends Fragment {
         publishButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                handleOnClickPublishButton();
+                handleOnClickPublishButton(view);
             }
         });
     }
 
-    void handleOnClickPublishButton() {
-        rateService((int) ratingBar.getRating(), String.valueOf(comment.getText()));
+    void handleOnClickPublishButton(View view) {
+        rateService((int) ratingBar.getRating(), String.valueOf(comment.getText()), view);
     }
 
-    public void rateService(int rate, String message) {
+    public void rateService(int rate, String message, View view) {
         okHttpClient = new OkHttpClient();
 
         String url = "https://bafix-api.onrender.com/services/" + serviceId + "/rate";
@@ -135,7 +136,18 @@ public class RatingFragment extends Fragment {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (getActivity() == null) {
+                    return;
+                }
+
                 Log.d("DEBUGGING", response.toString());
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getActivity(), "¡Calificación enviada!", Toast.LENGTH_SHORT).show();
+                    NavController navController = Navigation.findNavController(view);
+                    RatingFragmentDirections.ActionRatingFragmentToServiceFragment action =
+                            RatingFragmentDirections.actionRatingFragmentToServiceFragment(rate, serviceData);
+                    navController.navigate(action);
+                });
             }
         });
     }
