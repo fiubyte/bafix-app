@@ -80,11 +80,11 @@
                 android:background="@color/background_color">
 
                 <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout"
                     app:tabGravity="start"
                     app:tabMode="scrollable"
                     android:layout_gravity="left"
                     android:layout_margin="0dp"
-                    android:id="@+id/contentTabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/background_color"
@@ -96,12 +96,14 @@
                     app:tabIndicatorFullWidth="false">
 
                     <com.google.android.material.tabs.TabItem
+                        android:id="@+id/information_tab"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Información">
                     </com.google.android.material.tabs.TabItem>
 
                     <com.google.android.material.tabs.TabItem
+                        android:id="@+id/opinions_tab"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Opiniones">
@@ -122,6 +124,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/information_layout"
         app:layout_constraintTop_toBottomOf="@id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -317,6 +320,13 @@
             android:progressDrawable="@drawable/rating_bar"
             android:rating="0"
             android:stepSize="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/opinions_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     </LinearLayout>
 

@@ -13,22 +13,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.entities.ServiceTab;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.ProvidersDataGenerator;
 import com.fiubyte.bafix.utils.SvgRatingBar;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ServiceFragment extends Fragment implements View.OnClickListener {
+    private ServiceTab currentTab = ServiceTab.INFORMATION;
+    private Map<ServiceTab, LinearLayout> tabs;
+    private LinearLayout informationLayout;
+    private LinearLayout opinionsLayout;
+
+    private TabLayout tabLayout;
     private DataViewModel dataViewModel;
     MaterialCardView providerCardView;
     ServiceData serviceData;
@@ -47,6 +60,17 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        informationLayout = view.findViewById(R.id.information_layout);
+        opinionsLayout = view.findViewById(R.id.opinions_layout);
+
+        setupTabLayout(view);
+
+        tabs = new HashMap<>();
+        tabs.put(ServiceTab.INFORMATION, informationLayout);
+        tabs.put(ServiceTab.OPINIONS, opinionsLayout);
+
+        updateCurrentTab();
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
@@ -84,6 +108,53 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
                 Navigation
                         .findNavController(view)
                         .navigate(action);
+            }
+        });
+    }
+
+    private void setupTabLayout(View view) {
+        tabLayout = view.findViewById(R.id.tab_layout);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getText().toString().contains("Información")) {
+                    onInformationTabClicked();
+                } else if (tab.getText().toString().contains("Opiniones")) {
+                    onOpinionsTabClicked();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+    }
+
+    private void onOpinionsTabClicked() {
+        Log.d("DEBUGGING", "opinions");
+
+        currentTab = ServiceTab.OPINIONS;
+        updateCurrentTab();
+    }
+
+    private void onInformationTabClicked() {
+        Log.d("DEBUGGING", "information");
+        currentTab = ServiceTab.INFORMATION;
+        updateCurrentTab();
+    }
+
+    private void updateCurrentTab() {
+        tabs.forEach((tabType, layout) -> {
+            if (tabType == currentTab) {
+                layout.setVisibility(View.VISIBLE);
+            } else {
+                layout.setVisibility(View.GONE);
             }
         });
     }
