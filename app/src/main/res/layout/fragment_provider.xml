@@ -87,7 +87,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/phone_icon"></ImageView>
+                    android:src="@drawable/phone_icon_selected"></ImageView>
 
                 <TextView
                     android:id="@+id/provider_phone"
@@ -96,7 +96,7 @@
                     android:layout_marginLeft="8dp"
                     android:fontFamily="@font/dm_sans_regular"
                     android:text="+5491140298321"
-                    android:textColor="@color/title_color"
+                    android:textColor="@color/selected_color"
                     android:textSize="15dp"></TextView>
 
             </LinearLayout>

@@ -1,5 +1,6 @@
 package com.fiubyte.bafix.fragments;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -47,7 +48,10 @@ public class ProviderFragment extends Fragment implements RecylcerViewInterface 
 
         ((TextView)view.findViewById(R.id.provider_name)).setText(providerData.getName());
         ((TextView)view.findViewById(R.id.max_distance)).setText("A " + providerData.getDistance() + " km");
-        ((TextView)view.findViewById(R.id.provider_phone)).setText(providerData.getPhone());
+
+        TextView providerPhone = view.findViewById(R.id.provider_phone);
+        providerPhone.setText(providerData.getPhone());
+        providerPhone.setPaintFlags(providerPhone.getPaintFlags() |  Paint.UNDERLINE_TEXT_FLAG);
 
         ImageView providerPhoto = view.findViewById(R.id.provider_picture);
         Picasso.with(this.getContext()).load(providerData.getProviderPhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
