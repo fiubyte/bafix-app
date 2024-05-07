@@ -8,17 +8,21 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.ProvidersDataGenerator;
+import com.fiubyte.bafix.utils.SvgRatingBar;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
@@ -29,6 +33,8 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
     MaterialCardView providerCardView;
     ServiceData serviceData;
     ImageView backButton;
+
+    SvgRatingBar ratingBar;
 
     @Override
     public View onCreateView(
@@ -44,10 +50,12 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
-        serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
+        if(ServiceFragmentArgs.fromBundle(getArguments()).getServiceData() != null){
+            serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
+        }
 
         ImageView providerPhoto = view.findViewById(R.id.provider_picture);
-        Picasso.with(this.getContext()).load(serviceData.getProviderPhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
+        Picasso.with(this.getContext()).load(serviceData.getServicePhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
 
         ((TextView)view.findViewById(R.id.service_title)).setText(serviceData.getTitle());
         ((TextView)view.findViewById(R.id.service_description)).setText(serviceData.getDescription());
@@ -63,6 +71,21 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
         backButton = view.findViewById(R.id.back_button);
 
         backButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
+
+        ratingBar = view.findViewById(R.id.rating_bar);
+
+        ratingBar.setRating(ServiceFragmentArgs.fromBundle(getArguments()).getRating());
+        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
+            @Override
+            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
+                ServiceFragmentDirections.ActionServiceFragmentToRatingFragment action =
+                        ServiceFragmentDirections.actionServiceFragmentToRatingFragment((int) v, serviceData);
+
+                Navigation
+                        .findNavController(view)
+                        .navigate(action);
+            }
+        });
     }
 
     @Override

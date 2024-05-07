@@ -107,7 +107,7 @@ public class FiltersFragment extends Fragment {
 
         cancelButton.setOnClickListener(v-> {
             clearFilters();
-            Navigation.findNavController(requireView()).navigate(R.id.action_filtersFragment_to_serviceFinderFragment);
+            Navigation.findNavController(view).navigate(R.id.action_filtersFragment_to_serviceFinderFragment);
         });
 
         clearFiltersButton.setOnClickListener(v-> {
@@ -262,7 +262,7 @@ public class FiltersFragment extends Fragment {
         Log.d("BUTTON", "Updated filters: " + filters);
 
         retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()), filters,
-                         dataViewModel.getCurrentLocation().getValue());
+                         dataViewModel.getCurrentLocation().getValue(), view);
     }
 
     private void deselectButton() {
@@ -300,7 +300,7 @@ public class FiltersFragment extends Fragment {
     }
 
     private void retrieveServices(String token, Map<String, String> filters,
-                                  Map<String, Double> userLocation) throws UnsupportedEncodingException {
+                                  Map<String, Double> userLocation, View view) throws UnsupportedEncodingException {
         ServicesListManager.retrieveServices(token, filters, userLocation,
                                              new ServicesListManager.ServicesListCallback() {
                                                  @Override
@@ -308,7 +308,7 @@ public class FiltersFragment extends Fragment {
                                                      getActivity().runOnUiThread(() -> {
                                                          try {
                                                              dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
-                                                             Navigation.findNavController(requireView()).navigate(R.id.action_filtersFragment_to_serviceFinderFragment);
+                                                             Navigation.findNavController(view).navigate(R.id.action_filtersFragment_to_serviceFinderFragment);
                                                          } catch (JSONException e) {
                                                              throw new RuntimeException(e);
                                                          } catch (IOException e) {
@@ -321,7 +321,7 @@ public class FiltersFragment extends Fragment {
                                                  public void onError() {
                                                      Log.d("BACK", "caido filters");
                                                      dataViewModel.isBackendDown().postValue(true);
-                                                     requireActivity().runOnUiThread(() -> Navigation.findNavController(requireView()).navigate(R.id.action_filtersFragment_to_serviceFinderFragment));
+                                                     requireActivity().runOnUiThread(() -> Navigation.findNavController(view).navigate(R.id.action_filtersFragment_to_serviceFinderFragment));
                                                  }
                                              }
                                             );
