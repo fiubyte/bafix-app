@@ -1,6 +1,10 @@
 package com.fiubyte.bafix.fragments;
 
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Paint;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +14,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +37,8 @@ public class ProviderFragment extends Fragment implements RecylcerViewInterface 
 
     private ImageView backButton;
 
+    private static final String WHATSAPP_PACKAGE_NAME = "com.whatsapp";
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -53,6 +60,10 @@ public class ProviderFragment extends Fragment implements RecylcerViewInterface 
         providerPhone.setText(providerData.getPhone());
         providerPhone.setPaintFlags(providerPhone.getPaintFlags() |  Paint.UNDERLINE_TEXT_FLAG);
 
+        providerPhone.setOnClickListener(v -> {
+            onProviderPhoneClicked(v);
+        });
+
         ImageView providerPhoto = view.findViewById(R.id.provider_picture);
         Picasso.with(this.getContext()).load(providerData.getProviderPhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
 
@@ -68,6 +79,36 @@ public class ProviderFragment extends Fragment implements RecylcerViewInterface 
                         .popBackStack();
             }
         });
+    }
+
+    private void onProviderPhoneClicked(View v) {
+        if (isAppInstalled(WHATSAPP_PACKAGE_NAME)) {
+            String text = "¡Hola "
+                        + providerData.getName()
+                        + "! Me interesa uno de los servicios que ofreces en BAFIX";
+            Uri uri = Uri.parse("https://api.whatsapp.com/send?phone="
+                                        + providerData.getPhone()
+                                        + "&text="
+                                        + text);
+            Intent whatsappIntent = new Intent(Intent.ACTION_VIEW, uri);
+            startActivity(whatsappIntent);
+        } else {
+            Intent googlePlayStoreIntent = new
+                    Intent(Intent.ACTION_VIEW,
+                           Uri.parse("https://play.google.com/store/apps/details?id="
+                                             + WHATSAPP_PACKAGE_NAME));
+            startActivity(googlePlayStoreIntent);
+        }
+    }
+
+    private boolean isAppInstalled(String packageName) {
+        try {
+            getContext().getPackageManager().getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+            return true;
+        }
+        catch (PackageManager.NameNotFoundException ignored) {
+            return false;
+        }
     }
 
     private void initializeListView(ArrayList<ServiceData> services) {
