@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.entities.ServiceTab;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.SvgRatingBar;
 import com.google.android.material.card.MaterialCardView;
@@ -50,6 +51,8 @@ public class RatingFragment extends Fragment {
     private int serviceId;
     private String postServiceRateURL;
 
+    private ServiceTab currentServicesTab;
+
     private ServiceData serviceData;
 
     @Override
@@ -71,6 +74,7 @@ public class RatingFragment extends Fragment {
 
         int rating = RatingFragmentArgs.fromBundle(getArguments()).getRating();
         ratingBar.setRating(rating);
+        currentServicesTab = RatingFragmentArgs.fromBundle(getArguments()).getCurrentServicesTab();
 
         serviceData = RatingFragmentArgs.fromBundle(getArguments()).getServiceData();
         serviceId = serviceData.getServiceId();
@@ -83,7 +87,7 @@ public class RatingFragment extends Fragment {
             public void onClick(View view) {
                 NavController navController = Navigation.findNavController(view);
                 RatingFragmentDirections.ActionRatingFragmentToServiceFragment action =
-                        RatingFragmentDirections.actionRatingFragmentToServiceFragment(0, serviceData);
+                        RatingFragmentDirections.actionRatingFragmentToServiceFragment(0, serviceData, currentServicesTab);
                 navController.navigate(action);
             }
         });
@@ -145,7 +149,7 @@ public class RatingFragment extends Fragment {
                     Toast.makeText(getActivity(), "¡Calificación enviada!", Toast.LENGTH_SHORT).show();
                     NavController navController = Navigation.findNavController(view);
                     RatingFragmentDirections.ActionRatingFragmentToServiceFragment action =
-                            RatingFragmentDirections.actionRatingFragmentToServiceFragment(rate, serviceData);
+                            RatingFragmentDirections.actionRatingFragmentToServiceFragment(rate, serviceData, currentServicesTab);
                     navController.navigate(action);
                 });
             }

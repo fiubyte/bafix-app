@@ -96,6 +96,9 @@
         <argument
             android:name="serviceData"
             app:argType="com.fiubyte.bafix.entities.ServiceData" />
+        <argument
+            android:name="currentTab"
+            app:argType="com.fiubyte.bafix.entities.ServiceTab" />
     </fragment>
     <fragment
         android:id="@+id/ratingFragment"
@@ -112,5 +115,8 @@
             android:id="@+id/action_ratingFragment_to_serviceFragment"
             app:destination="@id/serviceFragment"
             app:popUpTo="@id/serviceFinderFragment"/>
+        <argument
+            android:name="currentServicesTab"
+            app:argType="com.fiubyte.bafix.entities.ServiceTab" />
     </fragment>
 </navigation>

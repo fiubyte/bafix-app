@@ -68,25 +68,26 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if(ServiceFragmentArgs.fromBundle(getArguments()).getServiceData() != null){
+            serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
+            currentTab = ServiceFragmentArgs.fromBundle(getArguments()).getCurrentTab();
+            Log.d("DEBUGGING", "currentTab: " + currentTab);
+        }
+
         informationLayout = view.findViewById(R.id.information_layout);
         opinionsLayout = view.findViewById(R.id.opinions_layout);
-
-        setupTabLayout(view);
 
         tabs = new HashMap<>();
         tabs.put(ServiceTab.INFORMATION, informationLayout);
         tabs.put(ServiceTab.OPINIONS, opinionsLayout);
 
+        setupTabLayout(view);
         updateCurrentTab();
 
         opinionsRecylerView = view.findViewById(R.id.opinions_recylcer_view);
         setupOpinionsRecylcerView();
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
-
-        if(ServiceFragmentArgs.fromBundle(getArguments()).getServiceData() != null){
-            serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
-        }
 
         ImageView providerPhoto = view.findViewById(R.id.provider_picture);
         Picasso.with(this.getContext()).load(serviceData.getServicePhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
@@ -109,17 +110,16 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         ratingBar = view.findViewById(R.id.rating_bar);
 
         ratingBar.setRating(ServiceFragmentArgs.fromBundle(getArguments()).getRating());
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                handleOnRatingChanged(view, v);
+        ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+            if (fromUser) {
+                handleOnRatingChanged(view, rating);
             }
         });
     }
 
     private void handleOnRatingChanged(View view, float v) {
         ServiceFragmentDirections.ActionServiceFragmentToRatingFragment action =
-                ServiceFragmentDirections.actionServiceFragmentToRatingFragment((int) v, serviceData);
+                ServiceFragmentDirections.actionServiceFragmentToRatingFragment((int) v, serviceData, currentTab);
 
         Navigation
                 .findNavController(view)
@@ -167,11 +167,11 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
 
             }
         });
+
+        tabLayout.getTabAt(currentTab.ordinal()).select();
     }
 
     private void onOpinionsTabClicked() {
-        Log.d("DEBUGGING", "opinions");
-
         currentTab = ServiceTab.OPINIONS;
         updateCurrentTab();
     }
@@ -183,6 +183,8 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     }
 
     private void updateCurrentTab() {
+        Log.d("DEBUGGING", "currentTab: " + currentTab);
+
         tabs.forEach((tabType, layout) -> {
             if (tabType == currentTab) {
                 layout.setVisibility(View.VISIBLE);

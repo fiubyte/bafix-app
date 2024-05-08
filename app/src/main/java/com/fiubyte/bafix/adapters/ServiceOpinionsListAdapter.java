@@ -79,9 +79,9 @@ public class ServiceOpinionsListAdapter extends RecyclerView.Adapter<RecyclerVie
         void bind(float currentUserRating) {
             ratingBar.setRating(currentUserRating);
 
-            ratingBar.setOnRatingBarChangeListener((ratingBar, v, b) -> {
-                if (ratingBarInterface != null) {
-                    ratingBarInterface.onBarClicked((int) v);
+            ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+                if (ratingBarInterface != null && fromUser) {
+                    ratingBarInterface.onBarClicked((int) rating);
                 }
             });
         }
