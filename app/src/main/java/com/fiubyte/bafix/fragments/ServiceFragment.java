@@ -40,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +57,13 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     ImageView backButton;
     SvgRatingBar ratingBar;
 
+    ArrayList<ServiceOpinionData> opinions = new ArrayList<>(Arrays.asList(
+            new ServiceOpinionData("Micaela Olivera", 5, "Excelente servicio! Julia es una divina. Las uñas me duraron 2 semanas enteras. Lo recomiendo!"),
+            new ServiceOpinionData("Daniele Leandro", 4, "No tenian el color de esmalte que queria pero me encanto la atencion de Julia y el resultado fue duradero y mejor de lo que esperaba."),
+            new ServiceOpinionData("Clara Vanier", 5, "Servicio super personalizado. Julia me entendió a la perfección lo que queria y es super atenta, además de muy bien capacitada. Trabaja con materiales de calidad."),
+            new ServiceOpinionData("Camila Quiroga", 2, "Creo que podrian hacer mejor su trabajo. Me atendieron 1 hora mas tarde de lo acordado y para mi la puntualidad es importante."),
+            new ServiceOpinionData("Camila Quiroga", 2, "Creo que podrian hacer mejor su trabajo. Me atendieron 1 hora mas tarde de lo acordado y para mi la puntualidad es importante.")
+                                                                          ));
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -130,13 +138,6 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         opinionsRecylerView.setLayoutManager(new LinearLayoutManager(requireContext(),
                                                               LinearLayoutManager.VERTICAL, false
         ));
-        ArrayList<ServiceOpinionData> opinions = new ArrayList<>();
-        opinions.add(new ServiceOpinionData("Micaela Olivera", 5, "Excelente servicio! Julia es una divina. Las uñas me duraron 2 semanas enteras. Lo recomiendo!"));
-        opinions.add(new ServiceOpinionData("Daniele Leandro", 4, "No tenian el color de esmalte que queria pero me encanto la atencion de Julia y el resultado fue duradero y mejor de lo que esperaba."));
-        opinions.add(new ServiceOpinionData("Clara Vanier", 5, "Servicio super personalizado. Julia me entendió a la perfección lo que queria y es super atenta, además de muy bien capacitada. Trabaja con materiales de calidad."));
-        opinions.add(new ServiceOpinionData("Camila Quiroga", 2, "Creo que podrian hacer mejor su trabajo. Me atendieron 1 hora mas tarde de lo acordado y para mi la puntualidad es importante."));
-        opinions.add(new ServiceOpinionData("Camila Quiroga", 2, "Creo que podrian hacer mejor su trabajo. Me atendieron 1 hora mas tarde de lo acordado y para mi la puntualidad es importante."));
-
         ServiceOpinionsListAdapter adapter = new ServiceOpinionsListAdapter(
                 requireContext(),
                 opinions,
@@ -147,6 +148,10 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
 
     private void setupTabLayout(View view) {
         tabLayout = view.findViewById(R.id.tab_layout);
+
+        if(opinions.isEmpty()) {
+            tabLayout.removeTab(tabLayout.getTabAt(ServiceTab.OPINIONS.ordinal()));
+        }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
