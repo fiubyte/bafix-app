@@ -49,17 +49,22 @@ public class ServiceOpinionsListAdapter extends RecyclerView.Adapter<RecyclerVie
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        final ServiceOpinionData opinionListItem = opinions.get(position);
         if (holder.getItemViewType() == VIEW_TYPE_FIRST_ITEM) {
             ((FirstItemViewHolder) holder).bind(currentUserRating);
         } else {
+            if (position == 1) {
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getRootView().getLayoutParams();
+                layoutParams.topMargin = -70;
+                holder.itemView.getRootView().setLayoutParams(layoutParams);
+            }
+            final ServiceOpinionData opinionListItem = opinions.get(position - 1);
             ((NormalItemViewHolder) holder).bind(opinionListItem);
         }
     }
 
     @Override
     public int getItemCount() {
-        return opinions.size();
+        return opinions.size() + 1;
     }
 
     @Override

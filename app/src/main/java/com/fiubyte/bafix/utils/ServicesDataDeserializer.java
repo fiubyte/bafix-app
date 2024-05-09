@@ -3,6 +3,7 @@ package com.fiubyte.bafix.utils;
 import android.util.Log;
 
 import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.entities.ServiceOpinionData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,9 +45,28 @@ public class ServicesDataDeserializer {
             String description = jsonObject.getString("description");
             String availabilityDays = ServicesDataDeserializer.formatAvailableDays(jsonObject.getString("availability_days"));
             String availabilityTime = jsonObject.getString("availability_time_start") + " - " + jsonObject.getString("availability_time_end");
+            int ownRating = jsonObject.optInt("own_rate", 0);
 
-            services.add(new ServiceData(id, title, userPhotoURL, servicePhotoURL, maxDistance, providerName, providerId,
-                                         isAvailable, new GeoPoint(latitude, longitude), providerPhone, description, availabilityDays, availabilityTime));
+            JSONArray rates = jsonObject.getJSONArray("rates");
+            ArrayList<ServiceOpinionData> opinions = new ArrayList<>();
+
+            if (rates.length() != 0) {
+                for (int j = 0; j < rates.length(); j++) {
+                    JSONObject rate = rates.getJSONObject(j);
+
+                    String userName = rate.getString("name") + " " + rate.getString("surname");
+                    int userRating = rate.getInt("rate");
+                    String userOpinion = rate.getString("message");
+
+                    opinions.add(new ServiceOpinionData(userName, userRating, userOpinion));
+                }
+            }
+
+            services.add(new ServiceData(id, title, userPhotoURL, servicePhotoURL, maxDistance,
+                                         providerName, providerId, isAvailable,
+                                         new GeoPoint(latitude, longitude), providerPhone,
+                                         description, availabilityDays, availabilityTime,
+                                         ownRating, opinions));
         }
         return services;
     }

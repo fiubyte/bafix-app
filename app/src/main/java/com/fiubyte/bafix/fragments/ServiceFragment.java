@@ -57,13 +57,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     ImageView backButton;
     SvgRatingBar ratingBar;
 
-    ArrayList<ServiceOpinionData> opinions = new ArrayList<>(Arrays.asList(
-            new ServiceOpinionData("Micaela Olivera", 5, "Excelente servicio! Julia es una divina. Las uñas me duraron 2 semanas enteras. Lo recomiendo!"),
-            new ServiceOpinionData("Daniele Leandro", 4, "No tenian el color de esmalte que queria pero me encanto la atencion de Julia y el resultado fue duradero y mejor de lo que esperaba."),
-            new ServiceOpinionData("Clara Vanier", 5, "Servicio super personalizado. Julia me entendió a la perfección lo que queria y es super atenta, además de muy bien capacitada. Trabaja con materiales de calidad."),
-            new ServiceOpinionData("Camila Quiroga", 2, "Creo que podrian hacer mejor su trabajo. Me atendieron 1 hora mas tarde de lo acordado y para mi la puntualidad es importante."),
-            new ServiceOpinionData("Camila Quiroga", 2, "Creo que podrian hacer mejor su trabajo. Me atendieron 1 hora mas tarde de lo acordado y para mi la puntualidad es importante.")
-                                                                          ));
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
@@ -117,7 +111,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
 
         ratingBar = view.findViewById(R.id.rating_bar);
 
-        ratingBar.setRating(ServiceFragmentArgs.fromBundle(getArguments()).getRating());
+        ratingBar.setRating(serviceData.getOwnRating());
         ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
             if (fromUser) {
                 handleOnRatingChanged(view, rating);
@@ -140,8 +134,8 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         ));
         ServiceOpinionsListAdapter adapter = new ServiceOpinionsListAdapter(
                 requireContext(),
-                opinions,
-                ServiceFragmentArgs.fromBundle(getArguments()).getRating(), this
+                serviceData.getOpinions(),
+                serviceData.getOwnRating(), this
         );
         opinionsRecylerView.setAdapter(adapter);
     }
@@ -149,7 +143,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     private void setupTabLayout(View view) {
         tabLayout = view.findViewById(R.id.tab_layout);
 
-        if(opinions.isEmpty()) {
+        if(serviceData.getOpinions().isEmpty()) {
             tabLayout.removeTab(tabLayout.getTabAt(ServiceTab.OPINIONS.ordinal()));
         }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {

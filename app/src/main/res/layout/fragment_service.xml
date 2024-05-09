@@ -325,7 +325,8 @@
             android:id="@+id/opinions_recylcer_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layoutAnimation="@anim/layout_animation_fall_down">
+            android:layoutAnimation="@anim/layout_animation_fall_down"
+            android:clipToPadding="false">
 
         </androidx.recyclerview.widget.RecyclerView>
 

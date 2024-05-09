@@ -20,10 +20,13 @@ public class ServiceData implements Serializable {
     String description;
     String availabilityDays;
     String availabilityTime;
+    int ownRating;
+    ArrayList<ServiceOpinionData> opinions;
     public ServiceData(int id,
             String title, String providerPhotoURL, String servicePhotoURL, double maxDistance,
             String providerName, int providerId, boolean available, GeoPoint geoPoint, String providerPhone,
-            String description, String availabilityDays, String availabilityTime
+            String description, String availabilityDays, String availabilityTime, int ownRating,
+                       ArrayList<ServiceOpinionData> opinions
                       ) {
         this.id = id;
         this.title = title;
@@ -38,6 +41,8 @@ public class ServiceData implements Serializable {
         this.description = description;
         this.availabilityDays = availabilityDays;
         this.availabilityTime = availabilityTime;
+        this.ownRating = ownRating;
+        this.opinions = opinions;
     }
 
     public String getProviderPhotoURL() {
@@ -85,6 +90,14 @@ public class ServiceData implements Serializable {
         return availabilityTime;
     }
 
+    public int getOwnRating() {
+        return ownRating;
+    }
+
+    public ArrayList<ServiceOpinionData> getOpinions() {
+        return opinions;
+    }
+
     public int getServiceId() { return id; }
     public void writeToObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeObject(id);
@@ -100,6 +113,8 @@ public class ServiceData implements Serializable {
         out.writeObject(description);
         out.writeObject(availabilityDays);
         out.writeObject(availabilityTime);
+        out.writeInt(ownRating);
+        out.writeObject(opinions);
     }
 
     @SuppressWarnings("unchecked")
@@ -117,9 +132,11 @@ public class ServiceData implements Serializable {
         String description = (String) in.readObject();
         String availabilityDays = (String) in.readObject();
         String availabilityTime = (String) in.readObject();
+        int ownRating = in.readInt();
+        ArrayList<ServiceOpinionData> opinions = (ArrayList<ServiceOpinionData>) in.readObject();
 
         return new ServiceData(id, title, providerPhotoURL, servicePhotoURL, maxDistance, providerName,
                                providerId, available, geoPoint, providerPhone, description,
-                               availabilityDays, availabilityTime);
+                               availabilityDays, availabilityTime, ownRating, opinions);
     }
 }
