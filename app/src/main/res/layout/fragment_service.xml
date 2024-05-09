@@ -312,6 +312,20 @@
             android:rating="0"
             android:stepSize="1" />
 
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/pending_approval_text"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/dm_sans_regular"
+            android:textColor="@color/subtitle_color"
+            android:textSize="15sp"
+            android:text="Su calificación esta pendiente de aprobación.">
+
+        </TextView>
+
     </LinearLayout>
 
     <LinearLayout

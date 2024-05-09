@@ -57,6 +57,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     ImageView backButton;
     SvgRatingBar ratingBar;
 
+    TextView pendingApprovalText;
 
     @Override
     public View onCreateView(
@@ -109,14 +110,31 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
 
         backButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
 
+        pendingApprovalText = view.findViewById(R.id.pending_approval_text);
         ratingBar = view.findViewById(R.id.rating_bar);
 
-        ratingBar.setRating(serviceData.getOwnRating());
+        setCurrentRatingView();
+
+        if(serviceData.getOwnRating() == null) {
+            ratingBar.setRating(0);
+        } else {
+            ratingBar.setRating(serviceData.getOwnRating());
+        }
         ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
             if (fromUser) {
                 handleOnRatingChanged(view, rating);
             }
         });
+    }
+
+    private void setCurrentRatingView() {
+        if(serviceData.getOwnRatingApproved() || serviceData.getOwnRating() == null) {
+            ratingBar.setVisibility(View.VISIBLE);
+            pendingApprovalText.setVisibility(View.GONE);
+        } else {
+            ratingBar.setVisibility(View.GONE);
+            pendingApprovalText.setVisibility(View.VISIBLE);
+        }
     }
 
     private void handleOnRatingChanged(View view, float v) {
@@ -135,7 +153,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         ServiceOpinionsListAdapter adapter = new ServiceOpinionsListAdapter(
                 requireContext(),
                 serviceData.getOpinions(),
-                serviceData.getOwnRating(), this
+                serviceData.getOwnRating(), serviceData.getOwnRatingApproved(), this
         );
         opinionsRecylerView.setAdapter(adapter);
     }

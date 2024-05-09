@@ -45,7 +45,14 @@ public class ServicesDataDeserializer {
             String description = jsonObject.getString("description");
             String availabilityDays = ServicesDataDeserializer.formatAvailableDays(jsonObject.getString("availability_days"));
             String availabilityTime = jsonObject.getString("availability_time_start") + " - " + jsonObject.getString("availability_time_end");
-            int ownRating = jsonObject.optInt("own_rate", 0);
+            Boolean ownRatingApproved = jsonObject.optBoolean("own_rate_approved");
+
+            Integer ownRating;
+            if (jsonObject.isNull("own_rate")) {
+                ownRating = null;
+            } else {
+                ownRating = jsonObject.optInt("own_rate");
+            }
 
             JSONArray rates = jsonObject.getJSONArray("rates");
             ArrayList<ServiceOpinionData> opinions = new ArrayList<>();
@@ -66,7 +73,7 @@ public class ServicesDataDeserializer {
                                          providerName, providerId, isAvailable,
                                          new GeoPoint(latitude, longitude), providerPhone,
                                          description, availabilityDays, availabilityTime,
-                                         ownRating, opinions));
+                                         ownRating, ownRatingApproved, opinions));
         }
         return services;
     }

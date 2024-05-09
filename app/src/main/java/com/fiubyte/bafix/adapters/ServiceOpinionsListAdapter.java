@@ -25,13 +25,17 @@ public class ServiceOpinionsListAdapter extends RecyclerView.Adapter<RecyclerVie
     private final RatingBarInterface ratingBarInterface;
     private Context context;
     private ArrayList<ServiceOpinionData> opinions;
-    private int currentUserRating;
+    private Integer currentUserRating;
+    private boolean userRatingApproved;
 
-    public ServiceOpinionsListAdapter(Context context, ArrayList<ServiceOpinionData> opinions, int currentUserRating, RatingBarInterface ratingBarInterface) {
+    public ServiceOpinionsListAdapter(Context context, ArrayList<ServiceOpinionData> opinions,
+                                      Integer currentUserRating, boolean userRatingApproved,
+                                      RatingBarInterface ratingBarInterface) {
         this.ratingBarInterface = ratingBarInterface;
         this.context = context;
         this.opinions = opinions;
         this.currentUserRating = currentUserRating;
+        this.userRatingApproved = userRatingApproved;
     }
 
     @NonNull
@@ -50,7 +54,7 @@ public class ServiceOpinionsListAdapter extends RecyclerView.Adapter<RecyclerVie
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         if (holder.getItemViewType() == VIEW_TYPE_FIRST_ITEM) {
-            ((FirstItemViewHolder) holder).bind(currentUserRating);
+            ((FirstItemViewHolder) holder).bind();
         } else {
             if (position == 1) {
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) holder.itemView.getRootView().getLayoutParams();
@@ -73,20 +77,33 @@ public class ServiceOpinionsListAdapter extends RecyclerView.Adapter<RecyclerVie
     }
 
     private class FirstItemViewHolder extends RecyclerView.ViewHolder {
-
+        TextView pendingApprovalText;
         SvgRatingBar ratingBar;
 
         FirstItemViewHolder(@NonNull View itemView, RatingBarInterface ratingBarInterface) {
             super(itemView);
             ratingBar = itemView.findViewById(R.id.rating_bar);
+            pendingApprovalText = itemView.findViewById(R.id.pending_approval_text);
         }
 
-        void bind(float currentUserRating) {
-            ratingBar.setRating(currentUserRating);
+        void bind() {
+            if(userRatingApproved || currentUserRating == null) {
+                ratingBar.setVisibility(View.VISIBLE);
+                pendingApprovalText.setVisibility(View.GONE);
+            } else {
+                ratingBar.setVisibility(View.GONE);
+                pendingApprovalText.setVisibility(View.VISIBLE);
+            }
 
-            ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+            if (currentUserRating == null) {
+                ratingBar.setRating(0);
+            } else {
+                ratingBar.setRating(currentUserRating);
+            }
+
+            ratingBar.setOnRatingBarChangeListener((ratingBar, rate, fromUser) -> {
                 if (ratingBarInterface != null && fromUser) {
-                    ratingBarInterface.onBarClicked((int) rating);
+                    ratingBarInterface.onBarClicked((int) rate);
                 }
             });
         }
