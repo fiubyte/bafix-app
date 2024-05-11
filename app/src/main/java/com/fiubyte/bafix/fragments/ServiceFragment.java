@@ -21,13 +21,21 @@ import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.models.FiltersViewModel;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.ProvidersDataGenerator;
-import com.fiubyte.bafix.utils.ServicesListManager;
-import com.fiubyte.bafix.utils.ServicesListManager.ServiceRateCallback;
+import com.fiubyte.bafix.utils.ServicesAPIManager;
+import com.fiubyte.bafix.utils.ServicesAPIManager.ServiceRateCallback;
+import com.fiubyte.bafix.utils.ServicesDataDeserializer;
 import com.fiubyte.bafix.utils.SvgRatingBar;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 public class ServiceFragment extends Fragment implements View.OnClickListener {
     private DataViewModel dataViewModel;
@@ -35,8 +43,8 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
     ServiceData serviceData;
     ImageView backButton;
     ImageView favoriteButton;
-
     SvgRatingBar ratingBar;
+    FiltersViewModel filtersViewModel;
 
     @Override
     public View onCreateView(
@@ -51,6 +59,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+        filtersViewModel = new ViewModelProvider(requireActivity()).get(FiltersViewModel.class);
 
         if (ServiceFragmentArgs.fromBundle(getArguments()).getServiceData() != null) {
             serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
@@ -71,7 +80,13 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
         providerCardView.setOnClickListener(this);
 
         backButton = view.findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> Navigation.findNavController(v).popBackStack());
+        backButton.setOnClickListener(v -> {
+            try {
+                handleOnBackButtonClicked(v);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         ratingBar = view.findViewById(R.id.rating_bar);
 
@@ -89,43 +104,16 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
         });
 
         favoriteButton = view.findViewById(R.id.favorite_button);
-        if (Boolean.TRUE.equals(dataViewModel.isServiceFaved().getValue())) {
-            favService();
-        }
+        updateFavoriteIconUI();
+
         favoriteButton.setOnClickListener(favButtonView -> {
-            String token = SharedPreferencesManager.getStoredToken(requireActivity());
-            if (Boolean.FALSE.equals(dataViewModel.isServiceFaved().getValue())) {
-                ServicesListManager.favService(token, serviceData.getServiceId(), new ServiceRateCallback() {
-                    @Override
-                    public void onSuccess(String response) {
-                        Log.d("DEBUGGING", "Fav service was successful");
-                        favService();
-                        showFavSuccess();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Log.e("ERROR", "Fav service was unsuccessful");
-                        showFavError();
-                    }
-                });
-            } else {
-                ServicesListManager.unfavService(token, serviceData.getServiceId(), new ServiceRateCallback() {
-                    @Override
-                    public void onSuccess(String response) {
-                        Log.d("DEBUGGING", "Unfav service was successful");
-                        unfavService();
-                        showUnfavSuccess();
-                    }
-
-                    @Override
-                    public void onError() {
-                        Log.e("ERROR", "Unfav service was unsuccessful");
-                        showFavError();
-                    }
-                });
-            }
+            onFavoriteButtonClicked();
         });
+    }
+
+    private void handleOnBackButtonClicked(View view) throws UnsupportedEncodingException {
+        retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()), filtersViewModel.getFilters().getValue(),
+                         dataViewModel.getCurrentLocation().getValue(), view);
     }
 
     @Override
@@ -147,16 +135,56 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
                 .navigate(action);
     }
 
+    private void updateFavoriteIconUI() {
+        if (isServiceFaved()) {
+            favoriteButton.setImageResource(R.drawable.filled_heart);
+        } else {
+            favoriteButton.setImageResource(R.drawable.empty_heart);
+        }
+    }
+
     private void favService() {
-        favoriteButton.setImageResource(R.drawable.favorite);
-        dataViewModel.isServiceFaved().postValue(true);
+        favoriteButton.setImageResource(R.drawable.filled_heart);
     }
 
     private void unfavService() {
-        favoriteButton.setImageResource(R.drawable.not_favorite);
-        dataViewModel.isServiceFaved().postValue(false);
+        favoriteButton.setImageResource(R.drawable.empty_heart);
     }
 
+    private void onFavoriteButtonClicked() {
+        String token = SharedPreferencesManager.getStoredToken(requireActivity());
+        if (!isServiceFaved()) {
+            ServicesAPIManager.favService(token, serviceData.getServiceId(), new ServiceRateCallback() {
+                @Override
+                public void onSuccess(String response) {
+                    Log.d("DEBUGGING", "Fav service was successful");
+                    favService();
+                    showFavSuccess();
+                }
+
+                @Override
+                public void onError() {
+                    Log.e("ERROR", "Fav service was unsuccessful");
+                    showFavError();
+                }
+            });
+        } else {
+            ServicesAPIManager.unfavService(token, serviceData.getServiceId(), new ServiceRateCallback() {
+                @Override
+                public void onSuccess(String response) {
+                    Log.d("DEBUGGING", "Unfav service was successful");
+                    unfavService();
+                    showUnfavSuccess();
+                }
+
+                @Override
+                public void onError() {
+                    Log.e("ERROR", "Unfav service was unsuccessful");
+                    showFavError();
+                }
+            });
+        }
+    }
     private void showFavError() {
         getActivity().runOnUiThread(() -> Toast.makeText(getActivity(),
                         "Ha ocurrido un error.\nPor favor, intenta de nuevo más tarde.",
@@ -176,5 +204,37 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
                         "¡Quitado de favoritos con éxito!",
                         Toast.LENGTH_SHORT)
                 .show());
+    }
+
+    private boolean isServiceFaved() {
+        return serviceData.isServiceFaved();
+    }
+
+    private void retrieveServices(String token, Map<String, String> filters,
+                                  Map<String, Double> userLocation, View view) throws UnsupportedEncodingException {
+        ServicesAPIManager.retrieveServices(token, filters, userLocation,
+                                            new ServicesAPIManager.ServicesListCallback() {
+                                                @Override
+                                                public void onServicesListReceived(String servicesList) {
+                                                    getActivity().runOnUiThread(() -> {
+                                                        try {
+                                                            dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                                                            Navigation.findNavController(view).popBackStack();
+                                                        } catch (JSONException e) {
+                                                            throw new RuntimeException(e);
+                                                        } catch (IOException e) {
+                                                            throw new RuntimeException(e);
+                                                        }
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onError() {
+                                                    Log.d("BACK", "caido filters");
+                                                    dataViewModel.isBackendDown().postValue(true);
+                                                    requireActivity().runOnUiThread(() -> Navigation.findNavController(view).navigate(R.id.action_filtersFragment_to_serviceFinderFragment));
+                                                }
+                                            }
+                                           );
     }
 }

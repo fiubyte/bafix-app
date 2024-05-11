@@ -23,7 +23,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class ServicesListManager {
+public class ServicesAPIManager {
     private static OkHttpClient client = new OkHttpClient();
     private static final String getServicesURL = "https://bafix-api.onrender.com/services/filter/";
     private static final String FAV_SERVICE_URL = "https://bafix-api.onrender.com/services/%s/fav";

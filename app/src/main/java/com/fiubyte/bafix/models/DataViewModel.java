@@ -38,13 +38,6 @@ public class DataViewModel extends ViewModel {
         return isBackendDown;
     }
 
-    public MutableLiveData<Boolean> isServiceFaved() {
-        if (serviceFaved == null) {
-            serviceFaved = new MutableLiveData<>(false);
-        }
-        return serviceFaved;
-    }
-
     public void updateServices(ArrayList<ServiceData> services) {
         Log.d("SERVICES", services.toString());
         getCurrentServices().setValue(services);

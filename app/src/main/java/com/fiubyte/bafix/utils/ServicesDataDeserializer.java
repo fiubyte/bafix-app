@@ -44,9 +44,13 @@ public class ServicesDataDeserializer {
             String description = jsonObject.getString("description");
             String availabilityDays = ServicesDataDeserializer.formatAvailableDays(jsonObject.getString("availability_days"));
             String availabilityTime = jsonObject.getString("availability_time_start") + " - " + jsonObject.getString("availability_time_end");
+            boolean isServiceFaved = jsonObject.getBoolean("faved_by_me");
 
-            services.add(new ServiceData(id, title, userPhotoURL, servicePhotoURL, maxDistance, providerName, providerId,
-                                         isAvailable, new GeoPoint(latitude, longitude), providerPhone, description, availabilityDays, availabilityTime));
+            services.add(new ServiceData(id, title, userPhotoURL, servicePhotoURL, maxDistance,
+                                         providerName, providerId,
+                                         isAvailable, new GeoPoint(latitude, longitude),
+                                         providerPhone, description, availabilityDays,
+                                         availabilityTime, isServiceFaved));
         }
         return services;
     }
