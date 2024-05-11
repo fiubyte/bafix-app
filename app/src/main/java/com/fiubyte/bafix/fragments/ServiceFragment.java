@@ -56,8 +56,10 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     ServiceData serviceData;
     ImageView backButton;
     SvgRatingBar ratingBar;
-
     TextView pendingApprovalText;
+    TextView ratingAverageText, ratingReviewsAmount, noOpinionsText;
+    RatingBar ratingAverageBar;
+    LinearLayout ratingLayout;
 
     @Override
     public View onCreateView(
@@ -125,6 +127,27 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
                 handleOnRatingChanged(view, rating);
             }
         });
+
+        setAverageRatingInfo(view);
+    }
+
+    private void setAverageRatingInfo(View view) {
+        ratingAverageText = view.findViewById(R.id.rating_average_text);
+        ratingReviewsAmount = view.findViewById(R.id.rating_reviews_amount);
+        ratingAverageBar = view.findViewById(R.id.rating_average_bar);
+        noOpinionsText = view.findViewById(R.id.no_opinions_text);
+        ratingLayout = view.findViewById(R.id.rating_layout);
+
+        if (serviceData.getRatingAverage() == null) {
+            noOpinionsText.setVisibility(View.VISIBLE);
+            ratingLayout.setVisibility(View.GONE);
+        } else {
+            noOpinionsText.setVisibility(View.GONE);
+            ratingLayout.setVisibility(View.VISIBLE);
+            ratingAverageText.setText(String.valueOf(serviceData.getRatingAverage()));
+            ratingAverageBar.setRating(serviceData.getRatingAverage().floatValue());
+            ratingReviewsAmount.setText("(" + serviceData.getOpinions().size() + ")");
+        }
     }
 
     private void setCurrentRatingView() {
