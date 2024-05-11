@@ -21,7 +21,7 @@ import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.fiubyte.bafix.utils.ServicesDataDeserializer;
-import com.fiubyte.bafix.utils.ServicesListManager;
+import com.fiubyte.bafix.utils.ServicesAPIManager;
 
 import org.json.JSONException;
 
@@ -123,8 +123,8 @@ public class SplashFragment extends Fragment {
         emptyFilters.put("distance", "99999999");
         emptyFilters.put("filterByAvailability", "true");
 
-        ServicesListManager.retrieveServices(token, emptyFilters, userLocation,
-                                             new ServicesListManager.ServicesListCallback() {
+        ServicesAPIManager.retrieveServices(token, emptyFilters, userLocation,
+                                            new ServicesAPIManager.ServicesListCallback() {
                                                  @Override
                                                  public void onServicesListReceived(String servicesList) {
                                                      getActivity().runOnUiThread(() -> {

@@ -14,8 +14,8 @@ public class DataViewModel extends ViewModel {
 
     private MutableLiveData<ArrayList<ServiceData>> services;
     private MutableLiveData<Map<String, Double>> location;
-
     private MutableLiveData<Boolean> isBackendDown;
+    private MutableLiveData<Boolean> serviceFaved;
 
     public MutableLiveData<ArrayList<ServiceData>> getCurrentServices() {
         if (services == null) {
