@@ -23,12 +23,13 @@ public class ServiceData implements Serializable {
     Integer ownRating;
     Boolean ownRatingApproved;
     ArrayList<ServiceOpinionData> opinions;
+    Double ratingAverage;
     public ServiceData(int id,
             String title, String providerPhotoURL, String servicePhotoURL, double maxDistance,
             String providerName, int providerId, boolean available, GeoPoint geoPoint, String providerPhone,
             String description, String availabilityDays, String availabilityTime, Integer ownRating,
                        Boolean ownRatingApproved,
-                       ArrayList<ServiceOpinionData> opinions
+                       ArrayList<ServiceOpinionData> opinions, Double ratingAverage
                       ) {
         this.id = id;
         this.title = title;
@@ -46,6 +47,7 @@ public class ServiceData implements Serializable {
         this.ownRating = ownRating;
         this.ownRatingApproved = ownRatingApproved;
         this.opinions = opinions;
+        this.ratingAverage = ratingAverage;
     }
 
     public String getProviderPhotoURL() {
@@ -106,6 +108,8 @@ public class ServiceData implements Serializable {
     }
 
     public int getServiceId() { return id; }
+
+    public Double getRatingAverage() { return ratingAverage; }
     public void writeToObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeObject(id);
         out.writeObject(title);
@@ -123,6 +127,7 @@ public class ServiceData implements Serializable {
         out.writeInt(ownRating);
         out.writeBoolean(ownRatingApproved);
         out.writeObject(opinions);
+        out.writeDouble(ratingAverage);
     }
 
     @SuppressWarnings("unchecked")
@@ -143,9 +148,11 @@ public class ServiceData implements Serializable {
         int ownRating = in.readInt();
         boolean ownRatingApproved = in.readBoolean();
         ArrayList<ServiceOpinionData> opinions = (ArrayList<ServiceOpinionData>) in.readObject();
+        Double ratingAverage = in.readDouble();
 
         return new ServiceData(id, title, providerPhotoURL, servicePhotoURL, maxDistance, providerName,
                                providerId, available, geoPoint, providerPhone, description,
-                               availabilityDays, availabilityTime, ownRating, ownRatingApproved, opinions);
+                               availabilityDays, availabilityTime, ownRating, ownRatingApproved, opinions,
+                               ratingAverage);
     }
 }

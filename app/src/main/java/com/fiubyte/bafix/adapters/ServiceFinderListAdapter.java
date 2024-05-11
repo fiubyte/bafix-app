@@ -1,10 +1,13 @@
 package com.fiubyte.bafix.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -52,6 +55,18 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
         holder.maxDistanceTextView.setText("A " + serviceListItem.getMaxDistance() + " km");
         holder.providerNameTextView.setText(serviceListItem.getProviderName());
 
+        Log.d("RATING", "average: " + serviceListItem.getRatingAverage());
+        if (serviceListItem.getRatingAverage() == null) {
+            holder.noOpinionsText.setVisibility(View.VISIBLE);
+            holder.ratingLayout.setVisibility(View.GONE);
+        } else {
+            holder.noOpinionsText.setVisibility(View.GONE);
+            holder.ratingLayout.setVisibility(View.VISIBLE);
+            holder.ratingAverageText.setText(String.valueOf(serviceListItem.getRatingAverage()));
+            holder.ratingAverageBar.setRating(serviceListItem.getRatingAverage().floatValue());
+            holder.ratingReviewsAmount.setText("(" + serviceListItem.getOpinions().size() + ")");
+        }
+
         if(serviceListItem.isAvailable()){
             holder.providerNameTextView.setVisibility(View.VISIBLE);
             holder.serviceNotAvailableLayout.setVisibility(View.GONE);
@@ -71,8 +86,11 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView serviceImageView;
         TextView providerNameTextView, maxDistanceTextView, serviceTitleTextView;
-
         ConstraintLayout serviceNotAvailableLayout;
+        TextView ratingAverageText, ratingReviewsAmount, noOpinionsText;
+        RatingBar ratingAverageBar;
+
+        LinearLayout ratingLayout;
 
         public MyViewHolder(@NonNull View itemView, RecylcerViewInterface recylcerViewInterface) {
             super(itemView);
@@ -82,6 +100,11 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
             maxDistanceTextView = itemView.findViewById(R.id.max_distance);
             providerNameTextView = itemView.findViewById(R.id.provider_name);
             serviceNotAvailableLayout = itemView.findViewById(R.id.service_not_available_layout);
+            ratingAverageText = itemView.findViewById(R.id.rating_average_text);
+            ratingReviewsAmount = itemView.findViewById(R.id.rating_reviews_amount);
+            ratingAverageBar = itemView.findViewById(R.id.rating_average_bar);
+            noOpinionsText = itemView.findViewById(R.id.no_opinions_text);
+            ratingLayout = itemView.findViewById(R.id.rating_layout);
 
             itemView.setOnClickListener(view -> {
                 if (recylcerViewInterface != null) {
