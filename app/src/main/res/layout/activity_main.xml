@@ -17,7 +17,9 @@
         app:titleTextAppearance="@style/ToolbarTheme"
         android:theme="@style/ToolbarTheme"/>
 
-    <androidx.fragment.app.FragmentContainerView
+    <!-- With FragmentContainerView breaks the deep linking-->
+    <!--    <androidx.fragment.app.FragmentContainerView-->
+    <fragment
         android:id="@+id/main_fragment_container_view"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"

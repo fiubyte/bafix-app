@@ -1,11 +1,14 @@
 package com.fiubyte.bafix.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 import java.io.Serializable;
 
-public class ServiceData implements Serializable {
+public class ServiceData implements Serializable, Parcelable {
     int id;
     String providerPhotoURL;
     String servicePhotoURL;
@@ -40,6 +43,58 @@ public class ServiceData implements Serializable {
         this.availabilityTime = availabilityTime;
         this.isServiceFaved = isServiceFaved;
     }
+
+    protected ServiceData(Parcel in) {
+        id = in.readInt();
+        providerPhotoURL = in.readString();
+        servicePhotoURL = in.readString();
+        title = in.readString();
+        maxDistance = in.readDouble();
+        providerName = in.readString();
+        providerId = in.readInt();
+        available = in.readByte() != 0;
+        geoPoint = in.readParcelable(GeoPoint.class.getClassLoader());
+        providerPhone = in.readString();
+        description = in.readString();
+        availabilityDays = in.readString();
+        availabilityTime = in.readString();
+        isServiceFaved = in.readByte() != 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(providerPhotoURL);
+        dest.writeString(servicePhotoURL);
+        dest.writeString(title);
+        dest.writeDouble(maxDistance);
+        dest.writeString(providerName);
+        dest.writeInt(providerId);
+        dest.writeByte((byte) (available ? 1 : 0));
+        dest.writeParcelable(geoPoint, flags);
+        dest.writeString(providerPhone);
+        dest.writeString(description);
+        dest.writeString(availabilityDays);
+        dest.writeString(availabilityTime);
+        dest.writeByte((byte) (isServiceFaved ? 1 : 0));
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<ServiceData> CREATOR = new Creator<ServiceData>() {
+        @Override
+        public ServiceData createFromParcel(Parcel in) {
+            return new ServiceData(in);
+        }
+
+        @Override
+        public ServiceData[] newArray(int size) {
+            return new ServiceData[size];
+        }
+    };
 
     public String getProviderPhotoURL() {
         return providerPhotoURL;
