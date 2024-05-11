@@ -145,10 +145,12 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
 
     private void favService() {
         favoriteButton.setImageResource(R.drawable.filled_heart);
+        serviceData.setIsServiceFaved(true);
     }
 
     private void unfavService() {
         favoriteButton.setImageResource(R.drawable.empty_heart);
+        serviceData.setIsServiceFaved(false);
     }
 
     private void onFavoriteButtonClicked() {
