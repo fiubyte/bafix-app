@@ -25,6 +25,7 @@ import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ProviderServiceListAdapter;
 import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.entities.ServiceTab;
 import com.fiubyte.bafix.utils.RecylcerViewInterface;
 import com.squareup.picasso.Picasso;
 
@@ -127,7 +128,7 @@ public class ProviderFragment extends Fragment implements RecylcerViewInterface 
     public void onItemClick(int position) {
 
         ProviderFragmentDirections.ActionProviderFragmentToServiceFragment action =
-                ProviderFragmentDirections.actionProviderFragmentToServiceFragment(0, providerData.getServicesOffered().get(position));
+                ProviderFragmentDirections.actionProviderFragmentToServiceFragment(0, providerData.getServicesOffered().get(position), ServiceTab.INFORMATION);
 
         Navigation
                 .findNavController(requireView())

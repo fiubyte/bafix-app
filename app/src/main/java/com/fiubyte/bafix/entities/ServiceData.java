@@ -4,6 +4,7 @@ import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class ServiceData implements Serializable {
     int id;
@@ -19,11 +20,19 @@ public class ServiceData implements Serializable {
     String description;
     String availabilityDays;
     String availabilityTime;
+    Integer ownRating;
+    Boolean ownRatingApproved;
+    ArrayList<ServiceOpinionData> opinions;
+    Double ratingAverage;
+
     boolean isServiceFaved;
+
     public ServiceData(int id,
             String title, String providerPhotoURL, String servicePhotoURL, double maxDistance,
             String providerName, int providerId, boolean available, GeoPoint geoPoint, String providerPhone,
-            String description, String availabilityDays, String availabilityTime, boolean isServiceFaved
+            String description, String availabilityDays, String availabilityTime, Integer ownRating,
+                       Boolean ownRatingApproved,
+                       ArrayList<ServiceOpinionData> opinions, Double ratingAverage, boolean isServiceFaved
                       ) {
         this.id = id;
         this.title = title;
@@ -38,6 +47,10 @@ public class ServiceData implements Serializable {
         this.description = description;
         this.availabilityDays = availabilityDays;
         this.availabilityTime = availabilityTime;
+        this.ownRating = ownRating;
+        this.ownRatingApproved = ownRatingApproved;
+        this.opinions = opinions;
+        this.ratingAverage = ratingAverage;
         this.isServiceFaved = isServiceFaved;
     }
 
@@ -86,9 +99,25 @@ public class ServiceData implements Serializable {
         return availabilityTime;
     }
 
+    public Integer getOwnRating() {
+        return ownRating;
+    }
+
+    public Boolean getOwnRatingApproved() {
+        return ownRatingApproved;
+    }
+
+    public ArrayList<ServiceOpinionData> getOpinions() {
+        return opinions;
+    }
+
     public int getServiceId() { return id; }
+
+    public Double getRatingAverage() { return ratingAverage; }
+
     public boolean isServiceFaved() { return isServiceFaved; }
     public void setIsServiceFaved(boolean isFaved) { isServiceFaved = isFaved; }
+
     public void writeToObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeObject(id);
         out.writeObject(title);
@@ -103,6 +132,10 @@ public class ServiceData implements Serializable {
         out.writeObject(description);
         out.writeObject(availabilityDays);
         out.writeObject(availabilityTime);
+        out.writeInt(ownRating);
+        out.writeBoolean(ownRatingApproved);
+        out.writeObject(opinions);
+        out.writeDouble(ratingAverage);
         out.writeBoolean(isServiceFaved);
     }
 
@@ -121,10 +154,15 @@ public class ServiceData implements Serializable {
         String description = (String) in.readObject();
         String availabilityDays = (String) in.readObject();
         String availabilityTime = (String) in.readObject();
+        int ownRating = in.readInt();
+        boolean ownRatingApproved = in.readBoolean();
+        ArrayList<ServiceOpinionData> opinions = (ArrayList<ServiceOpinionData>) in.readObject();
+        Double ratingAverage = in.readDouble();
         boolean isServiceFaved = in.readBoolean();
 
         return new ServiceData(id, title, providerPhotoURL, servicePhotoURL, maxDistance, providerName,
                                providerId, available, geoPoint, providerPhone, description,
-                               availabilityDays, availabilityTime, isServiceFaved);
+                               availabilityDays, availabilityTime, ownRating, ownRatingApproved, opinions,
+                               ratingAverage, isServiceFaved);
     }
 }

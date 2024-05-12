@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -50,6 +52,17 @@ public class ProviderServiceListAdapter extends RecyclerView.Adapter<ProviderSer
 
         holder.serviceTitleTextView.setText(serviceListItem.getTitle());
 
+        if (serviceListItem.getRatingAverage() == null) {
+            holder.noOpinionsText.setVisibility(View.VISIBLE);
+            holder.ratingLayout.setVisibility(View.GONE);
+        } else {
+            holder.noOpinionsText.setVisibility(View.GONE);
+            holder.ratingLayout.setVisibility(View.VISIBLE);
+            holder.ratingAverageText.setText(String.valueOf(serviceListItem.getRatingAverage()));
+            holder.ratingAverageBar.setRating(serviceListItem.getRatingAverage().floatValue());
+            holder.ratingReviewsAmount.setText("(" + serviceListItem.getOpinions().size() + ")");
+        }
+
         if(serviceListItem.isAvailable()){
             holder.serviceNotAvailableCardview.setVisibility(View.GONE);
             holder.serviceNotAvailableLayout.setVisibility(View.GONE);
@@ -72,6 +85,10 @@ public class ProviderServiceListAdapter extends RecyclerView.Adapter<ProviderSer
         CardView serviceNotAvailableCardview;
         ConstraintLayout serviceNotAvailableLayout;
 
+        TextView ratingAverageText, ratingReviewsAmount, noOpinionsText;
+        RatingBar ratingAverageBar;
+        LinearLayout ratingLayout;
+
         public MyViewHolder(@NonNull View itemView, RecylcerViewInterface recylcerViewInterface) {
             super(itemView);
 
@@ -79,6 +96,11 @@ public class ProviderServiceListAdapter extends RecyclerView.Adapter<ProviderSer
             serviceTitleTextView = itemView.findViewById(R.id.service_title);
             serviceNotAvailableCardview = itemView.findViewById(R.id.not_available_cardview);
             serviceNotAvailableLayout = itemView.findViewById(R.id.service_not_available_layout);
+            ratingAverageText = itemView.findViewById(R.id.rating_average_text);
+            ratingReviewsAmount = itemView.findViewById(R.id.rating_reviews_amount);
+            ratingAverageBar = itemView.findViewById(R.id.rating_average_bar);
+            noOpinionsText = itemView.findViewById(R.id.no_opinions_text);
+            ratingLayout = itemView.findViewById(R.id.rating_layout);
 
             itemView.setOnClickListener(view -> {
                 if (recylcerViewInterface != null) {
