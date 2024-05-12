@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
@@ -37,10 +38,9 @@ import java.util.stream.Collectors;
 
 public class FavoritesFragment extends Fragment implements RecylcerViewInterface,
                                                            Observer<ArrayList<ServiceData>> {
-
+    private TextView noFavoritesText;
     private RecyclerView recyclerView;
     private DataViewModel dataViewModel;
-
     private ServiceFinderListAdapter adapter;
 
     @Override
@@ -57,6 +57,7 @@ public class FavoritesFragment extends Fragment implements RecylcerViewInterface
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
 
+        noFavoritesText = view.findViewById(R.id.no_favorites_text);
         recyclerView = view.findViewById(R.id.favoriteServicesRecylcerView);
         initializeListView();
 
@@ -80,12 +81,24 @@ public class FavoritesFragment extends Fragment implements RecylcerViewInterface
                 getFavoriteServicesList(dataViewModel.getCurrentServices().getValue()), this
         );
         recyclerView.setAdapter(adapter);
+
+        updateCurrentView(getFavoriteServicesList(dataViewModel.getCurrentServices().getValue()));
     }
 
-    ArrayList<ServiceData> getFavoriteServicesList(ArrayList<ServiceData> services) {
+    private ArrayList<ServiceData> getFavoriteServicesList(ArrayList<ServiceData> services) {
         return services.stream()
                 .filter(ServiceData::isServiceFaved)
                 .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    private void updateCurrentView(ArrayList<ServiceData> favoriteServices) {
+        if (favoriteServices.isEmpty()) {
+            recyclerView.setVisibility(View.GONE);
+            noFavoritesText.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            noFavoritesText.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -127,7 +140,8 @@ public class FavoritesFragment extends Fragment implements RecylcerViewInterface
     }
 
     @Override
-    public void onChanged(ArrayList<ServiceData> serviceData) {
-        adapter.updateList(serviceData);
+    public void onChanged(ArrayList<ServiceData> favoriteServices) {
+        adapter.updateList(favoriteServices);
+        updateCurrentView(favoriteServices);
     }
 }
