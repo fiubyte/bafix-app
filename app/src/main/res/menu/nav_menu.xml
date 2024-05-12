@@ -7,13 +7,13 @@
         android:checkableBehavior="single">
 
         <item
-            android:id="@+id/nav_services"
+            android:id="@+id/serviceFinderFragment"
             android:icon="@drawable/search_icon"
             android:title="Buscador de servicios"
             android:actionMenuTextColor="@color/subtitle_color"/>
 
         <item
-            android:id="@+id/nav_favorites"
+            android:id="@+id/favoritesFragment"
             android:icon="@drawable/heart_icon"
             android:title="Favoritos"/>
 

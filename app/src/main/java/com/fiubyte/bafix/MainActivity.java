@@ -16,11 +16,16 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,6 +72,13 @@ public class MainActivity extends AppCompatActivity {
                 drawerLayout.openDrawer(GravityCompat.START);
             }
         });
+
+        NavigationView navigationView = findViewById(R.id.navigation_view);
+
+        NavController navController = ((NavHostFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.main_fragment_container_view)).getNavController();
+        NavigationUI.setupWithNavController(navigationView, navController);
+
     }
 
     boolean locationPermissionsGranted() {

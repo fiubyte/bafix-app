@@ -119,4 +119,9 @@
             android:name="currentServicesTab"
             app:argType="com.fiubyte.bafix.entities.ServiceTab" />
     </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.fiubyte.bafix.fragments.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" />
 </navigation>
