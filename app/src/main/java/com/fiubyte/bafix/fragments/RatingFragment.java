@@ -13,13 +13,18 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.entities.ServiceTab;
+import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.models.FiltersViewModel;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
+import com.fiubyte.bafix.utils.ServicesDataDeserializer;
+import com.fiubyte.bafix.utils.ServicesListManager;
 import com.fiubyte.bafix.utils.SvgRatingBar;
 import com.google.android.material.card.MaterialCardView;
 
@@ -27,6 +32,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -50,10 +57,12 @@ public class RatingFragment extends Fragment {
 
     private int serviceId;
     private String postServiceRateURL;
-
     private ServiceTab currentServicesTab;
 
     private ServiceData serviceData;
+
+    private DataViewModel dataViewModel;
+    FiltersViewModel filtersViewModel;
 
     @Override
     public View onCreateView(
@@ -66,6 +75,9 @@ public class RatingFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+        filtersViewModel = new ViewModelProvider(requireActivity()).get(FiltersViewModel.class);
 
         ratingBar = view.findViewById(R.id.rating_bar);
         closeButton = view.findViewById(R.id.close_button);
@@ -93,12 +105,7 @@ public class RatingFragment extends Fragment {
         });
 
         publishButton = view.findViewById(R.id.publish_button);
-        publishButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                handleOnClickPublishButton(view);
-            }
-        });
+        publishButton.setOnClickListener(v -> handleOnClickPublishButton(v));
     }
 
     void handleOnClickPublishButton(View view) {
@@ -144,15 +151,59 @@ public class RatingFragment extends Fragment {
                     return;
                 }
 
+
                 Log.d("DEBUGGING", response.toString());
                 getActivity().runOnUiThread(() -> {
                     Toast.makeText(getActivity(), "¡Calificación enviada!", Toast.LENGTH_SHORT).show();
-                    NavController navController = Navigation.findNavController(view);
-                    RatingFragmentDirections.ActionRatingFragmentToServiceFragment action =
-                            RatingFragmentDirections.actionRatingFragmentToServiceFragment(rate, serviceData, currentServicesTab);
-                    navController.navigate(action);
+
+                    try {
+                        retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()), filtersViewModel.getFilters().getValue(),
+                                         dataViewModel.getCurrentLocation().getValue(), view);
+                    } catch (UnsupportedEncodingException e) {
+                        throw new RuntimeException(e);
+                    }
                 });
             }
         });
+    }
+
+    private void retrieveServices(String token, Map<String, String> filters,
+                                  Map<String, Double> userLocation, View view) throws UnsupportedEncodingException {
+        ServicesListManager.retrieveServices(token, filters, userLocation,
+                                             new ServicesListManager.ServicesListCallback() {
+                                                 @Override
+                                                 public void onServicesListReceived(String servicesList) {
+                                                     getActivity().runOnUiThread(() -> {
+                                                         try {
+                                                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
+                                                             updateServiceData();
+                                                             NavController navController = Navigation.findNavController(view);
+
+                                                             RatingFragmentDirections.ActionRatingFragmentToServiceFragment action =
+                                                                     RatingFragmentDirections.actionRatingFragmentToServiceFragment((int) ratingBar.getRating(), serviceData, currentServicesTab);
+                                                             navController.navigate(action);
+                                                         } catch (JSONException e) {
+                                                             throw new RuntimeException(e);
+                                                         } catch (IOException e) {
+                                                             throw new RuntimeException(e);
+                                                         }
+                                                     });
+                                                 }
+
+                                                 @Override
+                                                 public void onError() {
+                                                     Log.d("BACK", "caido filters");
+                                                     dataViewModel.isBackendDown().postValue(true);
+                                                     requireActivity().runOnUiThread(() -> Navigation.findNavController(view).navigate(R.id.action_filtersFragment_to_serviceFinderFragment));
+                                                 }
+                                             }
+                                            );
+    }
+
+    private void updateServiceData() {
+        serviceData = dataViewModel.getCurrentServices().getValue().stream()
+                .filter(service -> service.getServiceId() == serviceId)
+                .findFirst()
+                .orElse(null);
     }
 }

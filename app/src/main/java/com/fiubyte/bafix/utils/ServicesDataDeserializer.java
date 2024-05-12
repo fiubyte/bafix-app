@@ -71,8 +71,16 @@ public class ServicesDataDeserializer {
                     String userName = rate.getString("name") + " " + rate.getString("surname");
                     int userRating = rate.getInt("rate");
                     String userOpinion = rate.getString("message");
+                    Boolean approved;
+                    if(rate.isNull("approved")) {
+                        approved = null;
+                    } else {
+                        approved = rate.optBoolean("approved");
+                    }
 
-                    opinions.add(new ServiceOpinionData(userName, userRating, userOpinion));
+                    if (approved != null && approved) {
+                        opinions.add(new ServiceOpinionData(userName, userRating, userOpinion, approved));
+                    }
                 }
             }
 

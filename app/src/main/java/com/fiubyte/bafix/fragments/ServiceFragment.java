@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,7 +45,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ServiceFragment extends Fragment implements View.OnClickListener, RatingBarInterface {
+public class ServiceFragment extends Fragment implements View.OnClickListener, RatingBarInterface
+        , Observer<ArrayList<ServiceData>> {
     private ServiceTab currentTab = ServiceTab.INFORMATION;
     private Map<ServiceTab, LinearLayout> tabs;
     private LinearLayout informationLayout;
@@ -93,6 +95,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         setupOpinionsRecylcerView();
 
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+        dataViewModel.getCurrentServices().observe(requireActivity(), this);
 
         ImageView providerPhoto = view.findViewById(R.id.provider_picture);
         Picasso.with(this.getContext()).load(serviceData.getServicePhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
@@ -151,6 +154,9 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     }
 
     private void setCurrentRatingView() {
+        if(ratingBar == null || pendingApprovalText == null) {
+            return;
+        }
         if(serviceData.getOwnRatingApproved() || serviceData.getOwnRating() == null) {
             ratingBar.setVisibility(View.VISIBLE);
             pendingApprovalText.setVisibility(View.GONE);
@@ -256,5 +262,10 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     @Override
     public void onBarClicked(int rate) {
         handleOnRatingChanged(requireView(), rate);
+    }
+
+    @Override
+    public void onChanged(ArrayList<ServiceData> serviceData) {
+        setCurrentRatingView();
     }
 }

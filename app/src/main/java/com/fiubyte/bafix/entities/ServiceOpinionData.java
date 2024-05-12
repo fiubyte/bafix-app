@@ -5,10 +5,13 @@ public class ServiceOpinionData {
     private int userRating;
     private String userOpinion;
 
-    public ServiceOpinionData(String userName, int userRating, String userOpinion) {
+    private Boolean approved;
+
+    public ServiceOpinionData(String userName, int userRating, String userOpinion, Boolean approved) {
         this.userName = userName;
         this.userRating = userRating;
         this.userOpinion = userOpinion;
+        this.approved = approved;
     }
 
     public String getUserName() {
@@ -22,4 +25,6 @@ public class ServiceOpinionData {
     public String getUserOpinion() {
         return userOpinion;
     }
+
+    public Boolean isApproved() { return approved; }
 }
