@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -84,6 +85,20 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
                 Navigation
                         .findNavController(view)
                         .navigate(action);
+            }
+        });
+
+        // Encuentra el botón de compartir y establece el OnClickListener
+        ImageButton shareButton = view.findViewById(R.id.share_button);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareBottomSheetFragment shareBottomSheet = ShareBottomSheetFragment.newInstance(
+                        serviceData.getTitle() ,
+                        "https://com.fiubyte.bafix/services/" + serviceData.getServiceId(),
+                        serviceData.getServicePhotoURL()
+                );
+                shareBottomSheet.show(getParentFragmentManager(), "shareBottomSheet");
             }
         });
     }
