@@ -4,7 +4,6 @@ import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
 
 public class ServiceData implements Serializable {
     int id;
@@ -89,6 +88,7 @@ public class ServiceData implements Serializable {
 
     public int getServiceId() { return id; }
     public boolean isServiceFaved() { return isServiceFaved; }
+    public void setIsServiceFaved(boolean isFaved) { isServiceFaved = isFaved; }
     public void writeToObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeObject(id);
         out.writeObject(title);
