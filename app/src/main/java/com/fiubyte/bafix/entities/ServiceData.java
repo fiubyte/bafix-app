@@ -24,12 +24,15 @@ public class ServiceData implements Serializable {
     Boolean ownRatingApproved;
     ArrayList<ServiceOpinionData> opinions;
     Double ratingAverage;
+
+    boolean isServiceFaved;
+
     public ServiceData(int id,
             String title, String providerPhotoURL, String servicePhotoURL, double maxDistance,
             String providerName, int providerId, boolean available, GeoPoint geoPoint, String providerPhone,
             String description, String availabilityDays, String availabilityTime, Integer ownRating,
                        Boolean ownRatingApproved,
-                       ArrayList<ServiceOpinionData> opinions, Double ratingAverage
+                       ArrayList<ServiceOpinionData> opinions, Double ratingAverage, boolean isServiceFaved
                       ) {
         this.id = id;
         this.title = title;
@@ -48,6 +51,7 @@ public class ServiceData implements Serializable {
         this.ownRatingApproved = ownRatingApproved;
         this.opinions = opinions;
         this.ratingAverage = ratingAverage;
+        this.isServiceFaved = isServiceFaved;
     }
 
     public String getProviderPhotoURL() {
@@ -110,6 +114,10 @@ public class ServiceData implements Serializable {
     public int getServiceId() { return id; }
 
     public Double getRatingAverage() { return ratingAverage; }
+
+    public boolean isServiceFaved() { return isServiceFaved; }
+    public void setIsServiceFaved(boolean isFaved) { isServiceFaved = isFaved; }
+
     public void writeToObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeObject(id);
         out.writeObject(title);
@@ -128,6 +136,7 @@ public class ServiceData implements Serializable {
         out.writeBoolean(ownRatingApproved);
         out.writeObject(opinions);
         out.writeDouble(ratingAverage);
+        out.writeBoolean(isServiceFaved);
     }
 
     @SuppressWarnings("unchecked")
@@ -149,10 +158,11 @@ public class ServiceData implements Serializable {
         boolean ownRatingApproved = in.readBoolean();
         ArrayList<ServiceOpinionData> opinions = (ArrayList<ServiceOpinionData>) in.readObject();
         Double ratingAverage = in.readDouble();
+        boolean isServiceFaved = in.readBoolean();
 
         return new ServiceData(id, title, providerPhotoURL, servicePhotoURL, maxDistance, providerName,
                                providerId, available, geoPoint, providerPhone, description,
                                availabilityDays, availabilityTime, ownRating, ownRatingApproved, opinions,
-                               ratingAverage);
+                               ratingAverage, isServiceFaved);
     }
 }

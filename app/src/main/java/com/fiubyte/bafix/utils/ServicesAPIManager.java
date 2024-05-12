@@ -1,19 +1,14 @@
 package com.fiubyte.bafix.utils;
 
-import android.location.Location;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,7 +20,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class ServicesListManager {
+public class ServicesAPIManager {
     private static OkHttpClient client;
     private static final String getServicesURL = "https://bafix-api.onrender.com/services/filter/";
 

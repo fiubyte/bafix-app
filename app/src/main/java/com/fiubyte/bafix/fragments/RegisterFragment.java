@@ -12,20 +12,17 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
-import android.widget.Toast;
 
 import com.fiubyte.bafix.R;
-import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.ServicesDataDeserializer;
-import com.fiubyte.bafix.utils.ServicesListManager;
+import com.fiubyte.bafix.utils.ServicesAPIManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.Task;
@@ -93,8 +90,8 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
         emptyFilters.put("distance", "99999999");
         emptyFilters.put("filterByAvailability", "true");
 
-        ServicesListManager.retrieveServices(token, emptyFilters, userLocation,
-                                             new ServicesListManager.ServicesListCallback() {
+        ServicesAPIManager.retrieveServices(token, emptyFilters, userLocation,
+                                            new ServicesAPIManager.ServicesListCallback() {
                                                  @Override
                                                  public void onServicesListReceived(String servicesList) {
                                                      getActivity().runOnUiThread(() -> {

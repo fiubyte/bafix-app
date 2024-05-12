@@ -24,7 +24,7 @@ import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.models.FiltersViewModel;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.ServicesDataDeserializer;
-import com.fiubyte.bafix.utils.ServicesListManager;
+import com.fiubyte.bafix.utils.ServicesAPIManager;
 import com.fiubyte.bafix.utils.SvgRatingBar;
 import com.google.android.material.card.MaterialCardView;
 
@@ -169,8 +169,8 @@ public class RatingFragment extends Fragment {
 
     private void retrieveServices(String token, Map<String, String> filters,
                                   Map<String, Double> userLocation, View view) throws UnsupportedEncodingException {
-        ServicesListManager.retrieveServices(token, filters, userLocation,
-                                             new ServicesListManager.ServicesListCallback() {
+        ServicesAPIManager.retrieveServices(token, filters, userLocation,
+                                            new ServicesAPIManager.ServicesListCallback() {
                                                  @Override
                                                  public void onServicesListReceived(String servicesList) {
                                                      getActivity().runOnUiThread(() -> {
@@ -197,7 +197,7 @@ public class RatingFragment extends Fragment {
                                                      requireActivity().runOnUiThread(() -> Navigation.findNavController(view).navigate(R.id.action_filtersFragment_to_serviceFinderFragment));
                                                  }
                                              }
-                                            );
+                                           );
     }
 
     private void updateServiceData() {
