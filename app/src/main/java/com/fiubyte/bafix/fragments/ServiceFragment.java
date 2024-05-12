@@ -77,7 +77,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
-                            ) {
+    ) {
         return inflater.inflate(R.layout.fragment_service, container, false);
     }
 
@@ -88,7 +88,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
         filtersViewModel = new ViewModelProvider(requireActivity()).get(FiltersViewModel.class);
 
-        if(ServiceFragmentArgs.fromBundle(getArguments()).getServiceData() != null){
+        if (ServiceFragmentArgs.fromBundle(getArguments()).getServiceData() != null) {
             serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
             currentTab = ServiceFragmentArgs.fromBundle(getArguments()).getCurrentTab();
         }
@@ -112,18 +112,25 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         ImageView providerPhoto = view.findViewById(R.id.provider_picture);
         Picasso.with(this.getContext()).load(serviceData.getServicePhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
 
-        ((TextView)view.findViewById(R.id.service_title)).setText(serviceData.getTitle());
-        ((TextView)view.findViewById(R.id.service_description)).setText(serviceData.getDescription());
-        ((TextView)view.findViewById(R.id.availability_days)).setText(serviceData.getAvailabilityDays());
-        ((TextView)view.findViewById(R.id.availability_time)).setText(serviceData.getAvailabilityTime());
-        ((TextView)view.findViewById(R.id.provider_name)).setText(serviceData.getProviderName());
-        ((TextView)view.findViewById(R.id.max_distance)).setText("A " + serviceData.getMaxDistance() + " km");
-        ((TextView)view.findViewById(R.id.provider_phone)).setText(serviceData.getProviderPhone());
+        ((TextView) view.findViewById(R.id.service_title)).setText(serviceData.getTitle());
+        ((TextView) view.findViewById(R.id.service_description)).setText(serviceData.getDescription());
+        ((TextView) view.findViewById(R.id.availability_days)).setText(serviceData.getAvailabilityDays());
+        ((TextView) view.findViewById(R.id.availability_time)).setText(serviceData.getAvailabilityTime());
+        ((TextView) view.findViewById(R.id.provider_name)).setText(serviceData.getProviderName());
+        ((TextView) view.findViewById(R.id.max_distance)).setText("A " + serviceData.getMaxDistance() + " km");
+        ((TextView) view.findViewById(R.id.provider_phone)).setText(serviceData.getProviderPhone());
 
         providerCardView = view.findViewById(R.id.provider_container);
         providerCardView.setOnClickListener(this);
 
         backButton = view.findViewById(R.id.back_button);
+        backButton.setOnClickListener(v -> {
+            try {
+                handleOnBackButtonClicked(v);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         backButton.setOnClickListener(v -> {
             try {
@@ -273,12 +280,12 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     @Override
     public void onClick(View view) {
         ProviderData providerData = new ProviderData(serviceData.getProviderId(),
-                                                     serviceData.getProviderName(),
-                                                     serviceData.getGeoPoint(),
-                                                     ProvidersDataGenerator.generateProviderServicesList(dataViewModel.getCurrentServices().getValue(), serviceData.getProviderId()),
-                                                     serviceData.getMaxDistance(),
-                                                     serviceData.getProviderPhotoURL(),
-                                                     serviceData.getProviderPhone()
+                serviceData.getProviderName(),
+                serviceData.getGeoPoint(),
+                ProvidersDataGenerator.generateProviderServicesList(dataViewModel.getCurrentServices().getValue(), serviceData.getProviderId()),
+                serviceData.getMaxDistance(),
+                serviceData.getProviderPhotoURL(),
+                serviceData.getProviderPhone()
 
         );
 
