@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_services"
+            android:icon="@drawable/search_icon"
+            android:title="Buscador de servicios"
+            android:actionMenuTextColor="@color/subtitle_color"/>
+
+        <item
+            android:id="@+id/nav_favorites"
+            android:icon="@drawable/heart_icon"
+            android:title="Favoritos"/>
+
+    </group>
+</menu>
