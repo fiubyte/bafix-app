@@ -2,67 +2,132 @@ package com.fiubyte.bafix.fragments;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.fiubyte.bafix.R;
+import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
+import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.entities.ServiceTab;
+import com.fiubyte.bafix.models.DataViewModel;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
+import com.fiubyte.bafix.utils.RecylcerViewInterface;
+import com.fiubyte.bafix.utils.ServicesAPIManager;
+import com.fiubyte.bafix.utils.ServicesDataDeserializer;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FavoritesFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class FavoritesFragment extends Fragment {
+import org.json.JSONException;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class FavoritesFragment extends Fragment implements RecylcerViewInterface,
+                                                           Observer<ArrayList<ServiceData>> {
 
-    public FavoritesFragment() {
-        // Required empty public constructor
-    }
+    private RecyclerView recyclerView;
+    private DataViewModel dataViewModel;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment FavoritesFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static FavoritesFragment newInstance(String param1, String param2) {
-        FavoritesFragment fragment = new FavoritesFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private ServiceFinderListAdapter adapter;
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
                             ) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_favorites, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+
+        recyclerView = view.findViewById(R.id.favoriteServicesRecylcerView);
+        initializeListView();
+
+        try {
+            retrieveServices(
+                    SharedPreferencesManager.getStoredToken(requireActivity()),
+                    dataViewModel.getCurrentLocation().getValue());
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+
+        dataViewModel.getFavoriteServices().observe(requireActivity(), this);
+    }
+
+    private void initializeListView() {
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                                                              LinearLayoutManager.VERTICAL, false
+        ));
+        adapter = new ServiceFinderListAdapter(
+                requireContext(),
+                getFavoriteServicesList(dataViewModel.getCurrentServices().getValue()), this
+        );
+        recyclerView.setAdapter(adapter);
+    }
+
+    ArrayList<ServiceData> getFavoriteServicesList(ArrayList<ServiceData> services) {
+        return services.stream()
+                .filter(ServiceData::isServiceFaved)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        FavoritesFragmentDirections.ActionFavoritesFragmentToServiceFragment action =
+                FavoritesFragmentDirections.actionFavoritesFragmentToServiceFragment(0, dataViewModel.getFavoriteServices().getValue().get(position), ServiceTab.INFORMATION);
+        Navigation
+                .findNavController(requireView())
+                .navigate(action);
+    }
+
+    private void retrieveServices(String token, Map<String, Double> userLocation) throws UnsupportedEncodingException {
+        Map<String,String> emptyFilters = new HashMap<>();
+        emptyFilters.put("distance", "99999999");
+        emptyFilters.put("filterByAvailability", "false");
+
+        ServicesAPIManager.retrieveServices(token, emptyFilters, userLocation,
+                                            new ServicesAPIManager.ServicesListCallback() {
+                                                @Override
+                                                public void onServicesListReceived(String servicesList) {
+                                                    getActivity().runOnUiThread(() -> {
+                                                        try {
+                                                            dataViewModel.updateFavoriteServices(
+                                                                    getFavoriteServicesList(
+                                                                            ServicesDataDeserializer.deserialize(servicesList)));
+                                                        } catch (JSONException e) {
+                                                            throw new RuntimeException(e);
+                                                        } catch (IOException e) {
+                                                            throw new RuntimeException(e);
+                                                        }
+                                                    });
+                                                }
+
+                                                @Override
+                                                public void onError() {
+                                                    dataViewModel.isBackendDown().postValue(true);
+                                                }
+                                            });
+    }
+
+    @Override
+    public void onChanged(ArrayList<ServiceData> serviceData) {
+        adapter.updateList(serviceData);
     }
 }
