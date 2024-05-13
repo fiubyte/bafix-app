@@ -23,6 +23,7 @@ import com.fiubyte.bafix.entities.ServiceTab;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.models.FiltersViewModel;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
+import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.fiubyte.bafix.utils.ServicesDataDeserializer;
 import com.fiubyte.bafix.utils.ServicesAPIManager;
 import com.fiubyte.bafix.utils.SvgRatingBar;
@@ -37,6 +38,7 @@ import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.HttpUrl;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -118,6 +120,9 @@ public class RatingFragment extends Fragment {
         String url = "https://bafix-api.onrender.com/services/" + serviceId + "/rate";
         MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
+        HttpUrl.Builder httpBuilder = HttpUrl.parse(url).newBuilder();
+        httpBuilder.addQueryParameter("user_name_to_display", LoginAuthManager.getLastSignedUserName(requireActivity()));
+
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("rate", rate);
@@ -131,7 +136,7 @@ public class RatingFragment extends Fragment {
         String token = SharedPreferencesManager.getStoredToken(requireActivity());
 
         Request request = new Request.Builder()
-                .url(url)
+                .url(httpBuilder.build())
                 .post(requestBody)
                 .addHeader("accept", "application/json")
                 .addHeader("Content-Type", "application/json")
@@ -173,6 +178,9 @@ public class RatingFragment extends Fragment {
                                             new ServicesAPIManager.ServicesListCallback() {
                                                  @Override
                                                  public void onServicesListReceived(String servicesList) {
+                                                     if (getActivity() == null) {
+                                                         return;
+                                                     }
                                                      getActivity().runOnUiThread(() -> {
                                                          try {
                                                              dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));

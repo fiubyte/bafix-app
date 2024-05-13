@@ -204,15 +204,25 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     }
 
     private void setCurrentRatingView() {
-        if(ratingBar == null || pendingApprovalText == null) {
+        // ownRatingApproved
+
+        if (ratingBar == null || pendingApprovalText == null) {
             return;
         }
-        if(serviceData.getOwnRatingApproved() || serviceData.getOwnRating() == null) {
+        if  (serviceData.getOwnRatingApproved() == null && serviceData.getOwnRating() == null ) {
+            ratingBar.setVisibility(View.VISIBLE);
+            pendingApprovalText.setVisibility(View.GONE);
+        } else if (serviceData.getOwnRatingApproved() == null) {
+            ratingBar.setVisibility(View.GONE);
+            pendingApprovalText.setVisibility(View.VISIBLE);
+            pendingApprovalText.setText("Su calificación esta pendiente de aprobación.");
+        } else if (serviceData.getOwnRatingApproved() == true) {
             ratingBar.setVisibility(View.VISIBLE);
             pendingApprovalText.setVisibility(View.GONE);
         } else {
-            ratingBar.setVisibility(View.GONE);
+            ratingBar.setVisibility(View.VISIBLE);
             pendingApprovalText.setVisibility(View.VISIBLE);
+            pendingApprovalText.setText("Su calificacion no ha sido aprobada. Por favor envie una nueva calificacion.");
         }
     }
 
@@ -404,6 +414,9 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
                                             new ServicesAPIManager.ServicesListCallback() {
                                                 @Override
                                                 public void onServicesListReceived(String servicesList) {
+                                                    if(getActivity() == null) {
+                                                        return;
+                                                    }
                                                     getActivity().runOnUiThread(() -> {
                                                         try {
                                                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
