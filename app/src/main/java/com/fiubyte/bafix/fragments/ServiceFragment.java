@@ -72,6 +72,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     RatingBar ratingAverageBar;
     LinearLayout ratingLayout;
     ImageView favoriteButton;
+    ImageView shareButton;
     FiltersViewModel filtersViewModel;
 
     @Override
@@ -165,17 +166,15 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         favoriteButton.setOnClickListener(favButtonView -> {
             onFavoriteButtonClicked();
         });
-        ImageButton shareButton = view.findViewById(R.id.share_button);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShareBottomSheetFragment shareBottomSheet = ShareBottomSheetFragment.newInstance(
-                        serviceData.getTitle() ,
-                        "https://bafix-api.onrender.com/service/" + serviceData.getServiceId(),
-                        serviceData.getServicePhotoURL()
-                );
-                shareBottomSheet.show(getParentFragmentManager(), "shareBottomSheet");
-            }
+
+        shareButton = view.findViewById(R.id.share_button);
+        shareButton.setOnClickListener((View.OnClickListener) v -> {
+            ShareBottomSheetFragment shareBottomSheet = ShareBottomSheetFragment.newInstance(
+                    serviceData.getTitle() ,
+                    "https://bafix-api.onrender.com/service/" + serviceData.getServiceId(),
+                    serviceData.getServicePhotoURL()
+            );
+            shareBottomSheet.show(getParentFragmentManager(), "shareBottomSheet");
         });
     }
 
