@@ -2,6 +2,7 @@ package com.fiubyte.bafix;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
@@ -79,6 +81,23 @@ public class MainActivity extends AppCompatActivity {
                 .findFragmentById(R.id.main_fragment_container_view)).getNavController();
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        // Get the intent that started this activity
+        Intent intent = getIntent();
+        if (!Objects.equals(intent.getAction(), "android.intent.action.MAIN")) {
+            // Expect intent with path like: /service/1
+            String serviceId = intent.getData().getPath().split("/service/")[1];
+            String token = SharedPreferencesManager.getStoredToken(this);
+            Bundle bundle = new Bundle();
+            bundle.putString("serviceId", serviceId);
+
+            if ("".equals(token)) {
+                // User not authenticated
+                Navigation.findNavController(this, R.id.main_fragment_container_view).navigate(R.id.registerFragment, bundle);
+            } else {
+                // User authenticated
+                Navigation.findNavController(this, R.id.main_fragment_container_view).navigate(R.id.registerFragment, bundle);
+            }
+        }
     }
 
     boolean locationPermissionsGranted() {

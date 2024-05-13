@@ -10,6 +10,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,7 +48,12 @@ public class LauncherFragment extends Fragment implements Observer<Map<String, D
 
     @Override
     public void onChanged(Map<String, Double> stringDoubleMap) {
-        Navigation.findNavController(requireView()).navigate(R.id.action_launcherFragment_to_splashFragment);
+        try {
+            // This is required for some reason when attempting to redirect to ServiceFragment form MainActivity on the external browser intent
+            Navigation.findNavController(requireView()).navigate(R.id.action_launcherFragment_to_splashFragment);
+        } catch (Exception e) {
+            Log.w("WARN", "Warning on onChanged from LauncherFragment");
+        }
     }
 
     @Override

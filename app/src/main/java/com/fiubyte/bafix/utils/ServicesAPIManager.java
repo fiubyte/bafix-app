@@ -64,7 +64,7 @@ public class ServicesAPIManager {
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                if(response.isSuccessful()) {
+                if (response.isSuccessful()) {
                     try {
                         callback.onServicesListReceived(response.body().string());
                     } catch (JSONException e) {

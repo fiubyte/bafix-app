@@ -1,5 +1,7 @@
 package com.fiubyte.bafix.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -71,6 +74,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     RatingBar ratingAverageBar;
     LinearLayout ratingLayout;
     ImageView favoriteButton;
+    ImageView shareButton;
     FiltersViewModel filtersViewModel;
 
     @Override
@@ -164,6 +168,22 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         favoriteButton.setOnClickListener(favButtonView -> {
             onFavoriteButtonClicked();
         });
+
+        shareButton = view.findViewById(R.id.share_button);
+        shareButton.setOnClickListener(v -> {
+            handleOnShareButtonClicked(v);
+        });
+    }
+
+    private void handleOnShareButtonClicked(View v) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/html");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://bafix-api.onrender.com/service/" + serviceData.getServiceId());
+        shareIntent.putExtra(Intent.EXTRA_TITLE, serviceData.getTitle());
+
+        if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(Intent.createChooser(shareIntent, "Share via"));
+        }
     }
 
     private void handleOnBackButtonClicked(View view) throws UnsupportedEncodingException {
@@ -237,7 +257,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     private void setupTabLayout(View view) {
         tabLayout = view.findViewById(R.id.tab_layout);
 
-        if(serviceData.getOpinions().isEmpty()) {
+        if (serviceData.getOpinions() != null && serviceData.getOpinions().isEmpty()) {
             tabLayout.removeTab(tabLayout.getTabAt(ServiceTab.OPINIONS.ordinal()));
         }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -285,6 +305,8 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
                 layout.setVisibility(View.GONE);
             }
         });
+
+
     }
 
     @Override
@@ -405,7 +427,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
                                                     getActivity().runOnUiThread(() -> {
                                                         try {
                                                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
-                                                            Navigation.findNavController(view).popBackStack();
+                                                            Navigation.findNavController(view).navigate(R.id.action_serviceFragment_to_serviceFinderFragment);
                                                         } catch (JSONException e) {
                                                             throw new RuntimeException(e);
                                                         } catch (IOException e) {

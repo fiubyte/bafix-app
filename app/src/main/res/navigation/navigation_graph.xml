@@ -25,6 +25,14 @@
         <action
             android:id="@+id/action_registerFragment_to_serviceFinderFragment"
             app:destination="@id/serviceFinderFragment" />
+        <argument
+            android:name="serviceId"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="-1" />
+        <action
+            android:id="@+id/action_registerFragment_to_serviceFragment"
+            app:destination="@id/serviceFragment" />
     </fragment>
     <fragment
         android:id="@+id/serviceFinderFragment"
@@ -96,6 +104,9 @@
         <argument
             android:name="serviceData"
             app:argType="com.fiubyte.bafix.entities.ServiceData" />
+        <action
+            android:id="@+id/action_serviceFragment_to_serviceFinderFragment"
+            app:destination="@id/serviceFinderFragment" />
         <argument
             android:name="currentTab"
             app:argType="com.fiubyte.bafix.entities.ServiceTab" />

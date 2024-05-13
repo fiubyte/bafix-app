@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/rounded_corner_background">
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/share_service"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="8dp"
+        android:text="@string/compartir_enlace"
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@color/black" />
+
+    <!-- Separador -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginVertical="8dp"
+        android:background="@android:color/darker_gray" />
+
+    <!-- Contenedor del servicio -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="118dp"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <!-- Imagen del servicio -->
+
+        <!-- Detalles del servicio -->
+
+        <ImageView
+            android:id="@+id/share_service_image"
+            android:layout_width="64dp"
+            android:layout_height="57dp"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_alert" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingStart="16dp">
+
+            <TextView
+                android:id="@+id/share_service_name_title"
+                android:layout_width="242dp"
+                android:layout_height="wrap_content"
+                android:text="Nombre del Servicio"
+                android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/share_service_url"
+                android:layout_width="238dp"
+                android:layout_height="63dp"
+                android:text="@string/https_com_fiubyte_bafix_services_5"
+                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                android:textColor="@color/black" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/share_copy_url_button"
+            android:layout_width="45dp"
+            android:layout_height="49dp"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_share"
+            android:contentDescription="Copiar URL al portapapeles" />
+
+    </LinearLayout>
+
+    <!-- Opciones de Compartir -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="79dp"
+        android:orientation="horizontal"
+        android:paddingTop="16dp">
+
+        <!-- Opción sms -->
+        <LinearLayout
+            android:id="@+id/share_sms_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/share_sms"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_menu_compass" />
+
+            <TextView
+                android:id="@+id/text_sms"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Mensajes" />
+        </LinearLayout>
+
+
+
+        <!-- Opción Mensajes -->
+        <LinearLayout
+            android:id="@+id/share_whatsapp_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/share_whatsapp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/whatsapp" />
+
+            <TextView
+                android:id="@+id/text_messages"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:text="Mensajes" />
+        </LinearLayout>
+
+
+        <!-- Opción Email -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/share_gmail_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:src="@drawable/gmail" />
+
+            <TextView
+                android:id="@+id/text_email"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:text="Email" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>
