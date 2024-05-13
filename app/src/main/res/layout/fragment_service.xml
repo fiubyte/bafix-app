@@ -387,17 +387,6 @@
             android:textSize="17sp">
         </TextView>
 
-        <com.fiubyte.bafix.utils.SvgRatingBar
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/rating_bar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="5"
-            android:progressDrawable="@drawable/rating_bar"
-            android:rating="0"
-            android:stepSize="1" />
-
         <TextView
             android:visibility="gone"
             android:id="@+id/pending_approval_text"
@@ -409,8 +398,18 @@
             android:textColor="@color/subtitle_color"
             android:textSize="15sp"
             android:text="Su calificación esta pendiente de aprobación.">
-
         </TextView>
+
+        <com.fiubyte.bafix.utils.SvgRatingBar
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:progressDrawable="@drawable/rating_bar"
+            android:rating="0"
+            android:stepSize="1" />
 
     </LinearLayout>
 

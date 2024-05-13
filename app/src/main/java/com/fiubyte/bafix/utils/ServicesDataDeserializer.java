@@ -45,7 +45,12 @@ public class ServicesDataDeserializer {
             String description = jsonObject.getString("description");
             String availabilityDays = ServicesDataDeserializer.formatAvailableDays(jsonObject.getString("availability_days"));
             String availabilityTime = jsonObject.getString("availability_time_start") + " - " + jsonObject.getString("availability_time_end");
-            Boolean ownRatingApproved = jsonObject.optBoolean("own_rate_approved");
+            Boolean ownRatingApproved;
+            if (jsonObject.isNull("own_rate_approved")) {
+                ownRatingApproved = null;
+            } else {
+                ownRatingApproved = jsonObject.optBoolean("own_rate_approved");
+            }
             boolean isServiceFaved = jsonObject.getBoolean("faved_by_me");
 
             Double ratingAverage;
@@ -69,7 +74,7 @@ public class ServicesDataDeserializer {
                 for (int j = 0; j < rates.length(); j++) {
                     JSONObject rate = rates.getJSONObject(j);
 
-                    String userName = rate.getString("name") + " " + rate.getString("surname");
+                    String userName = rate.getString("user_name_to_display");
                     int userRating = rate.getInt("rate");
                     String userOpinion = rate.getString("message");
                     Boolean approved;

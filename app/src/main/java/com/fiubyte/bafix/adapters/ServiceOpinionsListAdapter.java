@@ -26,10 +26,10 @@ public class ServiceOpinionsListAdapter extends RecyclerView.Adapter<RecyclerVie
     private Context context;
     private ArrayList<ServiceOpinionData> opinions;
     private Integer currentUserRating;
-    private boolean userRatingApproved;
+    private Boolean userRatingApproved;
 
     public ServiceOpinionsListAdapter(Context context, ArrayList<ServiceOpinionData> opinions,
-                                      Integer currentUserRating, boolean userRatingApproved,
+                                      Integer currentUserRating, Boolean userRatingApproved,
                                       RatingBarInterface ratingBarInterface) {
         this.ratingBarInterface = ratingBarInterface;
         this.context = context;
