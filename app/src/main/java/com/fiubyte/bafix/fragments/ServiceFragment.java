@@ -171,7 +171,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
             public void onClick(View v) {
                 ShareBottomSheetFragment shareBottomSheet = ShareBottomSheetFragment.newInstance(
                         serviceData.getTitle() ,
-                        "https://com.fiubyte.bafix/service/" + serviceData.getServiceId(),
+                        "https://bafix-api.onrender.com/service/" + serviceData.getServiceId(),
                         serviceData.getServicePhotoURL()
                 );
                 shareBottomSheet.show(getParentFragmentManager(), "shareBottomSheet");
