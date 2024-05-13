@@ -45,12 +45,18 @@ public class ServicesDataDeserializer {
             String availabilityDays = ServicesDataDeserializer.formatAvailableDays(jsonObject.getString("availability_days"));
             String availabilityTime = jsonObject.getString("availability_time_start") + " - " + jsonObject.getString("availability_time_end");
             boolean isServiceFaved = jsonObject.getBoolean("faved_by_me");
+            int ownRate = 0;
+            boolean ownRateApproved = false;
+            if (!jsonObject.isNull("own_rate"))
+                ownRate = jsonObject.getInt("own_rate");
+            if (!jsonObject.isNull("own_rate_approved"))
+                ownRateApproved = jsonObject.getBoolean("own_rate_approved");
 
             services.add(new ServiceData(id, title, userPhotoURL, servicePhotoURL, maxDistance,
                                          providerName, providerId,
                                          isAvailable, new GeoPoint(latitude, longitude),
                                          providerPhone, description, availabilityDays,
-                                         availabilityTime, isServiceFaved));
+                                         availabilityTime, isServiceFaved, ownRate, ownRateApproved));
         }
         return services;
     }

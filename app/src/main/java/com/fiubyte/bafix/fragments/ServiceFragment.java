@@ -221,7 +221,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
                                                     getActivity().runOnUiThread(() -> {
                                                         try {
                                                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));
-                                                            Navigation.findNavController(view).popBackStack();
+                                                            Navigation.findNavController(view).navigate(R.id.action_serviceFragment_to_serviceFinderFragment);
                                                         } catch (JSONException e) {
                                                             throw new RuntimeException(e);
                                                         } catch (IOException e) {

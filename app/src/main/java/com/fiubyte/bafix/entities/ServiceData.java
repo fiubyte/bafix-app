@@ -23,11 +23,14 @@ public class ServiceData implements Serializable, Parcelable {
     String availabilityDays;
     String availabilityTime;
     boolean isServiceFaved;
+    int ownRate;
+    boolean ownRateApproved;
     public ServiceData(int id,
-            String title, String providerPhotoURL, String servicePhotoURL, double maxDistance,
-            String providerName, int providerId, boolean available, GeoPoint geoPoint, String providerPhone,
-            String description, String availabilityDays, String availabilityTime, boolean isServiceFaved
-                      ) {
+                       String title, String providerPhotoURL, String servicePhotoURL, double maxDistance,
+                       String providerName, int providerId, boolean available, GeoPoint geoPoint, String providerPhone,
+                       String description, String availabilityDays, String availabilityTime, boolean isServiceFaved,
+                       int ownRate, boolean ownRateApproved
+    ) {
         this.id = id;
         this.title = title;
         this.providerPhotoURL = providerPhotoURL;
@@ -42,6 +45,8 @@ public class ServiceData implements Serializable, Parcelable {
         this.availabilityDays = availabilityDays;
         this.availabilityTime = availabilityTime;
         this.isServiceFaved = isServiceFaved;
+        this.ownRate = ownRate;
+        this.ownRateApproved = ownRateApproved;
     }
 
     protected ServiceData(Parcel in) {
@@ -59,6 +64,8 @@ public class ServiceData implements Serializable, Parcelable {
         availabilityDays = in.readString();
         availabilityTime = in.readString();
         isServiceFaved = in.readByte() != 0;
+        ownRate = in.readInt();
+        ownRateApproved = in.readByte() != 0;
     }
 
     @Override
@@ -77,6 +84,8 @@ public class ServiceData implements Serializable, Parcelable {
         dest.writeString(availabilityDays);
         dest.writeString(availabilityTime);
         dest.writeByte((byte) (isServiceFaved ? 1 : 0));
+        dest.writeInt(ownRate);
+        dest.writeByte((byte) (ownRateApproved ? 1 : 0));
     }
 
     @Override
@@ -144,6 +153,23 @@ public class ServiceData implements Serializable, Parcelable {
     public int getServiceId() { return id; }
     public boolean isServiceFaved() { return isServiceFaved; }
     public void setIsServiceFaved(boolean isFaved) { isServiceFaved = isFaved; }
+
+    public int getOwnRate() {
+        return ownRate;
+    }
+
+    public void setOwnRate(int ownRate) {
+        this.ownRate = ownRate;
+    }
+
+    public boolean isOwnRateApproved() {
+        return ownRateApproved;
+    }
+
+    public void setOwnRateApproved(boolean ownRateApproved) {
+        this.ownRateApproved = ownRateApproved;
+    }
+
     public void writeToObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeObject(id);
         out.writeObject(title);
@@ -159,6 +185,8 @@ public class ServiceData implements Serializable, Parcelable {
         out.writeObject(availabilityDays);
         out.writeObject(availabilityTime);
         out.writeBoolean(isServiceFaved);
+        out.writeInt(ownRate);
+        out.writeBoolean(ownRateApproved);
     }
 
     @SuppressWarnings("unchecked")
@@ -177,9 +205,11 @@ public class ServiceData implements Serializable, Parcelable {
         String availabilityDays = (String) in.readObject();
         String availabilityTime = (String) in.readObject();
         boolean isServiceFaved = in.readBoolean();
+        int ownRate = in.readInt();
+        boolean ownRateApproved = in.readBoolean();
 
         return new ServiceData(id, title, providerPhotoURL, servicePhotoURL, maxDistance, providerName,
                                providerId, available, geoPoint, providerPhone, description,
-                               availabilityDays, availabilityTime, isServiceFaved);
+                               availabilityDays, availabilityTime, isServiceFaved, ownRate, ownRateApproved);
     }
 }
