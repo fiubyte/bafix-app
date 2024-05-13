@@ -68,8 +68,11 @@ public class ServicesDataDeserializer {
             if (rates.length() != 0) {
                 for (int j = 0; j < rates.length(); j++) {
                     JSONObject rate = rates.getJSONObject(j);
-
-                    String userName = rate.getString("name") + " " + rate.getString("surname");
+                    String userName = "";
+                    if (!rate.isNull("name") && !rate.isNull("surname")){
+                        userName = rate.getString("name") + " " + rate.getString("surname");
+                    }
+//                    String userName = rate.getString("name") + " " + rate.getString("surname");
                     int userRating = rate.getInt("rate");
                     String userOpinion = rate.getString("message");
                     Boolean approved;
@@ -86,10 +89,11 @@ public class ServicesDataDeserializer {
             }
 
             services.add(new ServiceData(id, title, userPhotoURL, servicePhotoURL, maxDistance,
-                                         providerName, providerId,
-                                         isAvailable, new GeoPoint(latitude, longitude),
-                                         providerPhone, description, availabilityDays,
-                                         availabilityTime, isServiceFaved));
+                                         providerName, providerId, isAvailable,
+                                         new GeoPoint(latitude, longitude), providerPhone,
+                                         description, availabilityDays, availabilityTime,
+                                         ownRating, ownRatingApproved, opinions, ratingAverage,
+                                         isServiceFaved));
         }
         return services;
     }

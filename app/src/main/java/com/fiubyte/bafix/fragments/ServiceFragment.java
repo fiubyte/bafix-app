@@ -227,7 +227,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
     private void setupTabLayout(View view) {
         tabLayout = view.findViewById(R.id.tab_layout);
 
-        if(serviceData.getOpinions().isEmpty()) {
+        if (serviceData.getOpinions() != null && serviceData.getOpinions().isEmpty()) {
             tabLayout.removeTab(tabLayout.getTabAt(ServiceTab.OPINIONS.ordinal()));
         }
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
