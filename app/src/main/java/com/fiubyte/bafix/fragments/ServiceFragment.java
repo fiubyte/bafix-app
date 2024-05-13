@@ -1,5 +1,7 @@
 package com.fiubyte.bafix.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -168,14 +170,20 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         });
 
         shareButton = view.findViewById(R.id.share_button);
-        shareButton.setOnClickListener((View.OnClickListener) v -> {
-            ShareBottomSheetFragment shareBottomSheet = ShareBottomSheetFragment.newInstance(
-                    serviceData.getTitle() ,
-                    "https://bafix-api.onrender.com/service/" + serviceData.getServiceId(),
-                    serviceData.getServicePhotoURL()
-            );
-            shareBottomSheet.show(getParentFragmentManager(), "shareBottomSheet");
+        shareButton.setOnClickListener(v -> {
+            handleOnShareButtonClicked(v);
         });
+    }
+
+    private void handleOnShareButtonClicked(View v) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/html");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://bafix-api.onrender.com/service/" + serviceData.getServiceId());
+        shareIntent.putExtra(Intent.EXTRA_TITLE, serviceData.getTitle());
+
+        if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(Intent.createChooser(shareIntent, "Share via"));
+        }
     }
 
     private void handleOnBackButtonClicked(View view) throws UnsupportedEncodingException {
