@@ -64,7 +64,8 @@ public class ShareBottomSheetFragment extends BottomSheetDialogFragment {
         ImageView imageView = view.findViewById(R.id.share_service_image);
         LinearLayout whatsappButton = view.findViewById(R.id.share_whatsapp_button);
         ImageView gmailButton = view.findViewById(R.id.share_gmail_button);
-        ImageView copyUrlButton = view.findViewById(R.id.share_copy_url_button);  // Este es un ImageView, asegúrate de no castearlo incorrectamente.
+        ImageView copyUrlButton = view.findViewById(R.id.share_copy_url_button);
+        ImageView smsButton = view.findViewById(R.id.share_sms);
 
         nameTextView.setText(serviceName);
         urlTextView.setText(serviceUrl);
@@ -95,6 +96,13 @@ public class ShareBottomSheetFragment extends BottomSheetDialogFragment {
                 copyUrlToClipboard(serviceUrl);
             }
         });
+        smsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareToSMS(serviceName, serviceUrl);
+            }
+        });
+
         return view;
     }
 
@@ -133,6 +141,18 @@ public class ShareBottomSheetFragment extends BottomSheetDialogFragment {
         ClipData clip = ClipData.newPlainText("URL", url);
         clipboard.setPrimaryClip(clip);
         Toast.makeText(getContext(), "URL copiada al portapapeles", Toast.LENGTH_SHORT).show();
+    }
+    private void shareToSMS(String serviceName, String serviceUrl) {
+        String message = "Mira este servicio: " + serviceName + "\n" + serviceUrl;
+        Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+        smsIntent.setData(Uri.parse("sms:"));
+        smsIntent.putExtra("sms_body", message);
+
+        try {
+            startActivity(smsIntent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getContext(), "La aplicación de SMS no está instalada.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
