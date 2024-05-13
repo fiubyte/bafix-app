@@ -1,27 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/drawer_layout"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@color/background_color"
     android:gravity="center">
 
-    <androidx.appcompat.widget.Toolbar
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/black"
-        app:titleTextColor="@color/white"
-        app:titleTextAppearance="@style/ToolbarTheme"
-        android:theme="@style/ToolbarTheme"/>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/main_fragment_container_view"
-        android:name="androidx.navigation.fragment.NavHostFragment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:defaultNavHost="true"
-        app:navGraph="@navigation/navigation_graph" />
-</LinearLayout>
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            app:contentInsetStartWithNavigation="0dp"
+            app:navigationIcon="@drawable/baseline_menu_32"
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/black"
+            app:titleTextColor="@color/white"
+            app:titleTextAppearance="@style/ToolbarTheme"
+            android:theme="@style/ToolbarTheme"/>
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/main_fragment_container_view"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/navigation_graph" />
+
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        app:headerLayout="@layout/menu_header"
+        app:menu="@menu/nav_menu"
+        android:layout_gravity="start"
+        app:itemTextAppearance="@style/MenuItemTextStyle"
+        app:itemTextColor="@color/menu_item"
+        app:itemIconTint="@color/menu_item">
+
+    </com.google.android.material.navigation.NavigationView>
+</androidx.drawerlayout.widget.DrawerLayout>

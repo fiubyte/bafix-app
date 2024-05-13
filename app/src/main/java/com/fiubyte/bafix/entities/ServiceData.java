@@ -24,7 +24,6 @@ public class ServiceData implements Serializable {
     Boolean ownRatingApproved;
     ArrayList<ServiceOpinionData> opinions;
     Double ratingAverage;
-
     boolean isServiceFaved;
 
     public ServiceData(int id,

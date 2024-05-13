@@ -23,4 +23,5 @@
     <color name="line_color">#E0E0E0</color>
     <color name="subtitle_color">#909090</color>
     <color name="separator">#D2D2D2</color>
+    <color name="menu_item">#666666</color>
 </resources>

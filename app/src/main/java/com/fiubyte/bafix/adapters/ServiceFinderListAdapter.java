@@ -115,4 +115,9 @@ public class ServiceFinderListAdapter extends RecyclerView.Adapter<ServiceFinder
             });
         }
     }
+
+    public void updateList(ArrayList<ServiceData> newList) {
+        services = newList;
+        notifyDataSetChanged();
+    }
 }
