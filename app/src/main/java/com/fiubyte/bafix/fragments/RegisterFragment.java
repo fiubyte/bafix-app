@@ -87,7 +87,7 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
                                         if (redirectServiceId != null && !redirectServiceId.equals(NO_REDIRECT_SERVICE_ID)) {
                                             Bundle bundle = new Bundle();
                                             ServiceData serviceData = dataViewModel.getCurrentServices().getValue().stream().filter(s -> s.getServiceId() == redirectServiceId).findFirst().orElseThrow(() -> new RuntimeException("Redirect service id: " + redirectServiceId + " not found in the list of services"));
-                                            bundle.putInt("rating", serviceData.getOwnRating());
+                                            bundle.putInt("rating", (serviceData.getOwnRating() != null) ? serviceData.getOwnRating() : 0);
                                             bundle.putParcelable("serviceData", serviceData);
                                             bundle.putParcelable("currentTab", ServiceTab.INFORMATION);
                                             redirectServiceId = null;
@@ -160,7 +160,7 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
                                                              if (redirectServiceId != null && !redirectServiceId.equals(NO_REDIRECT_SERVICE_ID)) {
                                                                  Bundle bundle = new Bundle();
                                                                  ServiceData serviceData = dataViewModel.getCurrentServices().getValue().stream().filter(s -> s.getServiceId() == redirectServiceId).findFirst().orElseThrow(() -> new RuntimeException("Redirect service id: " + redirectServiceId + " not found in the list of services"));
-                                                                 bundle.putInt("rating", serviceData.getOwnRating());
+                                                                 bundle.putInt("rating", (serviceData.getOwnRating() != null) ? serviceData.getOwnRating() : 0);
                                                                  bundle.putParcelable("serviceData", serviceData);
                                                                  bundle.putParcelable("currentTab", ServiceTab.INFORMATION);
                                                                  redirectServiceId = null;
