@@ -94,6 +94,13 @@ public class LoginAuthManager {
         return "admin@admin@example.com";
     }
 
+    public static String getLastSignedUserName(Activity activity) {
+        if (userAlreadySignedIn(activity)) {
+            return GoogleSignIn.getLastSignedInAccount(activity).getDisplayName();
+        }
+        return "No User";
+    }
+
     private static void displaySuccessFulLoginToast(Activity activity) {
         activity.runOnUiThread(() -> {
             Toast.makeText(activity, "Successfully logged in", Toast.LENGTH_SHORT).show();

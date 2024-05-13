@@ -19,6 +19,7 @@ import android.util.Log;
 
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.entities.ServiceTab;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
@@ -86,8 +87,9 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
                                         if (redirectServiceId != null && !redirectServiceId.equals(NO_REDIRECT_SERVICE_ID)) {
                                             Bundle bundle = new Bundle();
                                             ServiceData serviceData = dataViewModel.getCurrentServices().getValue().stream().filter(s -> s.getServiceId() == redirectServiceId).findFirst().orElseThrow(() -> new RuntimeException("Redirect service id: " + redirectServiceId + " not found in the list of services"));
-                                            bundle.putInt("rating", serviceData.getOwnRate());
+                                            bundle.putInt("rating", serviceData.getOwnRating());
                                             bundle.putParcelable("serviceData", serviceData);
+                                            bundle.putParcelable("currentTab", ServiceTab.INFORMATION);
                                             redirectServiceId = null;
                                             Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_serviceFragment, bundle);
                                         }
@@ -158,8 +160,9 @@ public class RegisterFragment extends Fragment implements SharedPreferences.OnSh
                                                              if (redirectServiceId != null && !redirectServiceId.equals(NO_REDIRECT_SERVICE_ID)) {
                                                                  Bundle bundle = new Bundle();
                                                                  ServiceData serviceData = dataViewModel.getCurrentServices().getValue().stream().filter(s -> s.getServiceId() == redirectServiceId).findFirst().orElseThrow(() -> new RuntimeException("Redirect service id: " + redirectServiceId + " not found in the list of services"));
-                                                                 bundle.putInt("rating", serviceData.getOwnRate());
+                                                                 bundle.putInt("rating", serviceData.getOwnRating());
                                                                  bundle.putParcelable("serviceData", serviceData);
+                                                                 bundle.putParcelable("currentTab", ServiceTab.INFORMATION);
                                                                  redirectServiceId = null;
                                                                  Navigation.findNavController(requireView()).navigate(R.id.action_registerFragment_to_serviceFragment, bundle);
                                                              } else {

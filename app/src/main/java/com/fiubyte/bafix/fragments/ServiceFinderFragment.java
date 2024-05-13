@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.fiubyte.bafix.R;
 import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
 import com.fiubyte.bafix.entities.ProviderData;
+import com.fiubyte.bafix.entities.ServiceTab;
 import com.fiubyte.bafix.entities.ServicesView;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.utils.OpenStreetMapManager;
@@ -222,7 +224,7 @@ public class ServiceFinderFragment extends Fragment implements View.OnClickListe
     @Override
     public void onItemClick(int position) {
         ServiceFinderFragmentDirections.ActionServiceFinderFragmentToServiceFragment action =
-                ServiceFinderFragmentDirections.actionServiceFinderFragmentToServiceFragment(0, dataViewModel.getCurrentServices().getValue().get(position));
+                ServiceFinderFragmentDirections.actionServiceFinderFragmentToServiceFragment(0, dataViewModel.getCurrentServices().getValue().get(position), ServiceTab.INFORMATION);
         Navigation
                 .findNavController(requireView())
                 .navigate(action);

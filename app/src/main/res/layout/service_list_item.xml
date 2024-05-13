@@ -41,16 +41,82 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <TextView
-                    android:id="@+id/service_title"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="15sp"
-                    android:fontFamily="@font/dm_sans_bold"
-                    android:textColor="@color/title_color"
-                    tools:text="Pedicura completa con esmaltado permanente para unas permanentes"
+                    android:orientation="vertical"
                     android:layout_marginLeft="12dp"
-                    android:gravity="center_vertical|left"/>
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/service_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="15sp"
+                        android:fontFamily="@font/dm_sans_bold"
+                        android:textColor="@color/title_color"
+                        android:text="Pedicura completa con esmaltado permanente para unas permanentes"
+                        android:gravity="left"/>
+
+
+                    <LinearLayout
+                        android:id="@+id/rating_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="7dp">
+
+                        <TextView
+                            android:id="@+id/rating_average_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/dm_sans_regular"
+                            android:textSize="14sp"
+                            android:textColor="@color/subtitle_color"
+                            android:text="4,7"
+                            android:layout_gravity="center_vertical">
+                        </TextView>
+
+                        <RatingBar
+                            android:id="@+id/rating_average_bar"
+                            android:layout_gravity="center_vertical"
+                            android:rating="4.7"
+                            android:layout_marginLeft="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:progressTint="#F7BC0D"
+                            android:clickable="false">
+                        </RatingBar>
+
+                        <TextView
+                            android:id="@+id/rating_reviews_amount"
+                            android:layout_marginLeft="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/dm_sans_regular"
+                            android:textSize="14sp"
+                            android:textColor="@color/subtitle_color"
+                            android:text="(102)"
+                            android:layout_gravity="center_vertical">
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/no_opinions_text"
+                        android:layout_marginTop="7dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/dm_sans_regular"
+                        android:textSize="14sp"
+                        android:textColor="@color/subtitle_color"
+                        android:text="No hay opiniones"
+                        android:layout_gravity="center_vertical">
+                    </TextView>
+
+                </LinearLayout>
 
             </LinearLayout>
 

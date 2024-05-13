@@ -1,49 +1,80 @@
 package com.fiubyte.bafix.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.fiubyte.bafix.R;
+import com.fiubyte.bafix.adapters.ServiceFinderListAdapter;
+import com.fiubyte.bafix.adapters.ServiceOpinionsListAdapter;
 import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.entities.ServiceOpinionData;
+import com.fiubyte.bafix.entities.ServiceTab;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.models.FiltersViewModel;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.ProvidersDataGenerator;
+import com.fiubyte.bafix.utils.RatingBarInterface;
+import com.fiubyte.bafix.utils.RecylcerViewInterface;
+import com.fiubyte.bafix.utils.SvgRatingBar;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.tabs.TabItem;
+import com.google.android.material.tabs.TabLayout;
+import com.squareup.picasso.Picasso;
 import com.fiubyte.bafix.utils.ServicesAPIManager;
 import com.fiubyte.bafix.utils.ServicesAPIManager.ServiceRateCallback;
 import com.fiubyte.bafix.utils.ServicesDataDeserializer;
-import com.fiubyte.bafix.utils.SvgRatingBar;
-import com.google.android.material.card.MaterialCardView;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
-public class ServiceFragment extends Fragment implements View.OnClickListener {
+public class ServiceFragment extends Fragment implements View.OnClickListener, RatingBarInterface
+        , Observer<ArrayList<ServiceData>> {
+    private ServiceTab currentTab = ServiceTab.INFORMATION;
+    private Map<ServiceTab, LinearLayout> tabs;
+    private LinearLayout informationLayout;
+    private LinearLayout opinionsLayout;
+    private TabLayout tabLayout;
+    private RecyclerView opinionsRecylerView;
     private DataViewModel dataViewModel;
     MaterialCardView providerCardView;
     ServiceData serviceData;
     ImageView backButton;
-    ImageView favoriteButton;
     SvgRatingBar ratingBar;
+    TextView pendingApprovalText;
+    TextView ratingAverageText, ratingReviewsAmount, noOpinionsText;
+    RatingBar ratingAverageBar;
+    LinearLayout ratingLayout;
+    ImageView favoriteButton;
+    ImageView shareButton;
     FiltersViewModel filtersViewModel;
 
     @Override
@@ -63,7 +94,24 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
 
         if (ServiceFragmentArgs.fromBundle(getArguments()).getServiceData() != null) {
             serviceData = ServiceFragmentArgs.fromBundle(getArguments()).getServiceData();
+            currentTab = ServiceFragmentArgs.fromBundle(getArguments()).getCurrentTab();
         }
+
+        informationLayout = view.findViewById(R.id.information_layout);
+        opinionsLayout = view.findViewById(R.id.opinions_layout);
+
+        tabs = new HashMap<>();
+        tabs.put(ServiceTab.INFORMATION, informationLayout);
+        tabs.put(ServiceTab.OPINIONS, opinionsLayout);
+
+        setupTabLayout(view);
+        updateCurrentTab();
+
+        opinionsRecylerView = view.findViewById(R.id.opinions_recylcer_view);
+        setupOpinionsRecylcerView();
+
+        dataViewModel = new ViewModelProvider(requireActivity()).get(DataViewModel.class);
+        dataViewModel.getCurrentServices().observe(requireActivity(), this);
 
         ImageView providerPhoto = view.findViewById(R.id.provider_picture);
         Picasso.with(this.getContext()).load(serviceData.getServicePhotoURL()).resize(600, 600).centerCrop().into(providerPhoto);
@@ -88,20 +136,31 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        ratingBar = view.findViewById(R.id.rating_bar);
-
-        ratingBar.setRating(ServiceFragmentArgs.fromBundle(getArguments()).getRating());
-        ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
-            @Override
-            public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
-                ServiceFragmentDirections.ActionServiceFragmentToRatingFragment action =
-                        ServiceFragmentDirections.actionServiceFragmentToRatingFragment((int) v, serviceData);
-
-                Navigation
-                        .findNavController(view)
-                        .navigate(action);
+        backButton.setOnClickListener(v -> {
+            try {
+                handleOnBackButtonClicked(v);
+            } catch (UnsupportedEncodingException e) {
+                throw new RuntimeException(e);
             }
         });
+
+        pendingApprovalText = view.findViewById(R.id.pending_approval_text);
+        ratingBar = view.findViewById(R.id.rating_bar);
+
+        setCurrentRatingView();
+
+        if(serviceData.getOwnRating() == null) {
+            ratingBar.setRating(0);
+        } else {
+            ratingBar.setRating(serviceData.getOwnRating());
+        }
+        ratingBar.setOnRatingBarChangeListener((ratingBar, rating, fromUser) -> {
+            if (fromUser) {
+                handleOnRatingChanged(view, rating);
+            }
+        });
+
+        setAverageRatingInfo(view);
 
         favoriteButton = view.findViewById(R.id.favorite_button);
         updateFavoriteIconUI();
@@ -109,11 +168,145 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
         favoriteButton.setOnClickListener(favButtonView -> {
             onFavoriteButtonClicked();
         });
+
+        shareButton = view.findViewById(R.id.share_button);
+        shareButton.setOnClickListener(v -> {
+            handleOnShareButtonClicked(v);
+        });
+    }
+
+    private void handleOnShareButtonClicked(View v) {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.setType("text/html");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "https://bafix-api.onrender.com/service/" + serviceData.getServiceId());
+        shareIntent.putExtra(Intent.EXTRA_TITLE, serviceData.getTitle());
+
+        if (shareIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            startActivity(Intent.createChooser(shareIntent, "Share via"));
+        }
     }
 
     private void handleOnBackButtonClicked(View view) throws UnsupportedEncodingException {
         retrieveServices(SharedPreferencesManager.getStoredToken(requireActivity()), filtersViewModel.getFilters().getValue(),
                          dataViewModel.getCurrentLocation().getValue(), view);
+    }
+
+    private void setAverageRatingInfo(View view) {
+        ratingAverageText = view.findViewById(R.id.rating_average_text);
+        ratingReviewsAmount = view.findViewById(R.id.rating_reviews_amount);
+        ratingAverageBar = view.findViewById(R.id.rating_average_bar);
+        noOpinionsText = view.findViewById(R.id.no_opinions_text);
+        ratingLayout = view.findViewById(R.id.rating_layout);
+
+        if (serviceData.getRatingAverage() == null) {
+            noOpinionsText.setVisibility(View.VISIBLE);
+            ratingLayout.setVisibility(View.GONE);
+        } else {
+            noOpinionsText.setVisibility(View.GONE);
+            ratingLayout.setVisibility(View.VISIBLE);
+            ratingAverageText.setText(String.valueOf(serviceData.getRatingAverage()));
+            ratingAverageBar.setRating(serviceData.getRatingAverage().floatValue());
+            ratingReviewsAmount.setText("(" + serviceData.getOpinions().size() + ")");
+        }
+    }
+
+    private void setCurrentRatingView() {
+        // ownRatingApproved
+
+        if (ratingBar == null || pendingApprovalText == null) {
+            return;
+        }
+        if  (serviceData.getOwnRatingApproved() == null && serviceData.getOwnRating() == null ) {
+            ratingBar.setVisibility(View.VISIBLE);
+            pendingApprovalText.setVisibility(View.GONE);
+        } else if (serviceData.getOwnRatingApproved() == null) {
+            ratingBar.setVisibility(View.GONE);
+            pendingApprovalText.setVisibility(View.VISIBLE);
+            pendingApprovalText.setText("Su calificación esta pendiente de aprobación.");
+        } else if (serviceData.getOwnRatingApproved() == true) {
+            ratingBar.setVisibility(View.VISIBLE);
+            pendingApprovalText.setVisibility(View.GONE);
+        } else {
+            ratingBar.setVisibility(View.VISIBLE);
+            pendingApprovalText.setVisibility(View.VISIBLE);
+            pendingApprovalText.setText("Su calificacion no ha sido aprobada. Por favor envie una nueva calificacion.");
+        }
+    }
+
+    private void handleOnRatingChanged(View view, float v) {
+        ServiceFragmentDirections.ActionServiceFragmentToRatingFragment action =
+                ServiceFragmentDirections.actionServiceFragmentToRatingFragment((int) v, serviceData, currentTab);
+
+        Navigation
+                .findNavController(view)
+                .navigate(action);
+    }
+
+    private void setupOpinionsRecylcerView() {
+        opinionsRecylerView.setLayoutManager(new LinearLayoutManager(requireContext(),
+                                                              LinearLayoutManager.VERTICAL, false
+        ));
+        ServiceOpinionsListAdapter adapter = new ServiceOpinionsListAdapter(
+                requireContext(),
+                serviceData.getOpinions(),
+                serviceData.getOwnRating(), serviceData.getOwnRatingApproved(), this
+        );
+        opinionsRecylerView.setAdapter(adapter);
+    }
+
+    private void setupTabLayout(View view) {
+        tabLayout = view.findViewById(R.id.tab_layout);
+
+        if (serviceData.getOpinions() != null && serviceData.getOpinions().isEmpty()) {
+            tabLayout.removeTab(tabLayout.getTabAt(ServiceTab.OPINIONS.ordinal()));
+        }
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if (tab.getText().toString().contains("Información")) {
+                    onInformationTabClicked();
+                } else if (tab.getText().toString().contains("Opiniones")) {
+                    onOpinionsTabClicked();
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        tabLayout.getTabAt(currentTab.ordinal()).select();
+    }
+
+    private void onOpinionsTabClicked() {
+        currentTab = ServiceTab.OPINIONS;
+        updateCurrentTab();
+    }
+
+    private void onInformationTabClicked() {
+        Log.d("DEBUGGING", "information");
+        currentTab = ServiceTab.INFORMATION;
+        updateCurrentTab();
+    }
+
+    private void updateCurrentTab() {
+        Log.d("DEBUGGING", "currentTab: " + currentTab);
+
+        tabs.forEach((tabType, layout) -> {
+            if (tabType == currentTab) {
+                layout.setVisibility(View.VISIBLE);
+            } else {
+                layout.setVisibility(View.GONE);
+            }
+        });
+
+
     }
 
     @Override
@@ -133,6 +326,16 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
         Navigation
                 .findNavController(view)
                 .navigate(action);
+    }
+
+    @Override
+    public void onBarClicked(int rate) {
+        handleOnRatingChanged(requireView(), rate);
+    }
+
+    @Override
+    public void onChanged(ArrayList<ServiceData> serviceData) {
+        setCurrentRatingView();
     }
 
     private void updateFavoriteIconUI() {
@@ -189,22 +392,22 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
     }
     private void showFavError() {
         getActivity().runOnUiThread(() -> Toast.makeText(getActivity(),
-                        "Ha ocurrido un error.\nPor favor, intenta de nuevo más tarde.",
-                        Toast.LENGTH_SHORT)
+                                                         "Ha ocurrido un error.\nPor favor, intenta de nuevo más tarde.",
+                                                         Toast.LENGTH_SHORT)
                 .show());
     }
 
     private void showFavSuccess() {
         getActivity().runOnUiThread(() -> Toast.makeText(getActivity(),
-                        "¡Agregado a favoritos con éxito!",
-                        Toast.LENGTH_SHORT)
+                                                         "¡Agregado a favoritos con éxito!",
+                                                         Toast.LENGTH_SHORT)
                 .show());
     }
 
     private void showUnfavSuccess() {
         getActivity().runOnUiThread(() -> Toast.makeText(getActivity(),
-                        "¡Quitado de favoritos con éxito!",
-                        Toast.LENGTH_SHORT)
+                                                         "¡Quitado de favoritos con éxito!",
+                                                         Toast.LENGTH_SHORT)
                 .show());
     }
 
@@ -218,6 +421,9 @@ public class ServiceFragment extends Fragment implements View.OnClickListener {
                                             new ServicesAPIManager.ServicesListCallback() {
                                                 @Override
                                                 public void onServicesListReceived(String servicesList) {
+                                                    if(getActivity() == null) {
+                                                        return;
+                                                    }
                                                     getActivity().runOnUiThread(() -> {
                                                         try {
                                                             dataViewModel.updateServices(ServicesDataDeserializer.deserialize(servicesList));

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:layout_marginHorizontal="5dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Micaela Olivera"
+            android:fontFamily="@font/dm_sans_medium"
+            android:textSize="16sp"
+            android:textColor="@color/title_color">
+        </TextView>
+
+        <RatingBar
+            android:id="@+id/user_rating"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/ratingBarStyleSmall"
+            android:progressTint="#F7BC0D">
+        </RatingBar>
+
+        <TextView
+            android:id="@+id/user_opinion"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Excelente servicio! Julia es una divina. Las uñas me duraron 2 semanas enteras. Lo recomiendo!"
+            android:fontFamily="@font/dm_sans_regular"
+            android:textSize="15sp"
+            android:textColor="@color/title_color">
+        </TextView>
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/separator" />
+
+</LinearLayout>

@@ -7,4 +7,6 @@
     <string name="ordering_title">Ordenar</string>
     <string name="preference_file_key">com.fiubyte.bafix.PREFERENCES</string>
     <string name="login_token_key">user_token</string>
+    <string name="compartir_enlace">Compartir enlace</string>
+    <string name="https_com_fiubyte_bafix_services_5">https://com.fiubyte.bafix/services/5</string>
 </resources>

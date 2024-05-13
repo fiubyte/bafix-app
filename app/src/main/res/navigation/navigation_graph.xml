@@ -107,6 +107,9 @@
         <action
             android:id="@+id/action_serviceFragment_to_serviceFinderFragment"
             app:destination="@id/serviceFinderFragment" />
+        <argument
+            android:name="currentTab"
+            app:argType="com.fiubyte.bafix.entities.ServiceTab" />
     </fragment>
     <fragment
         android:id="@+id/ratingFragment"
@@ -123,5 +126,17 @@
             android:id="@+id/action_ratingFragment_to_serviceFragment"
             app:destination="@id/serviceFragment"
             app:popUpTo="@id/serviceFinderFragment"/>
+        <argument
+            android:name="currentServicesTab"
+            app:argType="com.fiubyte.bafix.entities.ServiceTab" />
+    </fragment>
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.fiubyte.bafix.fragments.FavoritesFragment"
+        android:label="fragment_favorites"
+        tools:layout="@layout/fragment_favorites" >
+        <action
+            android:id="@+id/action_favoritesFragment_to_serviceFragment"
+            app:destination="@id/serviceFragment" />
     </fragment>
 </navigation>
