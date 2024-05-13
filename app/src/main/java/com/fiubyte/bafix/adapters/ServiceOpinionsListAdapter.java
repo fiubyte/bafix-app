@@ -87,7 +87,7 @@ public class ServiceOpinionsListAdapter extends RecyclerView.Adapter<RecyclerVie
         }
 
         void bind() {
-            if(userRatingApproved || currentUserRating == null) {
+            if((userRatingApproved != null && userRatingApproved) || currentUserRating == null) {
                 ratingBar.setVisibility(View.VISIBLE);
                 pendingApprovalText.setVisibility(View.GONE);
             } else {
