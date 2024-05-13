@@ -3,6 +3,7 @@ package com.fiubyte.bafix.utils;
 import android.util.Log;
 
 import com.fiubyte.bafix.entities.ServiceData;
+import com.fiubyte.bafix.entities.ServiceOpinionData;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,19 +45,51 @@ public class ServicesDataDeserializer {
             String description = jsonObject.getString("description");
             String availabilityDays = ServicesDataDeserializer.formatAvailableDays(jsonObject.getString("availability_days"));
             String availabilityTime = jsonObject.getString("availability_time_start") + " - " + jsonObject.getString("availability_time_end");
+            Boolean ownRatingApproved = jsonObject.optBoolean("own_rate_approved");
             boolean isServiceFaved = jsonObject.getBoolean("faved_by_me");
-            int ownRate = 0;
-            boolean ownRateApproved = false;
-            if (!jsonObject.isNull("own_rate"))
-                ownRate = jsonObject.getInt("own_rate");
-            if (!jsonObject.isNull("own_rate_approved"))
-                ownRateApproved = jsonObject.getBoolean("own_rate_approved");
+
+            Double ratingAverage;
+            if (jsonObject.isNull("service_avg_rate")) {
+                ratingAverage = null;
+            } else {
+                ratingAverage = Double.valueOf(twoDForm.format(jsonObject.getDouble("service_avg_rate")));
+            }
+
+            Integer ownRating;
+            if (jsonObject.isNull("own_rate")) {
+                ownRating = null;
+            } else {
+                ownRating = jsonObject.optInt("own_rate");
+            }
+
+            JSONArray rates = jsonObject.getJSONArray("rates");
+            ArrayList<ServiceOpinionData> opinions = new ArrayList<>();
+
+            if (rates.length() != 0) {
+                for (int j = 0; j < rates.length(); j++) {
+                    JSONObject rate = rates.getJSONObject(j);
+
+                    String userName = rate.getString("name") + " " + rate.getString("surname");
+                    int userRating = rate.getInt("rate");
+                    String userOpinion = rate.getString("message");
+                    Boolean approved;
+                    if(rate.isNull("approved")) {
+                        approved = null;
+                    } else {
+                        approved = rate.optBoolean("approved");
+                    }
+
+                    if (approved != null && approved) {
+                        opinions.add(new ServiceOpinionData(userName, userRating, userOpinion, approved));
+                    }
+                }
+            }
 
             services.add(new ServiceData(id, title, userPhotoURL, servicePhotoURL, maxDistance,
                                          providerName, providerId,
                                          isAvailable, new GeoPoint(latitude, longitude),
                                          providerPhone, description, availabilityDays,
-                                         availabilityTime, isServiceFaved, ownRate, ownRateApproved));
+                                         availabilityTime, isServiceFaved));
         }
         return services;
     }

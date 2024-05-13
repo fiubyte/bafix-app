@@ -1,6 +1,8 @@
 package com.fiubyte.bafix.entities;
 
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.fiubyte.bafix.R;
@@ -8,6 +10,7 @@ import com.fiubyte.bafix.R;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class CustomInfoWindow extends MarkerInfoWindow {
@@ -16,15 +19,29 @@ public class CustomInfoWindow extends MarkerInfoWindow {
     ArrayList<TextView> services;
     ArrayList<View> dividers;
     TextView tooManyServicesIndicator;
+    TextView ratingAverageText, ratingReviewsAmount, noOpinionsText;
+    RatingBar ratingAverageBar;
+    LinearLayout ratingLayout;
+
+    ArrayList<ServiceData> servicesList;
 
     public CustomInfoWindow(MapView mapView, String providerName, ArrayList<ServiceData> servicesList) {
         super(R.layout.maps_info_window, mapView);
+        this.servicesList = servicesList;
         initializeProvider(providerName);
         initializeServices();
         initializeDividers();
         tooManyServicesIndicator = mView.findViewById(R.id.too_many_services_indicator);
 
-        updateInfoWindowView(servicesList);
+        updateInfoWindowList();
+
+        ratingAverageText = mView.findViewById(R.id.rating_average_text);
+        ratingReviewsAmount = mView.findViewById(R.id.rating_reviews_amount);
+        ratingAverageBar = mView.findViewById(R.id.rating_average_bar);
+        noOpinionsText = mView.findViewById(R.id.no_opinions_text);
+        ratingLayout = mView.findViewById(R.id.rating_layout);
+
+        updateAverageRatingInfo();
     }
 
     private void initializeProvider(String providerName) {
@@ -45,7 +62,7 @@ public class CustomInfoWindow extends MarkerInfoWindow {
         dividers.add(mView.findViewById(R.id.third_divider));
     }
 
-    private void updateInfoWindowView(ArrayList<ServiceData> servicesList) {
+    private void updateInfoWindowList() {
         for (int i = 0; i < servicesList.size(); i++) {
             if (i == MAX_LIST_ITEMS) {
                 dividers.get(MAX_LIST_ITEMS - 2).setVisibility(View.VISIBLE);
@@ -58,6 +75,49 @@ public class CustomInfoWindow extends MarkerInfoWindow {
                 dividers.get(i).setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private void updateAverageRatingInfo() {
+        if (computeUserOpinions() == 0) {
+            noOpinionsText.setVisibility(View.VISIBLE);
+            ratingLayout.setVisibility(View.GONE);
+        } else {
+            noOpinionsText.setVisibility(View.GONE);
+            ratingLayout.setVisibility(View.VISIBLE);
+            ratingAverageText.setText(String.valueOf(computeUserRatingAverage()));
+            ratingAverageBar.setRating(computeUserRatingAverage());
+            ratingReviewsAmount.setText("(" + computeUserOpinions() + ")");
+        }
+    }
+
+    private float computeUserRatingAverage() {
+        double totalRating = 0;
+        int totalRatingsCount = 0;
+
+        for (ServiceData service : servicesList) {
+            if (service.getOpinions() != null) {
+                for (ServiceOpinionData opinion : service.getOpinions()) {
+                    totalRating += opinion.getUserRating();
+                    totalRatingsCount++;
+                }
+            }
+        }
+
+        double averageRating = totalRating / totalRatingsCount;
+
+        DecimalFormat twoDForm = new DecimalFormat("#.#");
+        return Float.valueOf(twoDForm.format(averageRating));
+    }
+
+    private int computeUserOpinions() {
+        int totalRatingsCount = 0;
+
+        for (ServiceData service : servicesList) {
+            if (service.getOpinions() != null) {
+                totalRatingsCount += service.getOpinions().size();
+            }
+        }
+        return totalRatingsCount;
     }
 
     @Override

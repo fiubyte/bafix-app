@@ -1,14 +1,12 @@
 package com.fiubyte.bafix.entities;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import org.osmdroid.util.GeoPoint;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 
-public class ServiceData implements Serializable, Parcelable {
+public class ServiceData implements Serializable {
     int id;
     String providerPhotoURL;
     String servicePhotoURL;
@@ -22,15 +20,16 @@ public class ServiceData implements Serializable, Parcelable {
     String description;
     String availabilityDays;
     String availabilityTime;
+    Integer ownRating;
+    Boolean ownRatingApproved;
+    ArrayList<ServiceOpinionData> opinions;
+    Double ratingAverage;
     boolean isServiceFaved;
-    int ownRate;
-    boolean ownRateApproved;
     public ServiceData(int id,
-                       String title, String providerPhotoURL, String servicePhotoURL, double maxDistance,
-                       String providerName, int providerId, boolean available, GeoPoint geoPoint, String providerPhone,
-                       String description, String availabilityDays, String availabilityTime, boolean isServiceFaved,
-                       int ownRate, boolean ownRateApproved
-    ) {
+            String title, String providerPhotoURL, String servicePhotoURL, double maxDistance,
+            String providerName, int providerId, boolean available, GeoPoint geoPoint, String providerPhone,
+            String description, String availabilityDays, String availabilityTime, boolean isServiceFaved
+                      ) {
         this.id = id;
         this.title = title;
         this.providerPhotoURL = providerPhotoURL;
@@ -44,66 +43,12 @@ public class ServiceData implements Serializable, Parcelable {
         this.description = description;
         this.availabilityDays = availabilityDays;
         this.availabilityTime = availabilityTime;
+        this.ownRating = ownRating;
+        this.ownRatingApproved = ownRatingApproved;
+        this.opinions = opinions;
+        this.ratingAverage = ratingAverage;
         this.isServiceFaved = isServiceFaved;
-        this.ownRate = ownRate;
-        this.ownRateApproved = ownRateApproved;
     }
-
-    protected ServiceData(Parcel in) {
-        id = in.readInt();
-        providerPhotoURL = in.readString();
-        servicePhotoURL = in.readString();
-        title = in.readString();
-        maxDistance = in.readDouble();
-        providerName = in.readString();
-        providerId = in.readInt();
-        available = in.readByte() != 0;
-        geoPoint = in.readParcelable(GeoPoint.class.getClassLoader());
-        providerPhone = in.readString();
-        description = in.readString();
-        availabilityDays = in.readString();
-        availabilityTime = in.readString();
-        isServiceFaved = in.readByte() != 0;
-        ownRate = in.readInt();
-        ownRateApproved = in.readByte() != 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
-        dest.writeString(providerPhotoURL);
-        dest.writeString(servicePhotoURL);
-        dest.writeString(title);
-        dest.writeDouble(maxDistance);
-        dest.writeString(providerName);
-        dest.writeInt(providerId);
-        dest.writeByte((byte) (available ? 1 : 0));
-        dest.writeParcelable(geoPoint, flags);
-        dest.writeString(providerPhone);
-        dest.writeString(description);
-        dest.writeString(availabilityDays);
-        dest.writeString(availabilityTime);
-        dest.writeByte((byte) (isServiceFaved ? 1 : 0));
-        dest.writeInt(ownRate);
-        dest.writeByte((byte) (ownRateApproved ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<ServiceData> CREATOR = new Creator<ServiceData>() {
-        @Override
-        public ServiceData createFromParcel(Parcel in) {
-            return new ServiceData(in);
-        }
-
-        @Override
-        public ServiceData[] newArray(int size) {
-            return new ServiceData[size];
-        }
-    };
 
     public String getProviderPhotoURL() {
         return providerPhotoURL;
@@ -150,26 +95,24 @@ public class ServiceData implements Serializable, Parcelable {
         return availabilityTime;
     }
 
+    public Integer getOwnRating() {
+        return ownRating;
+    }
+
+    public Boolean getOwnRatingApproved() {
+        return ownRatingApproved;
+    }
+
+    public ArrayList<ServiceOpinionData> getOpinions() {
+        return opinions;
+    }
+
     public int getServiceId() { return id; }
+
+    public Double getRatingAverage() { return ratingAverage; }
+
     public boolean isServiceFaved() { return isServiceFaved; }
     public void setIsServiceFaved(boolean isFaved) { isServiceFaved = isFaved; }
-
-    public int getOwnRate() {
-        return ownRate;
-    }
-
-    public void setOwnRate(int ownRate) {
-        this.ownRate = ownRate;
-    }
-
-    public boolean isOwnRateApproved() {
-        return ownRateApproved;
-    }
-
-    public void setOwnRateApproved(boolean ownRateApproved) {
-        this.ownRateApproved = ownRateApproved;
-    }
-
     public void writeToObject(java.io.ObjectOutputStream out) throws IOException {
         out.writeObject(id);
         out.writeObject(title);
@@ -184,9 +127,11 @@ public class ServiceData implements Serializable, Parcelable {
         out.writeObject(description);
         out.writeObject(availabilityDays);
         out.writeObject(availabilityTime);
+        out.writeInt(ownRating);
+        out.writeBoolean(ownRatingApproved);
+        out.writeObject(opinions);
+        out.writeDouble(ratingAverage);
         out.writeBoolean(isServiceFaved);
-        out.writeInt(ownRate);
-        out.writeBoolean(ownRateApproved);
     }
 
     @SuppressWarnings("unchecked")
@@ -204,12 +149,14 @@ public class ServiceData implements Serializable, Parcelable {
         String description = (String) in.readObject();
         String availabilityDays = (String) in.readObject();
         String availabilityTime = (String) in.readObject();
+        int ownRating = in.readInt();
+        boolean ownRatingApproved = in.readBoolean();
+        ArrayList<ServiceOpinionData> opinions = (ArrayList<ServiceOpinionData>) in.readObject();
+        Double ratingAverage = in.readDouble();
         boolean isServiceFaved = in.readBoolean();
-        int ownRate = in.readInt();
-        boolean ownRateApproved = in.readBoolean();
 
         return new ServiceData(id, title, providerPhotoURL, servicePhotoURL, maxDistance, providerName,
                                providerId, available, geoPoint, providerPhone, description,
-                               availabilityDays, availabilityTime, isServiceFaved, ownRate, ownRateApproved);
+                               availabilityDays, availabilityTime, isServiceFaved);
     }
 }

@@ -1,7 +1,5 @@
 package com.fiubyte.bafix.utils;
 
-import static java.lang.String.format;
-
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -22,14 +20,18 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import static java.lang.String.format;
+
 
 public class ServicesAPIManager {
-    private static OkHttpClient client = new OkHttpClient();
+    private static OkHttpClient client;
     private static final String getServicesURL = "https://bafix-api.onrender.com/services/filter/";
     private static final String FAV_SERVICE_URL = "https://bafix-api.onrender.com/services/%s/fav";
     private static final String UNFAV_SERVICE_URL = "https://bafix-api.onrender.com/services/%s/unfav";
 
     public static void retrieveServices(String token, Map<String,String> filters, Map<String, Double> userLocation, ServicesListCallback callback) throws UnsupportedEncodingException {
+        client = new OkHttpClient();
+
         HttpUrl.Builder httpBuilder = HttpUrl.parse(getServicesURL).newBuilder();
 
         httpBuilder.addQueryParameter("ordered_by_distance", "true");
@@ -44,7 +46,6 @@ public class ServicesAPIManager {
                     .map(String::trim)
                     .collect(Collectors.toList());
 
-            // Agregar cada valor individual al parámetro category_ids
             for (String categoryId : categoryIds) {
                 httpBuilder.addQueryParameter("category_ids", categoryId);
             }

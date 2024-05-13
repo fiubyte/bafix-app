@@ -24,7 +24,64 @@
             android:textColor="@color/selected_color"
             android:fontFamily="@font/dm_sans_bold"
             android:textSize="16dp"
-            android:paddingBottom="4dp">
+            android:paddingBottom="2dp">
+        </TextView>
+
+        <LinearLayout
+            android:id="@+id/rating_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="7dp">
+
+            <TextView
+                android:id="@+id/rating_average_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dm_sans_regular"
+                android:textSize="14sp"
+                android:textColor="@color/subtitle_color"
+                android:text="4,7"
+                android:layout_gravity="center_vertical">
+            </TextView>
+
+            <RatingBar
+                android:id="@+id/rating_average_bar"
+                android:layout_gravity="center_vertical"
+                android:rating="4.7"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="?android:attr/ratingBarStyleSmall"
+                android:progressTint="#F7BC0D"
+                android:clickable="false">
+            </RatingBar>
+
+            <TextView
+                android:id="@+id/rating_reviews_amount"
+                android:layout_marginLeft="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/dm_sans_regular"
+                android:textSize="14sp"
+                android:textColor="@color/subtitle_color"
+                android:text="(102)"
+                android:layout_gravity="center_vertical">
+            </TextView>
+
+        </LinearLayout>
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/no_opinions_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/dm_sans_regular"
+            android:textSize="14sp"
+            android:textColor="@color/subtitle_color"
+            android:text="No hay opiniones"
+            android:layout_gravity="center_vertical"
+            android:paddingBottom="7dp">
         </TextView>
 
         <View

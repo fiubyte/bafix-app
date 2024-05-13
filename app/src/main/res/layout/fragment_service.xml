@@ -1,257 +1,435 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp">
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp">
 
-        <ImageView
-            android:id="@+id/back_button"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
-            android:layout_gravity="left|center_vertical"
-
-            android:src="@drawable/left_arrow_icon" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <ImageView
-            android:id="@+id/favorite_button"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_gravity="right"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/empty_heart" />
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/provider_cardview"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            app:cardCornerRadius="12dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
 
             <ImageView
-                android:id="@+id/provider_picture"
+                android:id="@+id/back_button"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="left|center_vertical"
+
+                android:src="@drawable/left_arrow_icon" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageView
+                android:id="@+id/favorite_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/empty_heart" />
+            
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:gravity="center_vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/provider_cardview"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                app:cardCornerRadius="12dp">
+
+                <ImageView
+                    android:id="@+id/provider_picture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:src="@drawable/julia"/>
+
+            </androidx.cardview.widget.CardView>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:src="@drawable/julia" />
+                android:orientation="vertical"
+                android:layout_marginLeft="12dp"
+                android:gravity="center_vertical">
 
-        </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/service_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:fontFamily="@font/dm_sans_bold"
+                    android:textColor="@color/title_color"
+                    android:text="Pedicura completa con esmaltado permanente para unas permanentes"
+                    android:gravity="left"/>
 
-        <TextView
-            android:id="@+id/service_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="12dp"
-            android:fontFamily="@font/dm_sans_bold"
-            android:gravity="center_vertical|left"
-            android:text="Pedicura completa con esmaltado permanente"
-            android:textColor="@color/title_color"
-            android:textSize="18sp" />
+                <LinearLayout
+                    android:id="@+id/rating_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="7dp">
+
+                    <TextView
+                        android:id="@+id/rating_average_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/dm_sans_regular"
+                        android:textSize="14sp"
+                        android:textColor="@color/subtitle_color"
+                        android:text="4,7"
+                        android:layout_gravity="center_vertical">
+                    </TextView>
+
+                    <RatingBar
+                        android:id="@+id/rating_average_bar"
+                        android:layout_gravity="center_vertical"
+                        android:rating="4.7"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        style="?android:attr/ratingBarStyleSmall"
+                        android:progressTint="#F7BC0D"
+                        android:clickable="false">
+                    </RatingBar>
+
+                    <TextView
+                        android:id="@+id/rating_reviews_amount"
+                        android:layout_marginLeft="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/dm_sans_regular"
+                        android:textSize="14sp"
+                        android:textColor="@color/subtitle_color"
+                        android:text="(102)"
+                        android:layout_gravity="center_vertical">
+                    </TextView>
+
+                </LinearLayout>
+
+                <TextView
+                    android:visibility="gone"
+                    android:id="@+id/no_opinions_text"
+                    android:layout_marginTop="7dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/dm_sans_regular"
+                    android:textSize="14sp"
+                    android:textColor="@color/subtitle_color"
+                    android:text="No hay opiniones"
+                    android:layout_gravity="center_vertical">
+                </TextView>
+
+            </LinearLayout>
+
+        </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/service_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/dm_sans_regular"
-        android:text="Disfruta de pies hermosos y bien cuidados con una pedicura de alta calidad que incluye esmaltado duradero."
-        android:textColor="@color/title_color"
-        android:textSize="16sp"></TextView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:orientation="horizontal">
+        android:id="@+id/app_bar"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <com.google.android.material.appbar.AppBarLayout
+            app:elevation="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.Toolbar
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/dm_sans_medium"
-                android:text="Días de atención"
-                android:textColor="@color/subtitle_color"
-                android:textSize="16sp"></TextView>
+                android:background="@color/background_color">
 
-            <TextView
-                android:id="@+id/availability_days"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:fontFamily="@font/dm_sans_medium"
-                android:text="Lu, Ma, Mi, Ju, Vi, Sa, Do"
-                android:textColor="@color/title_color"
-                android:textSize="15sp"></TextView>
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tab_layout"
+                    app:tabGravity="start"
+                    app:tabMode="scrollable"
+                    android:layout_gravity="left"
+                    android:layout_margin="0dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/background_color"
+                    app:tabTextAppearance="@style/TabLayoutStyle"
+                    app:tabSelectedTextColor="@color/highligthed_color"
+                    app:tabTextColor="@color/subtitle_color"
+                    app:tabIndicatorColor="@color/highligthed_color"
+                    app:tabIndicatorHeight="4dp"
+                    app:tabIndicatorFullWidth="false">
 
-        </LinearLayout>
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/information_tab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Información">
+                    </com.google.android.material.tabs.TabItem>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
-            android:orientation="vertical">
+                    <com.google.android.material.tabs.TabItem
+                        android:id="@+id/opinions_tab"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Opiniones">
+                    </com.google.android.material.tabs.TabItem>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/dm_sans_medium"
-                android:text="Rango horario"
-                android:textColor="@color/subtitle_color"
-                android:textSize="16dp"></TextView>
+                </com.google.android.material.tabs.TabLayout>
 
-            <TextView
-                android:id="@+id/availability_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:fontFamily="@font/dm_sans_medium"
-                android:text="09:00 - 18:00"
-                android:textColor="@color/title_color"
-                android:textSize="15dp"></TextView>
+            </androidx.appcompat.widget.Toolbar>
 
-        </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginTop="-5dp"
+            android:layout_height="1dp"
+            android:background="@color/separator" />
 
     </LinearLayout>
 
-    <TextView
+    <LinearLayout
+        android:id="@+id/information_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:fontFamily="@font/dm_sans_bold"
-        android:text="Proveedor/a"
-        android:textColor="@color/title_color"
-        android:textSize="17sp"></TextView>
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/provider_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginRight="10dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="14dp"
-        app:cardElevation="0dp"
-        app:strokeColor="@color/subtitle_color"
-        app:strokeWidth="1dp">
-
+        <TextView
+            android:id="@+id/service_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Disfruta de pies hermosos y bien cuidados con una pedicura de alta calidad que incluye esmaltado duradero."
+            android:fontFamily="@font/dm_sans_regular"
+            android:textColor="@color/title_color"
+            android:textSize="16sp">
+        </TextView>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:orientation="vertical"
-            android:padding="15dp">
-
-            <TextView
-                android:id="@+id/provider_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/dm_sans_bold"
-                android:text="Julia Benavídez"
-                android:textColor="@color/selected_color"
-                android:textSize="16sp"></TextView>
+            android:orientation="horizontal"
+            android:layout_marginTop="20dp">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/distance_maps_icon"></ImageView>
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/max_distance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:fontFamily="@font/dm_sans_regular"
-                    android:text="A 0,8 km"
+                    android:text="Días de atención"
+                    android:fontFamily="@font/dm_sans_medium"
+                    android:textColor="@color/subtitle_color"
+                    android:textSize="16sp">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/availability_days"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/dm_sans_medium"
+                    android:text="Lu, Ma, Mi, Ju, Vi, Sa, Do"
                     android:textColor="@color/title_color"
-                    android:textSize="15dp"></TextView>
+                    android:textSize="15sp"></TextView>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/phone_icon"></ImageView>
+                android:orientation="vertical"
+                android:layout_marginLeft="60dp">
 
                 <TextView
-                    android:id="@+id/provider_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="8dp"
-                    android:fontFamily="@font/dm_sans_regular"
-                    android:text="+5491140298321"
+                    android:text="Rango horario"
+                    android:fontFamily="@font/dm_sans_medium"
+                    android:textColor="@color/subtitle_color"
+                    android:textSize="16dp">
+                </TextView>
+
+                <TextView
+                    android:id="@+id/availability_time"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="09:00 - 18:00"
+                    android:fontFamily="@font/dm_sans_medium"
                     android:textColor="@color/title_color"
-                    android:textSize="15dp"></TextView>
+                    android:textSize="15dp">
+                </TextView>
 
             </LinearLayout>
+
 
         </LinearLayout>
 
+        <TextView
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proveedor/a"
+            android:fontFamily="@font/dm_sans_bold"
+            android:textColor="@color/title_color"
+            android:textSize="17sp">
+        </TextView>
 
-    </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/provider_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/white"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/subtitle_color">
 
-    <TextView
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="15dp"
+                android:layout_marginLeft="5dp">
+
+                <TextView
+                    android:id="@+id/provider_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Julia Benavídez"
+                    android:fontFamily="@font/dm_sans_bold"
+                    android:textColor="@color/selected_color"
+                    android:textSize="16sp">
+                </TextView>
+
+                <LinearLayout
+                    android:layout_marginTop="7dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/distance_maps_icon"></ImageView>
+
+                    <TextView
+                        android:id="@+id/max_distance"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:fontFamily="@font/dm_sans_regular"
+                        android:text="A 0,8 km"
+                        android:textColor="@color/title_color"
+                        android:textSize="15dp"></TextView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="7dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/phone_icon"></ImageView>
+
+                    <TextView
+                        android:id="@+id/provider_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:fontFamily="@font/dm_sans_regular"
+                        android:text="+5491140298321"
+                        android:textColor="@color/title_color"
+                        android:textSize="15dp"></TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_marginTop="25dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Califica y opina"
+            android:fontFamily="@font/dm_sans_bold"
+            android:textColor="@color/title_color"
+            android:textSize="17sp">
+        </TextView>
+
+        <com.fiubyte.bafix.utils.SvgRatingBar
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/rating_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            android:progressDrawable="@drawable/rating_bar"
+            android:rating="0"
+            android:stepSize="1" />
+
+        <TextView
+            android:visibility="gone"
+            android:id="@+id/pending_approval_text"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/dm_sans_regular"
+            android:textColor="@color/subtitle_color"
+            android:textSize="15sp"
+            android:text="Su calificación esta pendiente de aprobación.">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/opinions_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:fontFamily="@font/dm_sans_bold"
-        android:text="Califica y opina"
-        android:textColor="@color/title_color"
-        android:textSize="17sp"></TextView>
+        android:orientation="vertical"
+        >
 
-    <com.fiubyte.bafix.utils.SvgRatingBar
-        android:id="@+id/rating_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="15dp"
-        android:numStars="5"
-        android:progressDrawable="@drawable/rating_bar"
-        android:rating="0"
-        android:stepSize="1" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/opinions_recylcer_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layoutAnimation="@anim/layout_animation_fall_down"
+            android:clipToPadding="false">
 
+        </androidx.recyclerview.widget.RecyclerView>
+
+    </LinearLayout>
 
 </LinearLayout>
