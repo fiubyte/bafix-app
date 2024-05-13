@@ -165,6 +165,18 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         favoriteButton.setOnClickListener(favButtonView -> {
             onFavoriteButtonClicked();
         });
+        ImageButton shareButton = view.findViewById(R.id.share_button);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ShareBottomSheetFragment shareBottomSheet = ShareBottomSheetFragment.newInstance(
+                        serviceData.getTitle() ,
+                        "https://com.fiubyte.bafix/service/" + serviceData.getServiceId(),
+                        serviceData.getServicePhotoURL()
+                );
+                shareBottomSheet.show(getParentFragmentManager(), "shareBottomSheet");
+            }
+        });
     }
 
     private void handleOnBackButtonClicked(View view) throws UnsupportedEncodingException {
@@ -277,19 +289,7 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
             }
         });
 
-        // Encuentra el botón de compartir y establece el OnClickListener
-        ImageButton shareButton = view.findViewById(R.id.share_button);
-        shareButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShareBottomSheetFragment shareBottomSheet = ShareBottomSheetFragment.newInstance(
-                        serviceData.getTitle() ,
-                        "https://com.fiubyte.bafix/services/" + serviceData.getServiceId(),
-                        serviceData.getServicePhotoURL()
-                );
-                shareBottomSheet.show(getParentFragmentManager(), "shareBottomSheet");
-            }
-        });
+
     }
 
     @Override
