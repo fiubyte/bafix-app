@@ -17,6 +17,14 @@ import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import android.content.Intent;
+import android.widget.LinearLayout;
+import android.widget.Toast;
+import android.net.Uri;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+
 public class ShareBottomSheetFragment extends BottomSheetDialogFragment {
     private static final String KEY_SERVICE_NAME = "serviceName";
     private static final String KEY_SERVICE_URL = "serviceUrl";
@@ -54,8 +62,9 @@ public class ShareBottomSheetFragment extends BottomSheetDialogFragment {
         TextView nameTextView = view.findViewById(R.id.share_service_name_title);
         TextView urlTextView = view.findViewById(R.id.share_service_url);
         ImageView imageView = view.findViewById(R.id.share_service_image);
-        Log.d("ShareBottomSheetFragment", "onCreateView aqui estoy: " + serviceName + " " + serviceUrl + " " + imageUrl);
-
+        LinearLayout whatsappButton = view.findViewById(R.id.share_whatsapp_button);
+        ImageView gmailButton = view.findViewById(R.id.share_gmail_button);
+        ImageView copyUrlButton = view.findViewById(R.id.share_copy_url_button);  // Este es un ImageView, asegúrate de no castearlo incorrectamente.
 
         nameTextView.setText(serviceName);
         urlTextView.setText(serviceUrl);
@@ -66,8 +75,67 @@ public class ShareBottomSheetFragment extends BottomSheetDialogFragment {
                     .centerCrop()
                     .into(imageView);
         }
+
+        whatsappButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareToWhatsApp(serviceName, serviceUrl);
+            }
+        });
+        gmailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                shareToGmail(serviceName, serviceUrl);
+            }
+        });
+
+        copyUrlButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                copyUrlToClipboard(serviceUrl);
+            }
+        });
         return view;
     }
+
+    private void shareToWhatsApp(String serviceName, String serviceUrl) {
+        String message = "Mira este servicio: " + serviceName + "\n" + serviceUrl;
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, message);
+        sendIntent.setType("text/plain");
+        sendIntent.setPackage("com.whatsapp");
+
+        try {
+            startActivity(sendIntent);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getContext(), "WhatsApp no está instalado.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void shareToGmail(String serviceName, String serviceUrl) {
+        String subject = "Mira este servicio: " + serviceName;
+        String body = "Encontré este servicio interesante: " + serviceName + "\n" + serviceUrl;
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", "", null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        emailIntent.putExtra(Intent.EXTRA_TEXT, body);
+        emailIntent.setPackage("com.google.android.gm");
+
+        try {
+            startActivity(Intent.createChooser(emailIntent, "Enviar correo..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(getContext(), "Gmail no está instalado.", Toast.LENGTH_SHORT).show();
+        }
+    }
+    private void copyUrlToClipboard(String url) {
+        ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("URL", url);
+        clipboard.setPrimaryClip(clip);
+        Toast.makeText(getContext(), "URL copiada al portapapeles", Toast.LENGTH_SHORT).show();
+    }
+
+
 }
 
 

@@ -28,7 +28,7 @@
     <!-- Contenedor del servicio -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="193dp"
+        android:layout_height="118dp"
         android:orientation="horizontal"
         android:padding="8dp">
 
@@ -39,7 +39,7 @@
         <ImageView
             android:id="@+id/share_service_image"
             android:layout_width="64dp"
-            android:layout_height="64dp"
+            android:layout_height="57dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_alert" />
@@ -70,62 +70,49 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/share_copy_url_button"
             android:layout_width="45dp"
-            android:layout_height="54dp"
+            android:layout_height="49dp"
             android:layout_weight="1"
-            app:srcCompat="@android:drawable/ic_menu_share" />
+            android:src="@android:drawable/ic_menu_share"
+            android:contentDescription="Copiar URL al portapapeles" />
 
     </LinearLayout>
 
     <!-- Opciones de Compartir -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="92dp"
+        android:layout_height="79dp"
         android:orientation="horizontal"
         android:paddingTop="16dp">
 
-        <!-- Opción Chat -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/share_chat"
-                android:layout_width="match_parent"
-                android:layout_height="44dp"
-                android:padding="12dp"
-                android:src="@android:drawable/ic_menu_send" />
-
-            <TextView
-                android:id="@+id/text_chat"
-                android:layout_width="match_parent"
-                android:layout_height="33dp"
-                android:text="Chat" />
-        </LinearLayout>
 
         <!-- Opción Mensajes -->
         <LinearLayout
+            android:id="@+id/share_whatsapp_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical"
+            android:padding="12dp">
 
             <ImageView
-                android:id="@+id/share_messages"
+                android:id="@+id/share_whatsapp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:src="@drawable/share_variant" />
+                android:layout_height="match_parent"
+                android:src="@drawable/whatsapp" />
 
             <TextView
                 android:id="@+id/text_messages"
                 android:layout_width="match_parent"
-                android:layout_height="35dp"
+                android:layout_height="40dp"
                 android:text="Mensajes" />
         </LinearLayout>
+
 
         <!-- Opción Email -->
         <LinearLayout
@@ -135,11 +122,11 @@
             android:orientation="vertical">
 
             <ImageView
-                android:id="@+id/share_email"
+                android:id="@+id/share_gmail_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:src="@drawable/share_variant" />
+                android:src="@drawable/gmail" />
 
             <TextView
                 android:id="@+id/text_email"
