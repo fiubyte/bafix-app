@@ -1,10 +1,8 @@
 package com.fiubyte.bafix.utils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -119,12 +117,11 @@ public class LoginAuthManager {
                         mUser.getIdToken(true)
                                 .addOnCompleteListener(task1 -> {
                                     if (task1.isSuccessful()) {
-
                                         String idToken = task1.getResult().getToken();
                                         String email =
                                                 (String) task1.getResult().getClaims().get("email");
-                                        LoginAuthManager.setupBaFixAPI(email, idToken, activity);
-
+                                        String fullName = (String) task1.getResult().getClaims().get("name");
+                                        LoginAuthManager.setupBaFixAPI(email, fullName, idToken, activity);
                                     } else {
                                         // Handle error -> task.getException();
                                     }
@@ -140,8 +137,8 @@ public class LoginAuthManager {
         AnimationManager.showAndFadeOutView(activity.getApplicationContext(), registerFailedView, 3000);
     }
 
-    public static void setupBaFixAPI(String email, String googleIdToken, Activity activity) {
-        LoginAuthManager.loginToBaFixAPI(email, googleIdToken,
+    public static void setupBaFixAPI(String email, String fullName, String googleIdToken, Activity activity) {
+        LoginAuthManager.loginToBaFixAPI(email, fullName, googleIdToken,
                                          new LoginAuthManager.TokenCallback() {
             @Override
             public void onTokenReceived(String token) {
@@ -158,11 +155,11 @@ public class LoginAuthManager {
         });
     }
 
-    public static void loginToBaFixAPI(String email, String idToken, TokenCallback callback) {
+    public static void loginToBaFixAPI(String email, String fullName, String idToken, TokenCallback callback) {
         okHttpClient = new OkHttpClient();
 
-        String json = String.format("{\"email\": \"%s\", \"google_id_token\": \"%s\"}", email,
-                                    idToken);
+        String json = String.format("{\"email\": \"%s\", \"fullName\": \"%s\", \"google_id_token\": \"%s\"}", email,
+                                    fullName, idToken);
 
         RequestBody requestBody = RequestBody.create(json, MediaType.get("application/json"));
 
