@@ -1,6 +1,8 @@
 package com.fiubyte.bafix.fragments;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ import com.fiubyte.bafix.entities.ServiceTab;
 import com.fiubyte.bafix.models.DataViewModel;
 import com.fiubyte.bafix.models.FiltersViewModel;
 import com.fiubyte.bafix.preferences.SharedPreferencesManager;
+import com.fiubyte.bafix.utils.AnimationManager;
 import com.fiubyte.bafix.utils.LoginAuthManager;
 import com.fiubyte.bafix.utils.ServicesDataDeserializer;
 import com.fiubyte.bafix.utils.ServicesAPIManager;
@@ -47,10 +50,10 @@ import okhttp3.Response;
 
 public class RatingFragment extends Fragment {
 
-    TextView serviceTitle;
+    private static int MIN_CHAR = 5;
+    TextView serviceTitle, remainingChars;
     SvgRatingBar ratingBar;
-    ImageView closeButton;
-
+    ImageView closeButton, minCharactersError;
     EditText comment;
 
     MaterialCardView publishButton;
@@ -85,6 +88,7 @@ public class RatingFragment extends Fragment {
         closeButton = view.findViewById(R.id.close_button);
         serviceTitle = view.findViewById(R.id.service_title);
         comment = view.findViewById(R.id.comment);
+        remainingChars = view.findViewById(R.id.remaining_chars);
 
         int rating = RatingFragmentArgs.fromBundle(getArguments()).getRating();
         ratingBar.setRating(rating);
@@ -95,6 +99,8 @@ public class RatingFragment extends Fragment {
         serviceTitle.setText(RatingFragmentArgs.fromBundle(getArguments()).getServiceData().getTitle());
 
         postServiceRateURL = "https://bafix-api.onrender.com/services/" + serviceId + "/rate";
+
+        minCharactersError = view.findViewById(R.id.min_characters_error);
 
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,9 +114,29 @@ public class RatingFragment extends Fragment {
 
         publishButton = view.findViewById(R.id.publish_button);
         publishButton.setOnClickListener(v -> handleOnClickPublishButton(v));
+
+        comment.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                int remaining = getResources().getInteger(R.integer.max_char) - s.length();
+                remainingChars.setText(String.valueOf(remaining));
+            }
+        });
     }
 
     void handleOnClickPublishButton(View view) {
+        if (comment.length() < MIN_CHAR) {
+            AnimationManager.showAndFadeOutView(getActivity().getApplicationContext(), minCharactersError, 3000);
+            return;
+        }
         rateService((int) ratingBar.getRating(), String.valueOf(comment.getText()), view);
     }
 
