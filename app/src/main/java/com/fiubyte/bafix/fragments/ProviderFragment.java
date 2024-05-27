@@ -26,7 +26,9 @@ import com.fiubyte.bafix.adapters.ProviderServiceListAdapter;
 import com.fiubyte.bafix.entities.ProviderData;
 import com.fiubyte.bafix.entities.ServiceData;
 import com.fiubyte.bafix.entities.ServiceTab;
+import com.fiubyte.bafix.preferences.SharedPreferencesManager;
 import com.fiubyte.bafix.utils.RecylcerViewInterface;
+import com.fiubyte.bafix.utils.ServicesAPIManager;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -83,25 +85,42 @@ public class ProviderFragment extends Fragment implements RecylcerViewInterface 
     }
 
     private void onProviderPhoneClicked(View v) {
-        if (isAppInstalled(WHATSAPP_PACKAGE_NAME)) {
-            String text = "¡Hola "
+        incrementContactCounter(providerData.getId(), () -> {
+            if (isAppInstalled(WHATSAPP_PACKAGE_NAME)) {
+                String text = "¡Hola "
                         + providerData.getName()
                         + "! Me interesa uno de los servicios que ofreces en BAFIX";
-            Uri uri = Uri.parse("https://api.whatsapp.com/send?phone="
-                                        + providerData.getPhone()
-                                        + "&text="
-                                        + text);
-            Intent whatsappIntent = new Intent(Intent.ACTION_VIEW, uri);
-            startActivity(whatsappIntent);
-        } else {
-            Intent googlePlayStoreIntent = new
-                    Intent(Intent.ACTION_VIEW,
-                           Uri.parse("https://play.google.com/store/apps/details?id="
-                                             + WHATSAPP_PACKAGE_NAME));
-            startActivity(googlePlayStoreIntent);
-        }
+                Uri uri = Uri.parse("https://api.whatsapp.com/send?phone="
+                        + providerData.getPhone()
+                        + "&text="
+                        + text);
+                Intent whatsappIntent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(whatsappIntent);
+            } else {
+                Intent googlePlayStoreIntent = new
+                        Intent(Intent.ACTION_VIEW,
+                        Uri.parse("https://play.google.com/store/apps/details?id="
+                                + WHATSAPP_PACKAGE_NAME));
+                startActivity(googlePlayStoreIntent);
+            }
+        });
     }
+    private void incrementContactCounter(int serviceId, Runnable onSuccess) {
+        String token = SharedPreferencesManager.getStoredToken(requireActivity());
+        ServicesAPIManager.incrementContactCounter(token, serviceId, new ServicesAPIManager.ServiceRateCallback() {
+            @Override
+            public void onSuccess(String response) {
+                Log.d("DEBUGGING", "Contador incrementado con éxito");
+                onSuccess.run();
+            }
 
+            @Override
+            public void onError() {
+                Log.e("ERROR", "Error al incrementar el contador");
+                onSuccess.run();
+            }
+        });
+    }
     private boolean isAppInstalled(String packageName) {
         try {
             getContext().getPackageManager().getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);

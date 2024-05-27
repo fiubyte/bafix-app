@@ -282,6 +282,21 @@ public class ServiceFragment extends Fragment implements View.OnClickListener, R
         });
 
         tabLayout.getTabAt(currentTab.ordinal()).select();
+
+        int serviceId = serviceData.getServiceId() ;
+        String token = SharedPreferencesManager.getStoredToken(requireActivity());
+
+        ServicesAPIManager.recordServiceView(token, serviceId, new ServicesAPIManager.ServiceRateCallback() {
+            @Override
+            public void onSuccess(String response) {
+                Log.d("DEBUGGING", "Service view recorded successfully");
+            }
+
+            @Override
+            public void onError() {
+                Log.e("ERROR", "Failed to record service view");
+            }
+        });
     }
 
     private void onOpinionsTabClicked() {

@@ -139,6 +139,74 @@ public class ServicesAPIManager {
         });
     }
 
+    public static void incrementContactCounter(String token, int serviceId, ServiceRateCallback callback) {
+        OkHttpClient client = new OkHttpClient();
+        String CONTACT_SERVICE_URL = "https://bafix-api.onrender.com/services/" + serviceId + "/contact";
+
+        Request request = new Request.Builder()
+                .url(CONTACT_SERVICE_URL)
+                .post(RequestBody.create("", null))
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("ERROR", "Error on POST /services/" + serviceId + "/contact", e);
+                callback.onError();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        assert response.body() != null;
+                        callback.onSuccess(response.body().string());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    callback.onError();
+                    Log.e("ERROR", "Error on POST /services/" + serviceId + "/contact: " + response);
+                }
+            }
+        });
+    }
+
+    public static void recordServiceView(String token, int serviceId, ServiceRateCallback callback) {
+        OkHttpClient client = new OkHttpClient();
+        String VIEW_SERVICE_URL = "https://bafix-api.onrender.com/services/" + serviceId + "/view";
+
+        Request request = new Request.Builder()
+                .url(VIEW_SERVICE_URL)
+                .post(RequestBody.create("", null))  // Empty body as no data needs to be sent
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                Log.e("ERROR", "Error on POST /services/" + serviceId + "/view", e);
+                callback.onError();
+            }
+
+            @Override
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try {
+                        callback.onSuccess(response.body().string());
+                    } catch (JSONException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    callback.onError();
+                    Log.e("ERROR", "Error on POST /services/" + serviceId + "/view: " + response);
+                }
+            }
+        });
+    }
+
+
     public interface ServicesListCallback {
         void onServicesListReceived(String response) throws JSONException;
 
